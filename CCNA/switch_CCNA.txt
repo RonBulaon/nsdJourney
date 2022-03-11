@@ -1,0 +1,27 @@
+enable
+config t
+
+hostname S2
+
+interface vlan1
+ip address 192.168.1.2 255.255.255.0
+ip default-gateway 192.168.0.1	
+no shutdown
+no ip domain-lookup
+
+line console 0
+password Ciscoconpa55
+exec-timeout 5
+login
+exit
+
+line vty 0
+exec-timeout 5
+login local
+
+enable secret Ciscoenpa55
+
+service password-encryption
+
+
+
