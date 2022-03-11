@@ -5,4 +5,4 @@ Notes here are my schedules, notes, exercises, etc. from my *Network Security Di
 ## Table of Contents
 * [Schedule](PDFs/FT_NSD_Feb2022.docx.pdf)
 * [CCNA Commands](CCNA/commands.md)
-* [Self Study Materials](selfStudy.md) (including supplmentary resources not provided by school)
+* [Self Study Materials](selfStudy.md)(including supplmentary resources not provided by school)
