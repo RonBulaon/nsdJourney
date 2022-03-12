@@ -1,5 +1,5 @@
 # Tips and Tricks
-Realization and study habits I used through the course. 
+Realizations and study habits I used through the course. 
 
 * Watch video tutorials 2x speed or more.
 * Read the lecture ahead and do the exercises (or labs) before the scheduled lecture.

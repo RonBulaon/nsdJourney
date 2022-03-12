@@ -8,3 +8,6 @@
 * [Internet Control Message Protocol (ICMP) Parameters](https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml)
 * [Decimal to Binary converter](https://www.rapidtables.com/convert/number/decimal-to-binary.html)
 * [Subnet Calculator](https://www.calculator.net/ip-subnet-calculator.html)
+
+## PDFs
+* [Cisco CLI Cheat Sheet](PDFs/Networking-CiscoCCNA.pdf)
