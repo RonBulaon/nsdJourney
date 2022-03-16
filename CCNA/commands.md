@@ -567,8 +567,8 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```enable``` <br> ```config t``` <br> ```no ip domain-lookup ```|                 | Disable DNS lookup|
 | ```hostname R1```| R1              | Router name (case sensitive)|
 | ```ip domain-name casestudy.com``` | casestudy.com   | Domain name (case sensitive)|
-| ```enable password ciscoenpass``` | ciscoenpass | Encrypted privileged exec password|
-| ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit``` | ciscoenpass | Console access password|
+| ```enable secret ciscoenpass``` | ciscoenpass | Encrypted privileged exec password|
+| ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit``` | ciscoconpass | Console access password|
 | ```security password min-length 8``` | 8 characters| Set the minimum length for passwords|
 | ```username admin secret adminpass``` | Username: admin <br> Password: adminpass | Create a user with an encrypted password in the local database |
 | ```line vty 0 4``` <br>  ```login local``` | | Set login on VTY 0 to 4 lines to use local database |
@@ -591,8 +591,8 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```reload```                  |                   | Reload the Switch.                              |
 | ```enable``` <br> ```config t``` <br> ```hostname S1```| S1              | Router name (case sensitive)|
 | ```interface vlan1```<br>```ip address 172.16.16.253 255.255.255.0```<br>```no shutdown``` | Set the Layer 3 IPv4 address <br> Activate Interface | Configure Management Interface (SVI)|
-| ```exit```<br> ```ip default-gateway 172.16.16.254```| S1              | Set the default gateway|
-| ```enable paqssword ciscoenpass```| ciscoenpass              | Encrypted privileged exec password(case sensitive)|
+| ```exit```<br> ```ip default-gateway 172.16.16.254```|               | Set the default gateway|
+| ```enable secret ciscoenpass```| ciscoenpass              | Encrypted privileged exec password(case sensitive)|
 | ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit```| ciscoconpass              | Console access password(case sensitive)|
 | ```line vty 0 15```<br>```transport input telnet```<br>```password ciscovtypass```<br>```login local```| ciscovtypass              | Telnet access password ( vty line 0 to 15) – allow only telnet(case sensitive)|
 
