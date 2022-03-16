@@ -20,6 +20,7 @@
       - [Host Side Configuration](#host-side-configuration)
       - [Router Side Configuration](#router-side-configuration)
       - [Switch Side Configuration](#switch-side-configuration)
+      - [Other Commands](#other-commands)
 
 <!-- /TOC -->
 
@@ -555,8 +556,8 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ------- | ----------  |  -----------                           | -----------   |
 | R1      | g0/0        |  ```2001:db8:beef:a::1/64  ```               |  |
 | R1      | g0/1        |  ```2001:db8:beef:b::1/64 ```                |  |
-| PC-A    |             |  ```2001:DB8:BEEF:A:240:BFF:FEB2:6B7D/64```  | ```2001:db8:beef:a::1``` |
-| PC-B    |             |  ```2001:DB8:BEEF:B:290:21FF:FE91:5D96/64``` | ```2001:db8:beef:b::1``` |
+| PC-A    |             |  ```2001:DB8:BEEF:A:240:BFF:FEB2:6B7D/64```  | ```fe80::1``` |
+| PC-B    |             |  ```2001:DB8:BEEF:B:290:21FF:FE91:5D96/64``` | ```fe80::1``` |
 
 #### Router Side Configuration 
 
@@ -595,5 +596,26 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```enable secret ciscoenpass```| ciscoenpass              | Encrypted privileged exec password(case sensitive)|
 | ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit```| ciscoconpass              | Console access password(case sensitive)|
 | ```line vty 0 15```<br>```transport input telnet```<br>```password ciscovtypass```<br>```login local```| ciscovtypass              | Telnet access password ( vty line 0 to 15) – allow only telnet(case sensitive)|
+
+#### Other Commands
+| Command                                   | Description       | 
+| -------                                   | ----------        | 
+| ```show ip interface brief```             | Display a summary of important information about the interfaces on R1.|
+| ```show ip route```                       | Display the IPv4 routing table.|
+| ```show arp```                            | Display the Layer 2 to Layer 3 mapping of addresses on R1.|
+| ```show ip interface G0/0```              | Display detailed IPv4 information about interface G0/0 on R1.|
+| ```show ipv6 route```                     | Display the IPv6 routing table.|
+| ```show ipv6 interface brief```           | Display a summary of IPv6 interface addresses and status.|
+| ```show cdp neighbors```                  | Display information about the devices connected to R1. Information should include Device ID, Local Interface, Hold time, Capability, Platform, and Port ID.|
+| ```copy running-config startup-config```  | Save the current configuration so it will be used the next time the router is started.|
+
+
+
+
+
+
+
+
+
 
 [Back to Top](#cisco-cli-commands)
