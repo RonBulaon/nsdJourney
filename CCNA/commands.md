@@ -486,7 +486,7 @@
     security password min-length 10
     ```
 
-[Back to README](../README.md)
+[Back to Top](#cisco-cli-commands)
 
 
 ### Case Study : CCNA Level 1
@@ -608,14 +608,6 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```show ipv6 interface brief```           | Display a summary of IPv6 interface addresses and status.|
 | ```show cdp neighbors```                  | Display information about the devices connected to R1. Information should include Device ID, Local Interface, Hold time, Capability, Platform, and Port ID.|
 | ```copy running-config startup-config```  | Save the current configuration so it will be used the next time the router is started.|
-
-
-
-
-
-
-
-
 
 
 [Back to Top](#cisco-cli-commands)
