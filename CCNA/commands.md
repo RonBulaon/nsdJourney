@@ -553,10 +553,10 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 
 | Device  | Interface   |  IPv6                                  | Gateway       |
 | ------- | ----------  |  -----------                           | -----------   |
-| R1      | g0/0        |  2001:db8:beef:a::1/64                 |  |
-| R1      | g0/1        |  2001:db8:beef:b::1/64                 |  |
-| PC-A    |             |  2001:DB8:BEEF:A:240:BFF:FEB2:6B7D/64  | 2001:db8:beef:a::1 |
-| PC-B    |             |  2001:DB8:BEEF:B:290:21FF:FE91:5D96/64 | 2001:db8:beef:b::1 |
+| R1      | g0/0        |  ```2001:db8:beef:a::1/64  ```               |  |
+| R1      | g0/1        |  ```2001:db8:beef:b::1/64 ```                |  |
+| PC-A    |             |  ```2001:DB8:BEEF:A:240:BFF:FEB2:6B7D/64```  | ```2001:db8:beef:a::1``` |
+| PC-B    |             |  ```2001:DB8:BEEF:B:290:21FF:FE91:5D96/64``` | ```2001:db8:beef:b::1``` |
 
 #### Router Side Configuration 
 
@@ -580,7 +580,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```crypto key generate rsa``` <br> ```1024``` | 1024 bits modulus | Generate a RSA crypto key|
 | ```interface g0/0``` <br> ```ipv6 address 2001:DB8:BEEF:A::1/64``` <br> ```ipv6 address fe80::1 link-local```| Configure G0/0 to use the first address in subnet A. 2001:DB8:BEEF:A::/64 | Assign the IPv6 Global Unicast Address <br> Assign the IPv6 link-local address |
 | ```interface g0/1 ``` <br>```ipv6 address 2001:DB8:BEEF:B::/64``` <br> ```ipv6 address fe80::1 link-local``` | Configure G0/0 to use the first address in subnet B. 2001:DB8:BEEF:B::/64 |  Assign the IPv6 Global Unicast Address <br> Assign the IPv6 link-local address |
-| ipv6 unicast-routing |  |Enable IPv6 unicast routing.|
+| ```ipv6 unicast-routing ```|  |Enable IPv6 unicast routing.|
 
 #### Switch Side Configuration 
 
