@@ -596,4 +596,4 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit```| ciscoconpass              | Console access password(case sensitive)|
 | ```line vty 0 15```<br>```transport input telnet```<br>```password ciscovtypass```<br>```login local```| ciscovtypass              | Telnet access password ( vty line 0 to 15) – allow only telnet(case sensitive)|
 
-
+[Back to Top](#cisco-cli-commands)
