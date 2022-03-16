@@ -14,8 +14,16 @@
   - [IPv6 Commands](#ipv6-commands)
   - [Basic Router Security](#basic-router-security)
   - [Sample Command Sequence](#sample-command-sequence)
+    - [Switch](#switch)
+    - [Router](#router-1)
+    - [Case Study : CCNA Level 1](#case-study--ccna-level-1)
+      - [Host Side Configuration](#host-side-configuration)
+      - [Router Side Configuration](#router-side-configuration)
+      - [Switch Side Configuration](#switch-side-configuration)
 
 <!-- /TOC -->
+
+[Back to README](../README.md)
 
 ## Global Commands
 * Go to configuration mode
@@ -64,7 +72,8 @@
     Switch# show start
     Switch# reload
     ```
- 
+ [Back to Top](#cisco-cli-commands)
+
 ## Secure Management Access
 * Secure console lines
     ```bash
@@ -100,6 +109,8 @@
     Switch(config)# service password-encryption
     ```
 
+[Back to Top](#cisco-cli-commands)
+
 ## IP Addressing Switch
 * Show mac address table
     ```bash
@@ -117,6 +128,8 @@
     ```bash
     Switch(config)# ip default-gateway 192.168.1.1
     ```
+
+[Back to Top](#cisco-cli-commands)
 
 ## Switch Port
 * Configure  port speed and duplex auto sensing. 
@@ -156,6 +169,8 @@
     ```bash
     Switch# show port-security interface fa0/2
     ```
+
+ [Back to Top](#cisco-cli-commands)
 
 ## VLANs
 * Show current VLAN settings
@@ -210,6 +225,8 @@
     ```bash
     Switch(config)# show interfaces trunk
     ```
+
+ [Back to Top](#cisco-cli-commands)
 
 ## Router
 * Show information about the Interfaces
@@ -266,6 +283,8 @@
     ```
     Note: *Clock rate* is the speed of the link
 
+[Back to Top](#cisco-cli-commands)
+
 ## Routing
 * Show routing table
     ```bash
@@ -287,6 +306,8 @@
     Router(config)# ip route 0.0.0.0 0.0.0.0 s0/0/1
     ```
 
+[Back to Top](#cisco-cli-commands)
+
 ## Dynamic Routing
 * Enabling and configuring RIPv2
     ```bash
@@ -306,6 +327,7 @@
     Router(config)# router rip
     Router(config-router)# default-information originate
     ```
+[Back to Top](#cisco-cli-commands)
 
 ## IPv6 Commands
 * Enable the router to forward IPv6 packets.
@@ -326,6 +348,8 @@
     ```bash
     Router(config-if)# no ipv6 address 2001:db8:1:5::1/64
     ```
+
+[Back to Top](#cisco-cli-commands)
 
 ## Basic Router Security
 * Encrypt all plaintext passwords.
@@ -378,8 +402,11 @@
     Switch(config-if-range)# shutdown
     ```
 
+[Back to Top](#cisco-cli-commands)
+
 ## Sample Command Sequence
-* ### Switch
+
+### Switch
     ```
     enable
     config t
@@ -407,8 +434,9 @@
     service password-encryption
     ```
 
+[Back to Top](#cisco-cli-commands)
 
-* ### Router
+### Router
 
     ```
     enable
@@ -456,5 +484,116 @@
 
     security password min-length 10
     ```
+
+[Back to README](../README.md)
+
+
+### Case Study : CCNA Level 1
+
+**Topology**<br/><img src="pics/topology1.png">
+
+**Scenario** <br/>
+In this Case Study, you will configure the devices in a small network. You must configure a router, switch, and PCs to support both IPv4 and IPv6 connectivity. You will configure security, including SSH, on the router. In addition, you will test and document the network using common CLI commands. 
+  
+Given an IP address and mask of (address / mask), **172.16.16.0 mask 255.255.254.0** design an IP addressing scheme that satisfies the following requirements. Network address/mask and the number of hosts for Subnets A and B will be provided below.
+
+| Subnet      | Number of Hosts |
+| ----------- | ----------- |
+| Subnet A      | 100       |
+| Subnet B      | 200       |
+
+**Answer**: **Subnet A**:
+
+| Specification                     | Student Input         | 
+| -----------                       | -----------           |
+| New IP mask (CIDR format)	        | ```/25```             |
+| New IP mask (dotted decimal)      | ```255.255.255.128``` |
+| Number of usable hosts            | ```126```             |
+| Network Address (Network IP)      | ```172.16.17.0```     |
+| First IP Host address(usable)     | ```172.16.17.1```     |
+| Last IP Host address(usable)      | ```172.16.17.126```   |
+| Broadcast Address (Broadcast IP)  | ```172.16.17.127```   |
+
+**Answer**: **Subnet B**:
+
+| Specification                     | Student Input         | 
+| -----------                       | -----------           |
+| New IP mask (CIDR format)	        | ```\24```             |
+| New IP mask (dotted decimal)      | ```255.255.255.0```   |
+| Number of usable hosts            | ```254```             |
+| Network Address (Network IP)      | ```172.16.16.0```     |
+| First IP Host address(usable)     | ```172.16.16.1```     |
+| Last IP Host address(usable)      | ```172.16.16.254```   |
+| Broadcast Address (Broadcast IP)  | ```172.16.16.255```   |
+
+Host **computers** will use the **FIRST usable IP address in the subnet** while the network **router** will use the **LAST usable address in the subnet**. The **switch** will use the **SECOND from the last usable address in the subnet**.
+
+Write down the IP address information for each device:
+
+| Device    | IP Addess     | Subnet Mask       | Gateway       |
+| -------   | ----------    | -----------       | --------      |
+| PC-A      | ```172.16.17.1```     | ```255.255.255.128```   | ```172.16.17.126``` |
+| R1-G0/0   |``` 172.16.17.126``` |``` 255.255.255.128```   | NA            |  
+| R1-G0/1   | ```172.16.16.254 ```| ```255.255.255.0 ```    | NA            |
+| S1        | ```172.16.16.253 ```  |``` 255.255.255.0```     | ```172.16.16.254``` |
+| PC-B      | ```172.16.16.1```   | ```255.255.255.0```     | ```172.16.16.254 ```|
+
+
+#### Host Side Configuration
+**IPv4**
+
+| Device    | IP Addess     | Subnet Mask       | Gateway       |
+| -------   | ----------    | -----------       | --------      |
+| PC-A      | ```172.16.17.1```     | ```255.255.255.128```   | ```172.16.17.126``` |
+| PC-B      | ```172.16.16.1```   | ```255.255.255.0```     | ```172.16.16.254 ```|
+
+**IPv6**
+
+Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresses for the Gigabit interfaces on R1. Use **FE80::1** as the link-local address on both interfaces.
+
+| Device  | Interface   |  IPv6                                  | Gateway       |
+| ------- | ----------  |  -----------                           | -----------   |
+| R1      | g0/0        |  2001:db8:beef:a::1/64                 |  |
+| R1      | g0/1        |  2001:db8:beef:b::1/64                 |  |
+| PC-A    |             |  2001:DB8:BEEF:A:240:BFF:FEB2:6B7D/64  | 2001:db8:beef:a::1 |
+| PC-B    |             |  2001:DB8:BEEF:B:290:21FF:FE91:5D96/64 | 2001:db8:beef:b::1 |
+
+#### Router Side Configuration 
+
+| Command                       | Specification     | Task          | 
+| -------                       | ----------        | ----------    |
+| ```erase startup-config```    |                   | Erase the startup-config file on the Router.  |   
+| ```reload```                  |                   | Reload the Router.                            |
+| ```enable``` <br> ```config t``` <br> ```no ip domain-lookup ```|                 | Disable DNS lookup|
+| ```hostname R1```| R1              | Router name (case sensitive)|
+| ```ip domain-name casestudy.com``` | casestudy.com   | Domain name (case sensitive)|
+| ```enable password ciscoenpass``` | ciscoenpass | Encrypted privileged exec password|
+| ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit``` | ciscoenpass | Console access password|
+| ```security password min-length 8``` | 8 characters| Set the minimum length for passwords|
+| ```username admin secret adminpass``` | Username: admin <br> Password: adminpass | Create a user with an encrypted password in the local database |
+| ```line vty 0 4``` <br>  ```login local``` | | Set login on VTY 0 to 4 lines to use local database |
+| ```transport input all``` | | Set VTY lines to accept all connections.|
+| ```service password-encryption``` | | Encrypt the clear text passwords|
+| ```banner motd #Warning! Unauthorized Access is Prohibited.# ```| Warning! Unauthorized Access is Prohibited. | MOTD Banner (case sensitive)|
+| ```interface g0/0``` <br> ```description to LAN A```<br>```ip address 172.16.17.126 255.255.255.128``` <br> ```no shut``` | Set the description to LAN A <br> Set the Layer 3 IPv4 address <br> Activate Interface | Interface G0/0|
+| ```interface g0/1``` <br> ```description to LAN B```<br>```ip address 172.16.16.254 255.255.255.0``` <br> ```no shut```| Set the description to LAN B <br> Set the Layer 3 IPv4 address <br> Activate Interface | Interface G0/1|
+| ```crypto key generate rsa``` <br> ```1024``` | 1024 bits modulus | Generate a RSA crypto key|
+| ```interface g0/0``` <br> ```ipv6 address 2001:DB8:BEEF:A::1/64``` <br> ```ipv6 address fe80::1 link-local```| Configure G0/0 to use the first address in subnet A. 2001:DB8:BEEF:A::/64 | Assign the IPv6 Global Unicast Address <br> Assign the IPv6 link-local address |
+| ```interface g0/1 ``` <br>```ipv6 address 2001:DB8:BEEF:B::/64``` <br> ```ipv6 address fe80::1 link-local``` | Configure G0/0 to use the first address in subnet B. 2001:DB8:BEEF:B::/64 |  Assign the IPv6 Global Unicast Address <br> Assign the IPv6 link-local address |
+| ipv6 unicast-routing |  |Enable IPv6 unicast routing.|
+
+#### Switch Side Configuration 
+
+| Command                       | Specification     | Task          | 
+| -------                       | ----------        | ----------    | 
+| ```erase startup-config```    |                   | Erase the startup-config file on the Switch.   |   
+| ```delete flash:vlan.dat```   |                   | Delete the vlan.dat file on the Switch   | 
+| ```reload```                  |                   | Reload the Switch.                              |
+| ```enable``` <br> ```config t``` <br> ```hostname S1```| S1              | Router name (case sensitive)|
+| ```interface vlan1```<br>```ip address 172.16.16.253 255.255.255.0```<br>```no shutdown``` | Set the Layer 3 IPv4 address <br> Activate Interface | Configure Management Interface (SVI)|
+| ```exit```<br> ```ip default-gateway 172.16.16.254```| S1              | Set the default gateway|
+| ```enable paqssword ciscoenpass```| ciscoenpass              | Encrypted privileged exec password(case sensitive)|
+| ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit```| ciscoconpass              | Console access password(case sensitive)|
+| ```line vty 0 15```<br>```transport input telnet```<br>```password ciscovtypass```<br>```login local```| ciscovtypass              | Telnet access password ( vty line 0 to 15) – allow only telnet(case sensitive)|
 
 

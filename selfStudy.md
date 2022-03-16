@@ -11,3 +11,8 @@
 
 ## PDFs
 * [Cisco CLI Cheat Sheet](PDFs/Networking-CiscoCCNA.pdf)
+* [Packet Analysis Reference Guide v3.0](PDFs/PacketAnalysisReferenceGuidev3.pdf)
+
+[Back to Top](#self-study-materials-and-other-tools)
+
+[Back to README](../README.md)
