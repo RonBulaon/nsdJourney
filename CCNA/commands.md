@@ -22,6 +22,7 @@
 - [CCNA II : Switching, Routing, and Wireless Essentials](#ccna-ii--switching-routing-and-wireless-essentials)
   - [Switch SVI Configuration Example](#switch-svi-configuration-example)
   - [VLAN Configuration](#vlan-configuration)
+  - [Configure Trunks](#configure-trunks)
 
 <!-- /TOC -->
 
@@ -662,6 +663,19 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     Switch(config)# interface f0/18
     Switch(config-if)# mls qos trust cos
     Switch(config-if)# switchport voice vlan 150
+    ```
+
+## Configure Trunks
+* Configure G0/1 and G0/2 interfaces for tunking
+    ```
+    Switch(config)# interface range g0/1-2
+    Switch(config-if)# switchport mode trunk
+    ```
+* Configure vlan 99 as the native vlan for G0/1 and G0/2 interfaces
+    ```
+    Switch(config)# interface range g0/1-2
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if) switchport trunk native vlan 99
     ```
 
 
