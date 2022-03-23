@@ -24,6 +24,11 @@
   - [VLAN Configuration](#vlan-configuration)
   - [Configure Trunks](#configure-trunks)
   - [Dynamic Trunking Protocol(DTP)](#dynamic-trunking-protocoldtp)
+  - [802.1Q Encapsulation](#8021q-encapsulation)
+  - [Activity : Configure Layer 3 Switching and Inter-VLAN Routing](#activity--configure-layer-3-switching-and-inter-vlan-routing)
+    - [Part 1 : Configure Layer 3 Switching](#part-1--configure-layer-3-switching)
+    - [Part 2 : Configure Inter-VLAN Routing](#part-2--configure-inter-vlan-routing)
+    - [Part 3 : Configure IPv6 Inter-VLAN Routing](#part-3--configure-ipv6-inter-vlan-routing)
 
 <!-- /TOC -->
 
@@ -665,6 +670,10 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     Switch(config-if)# mls qos trust cos
     Switch(config-if)# switchport voice vlan 150
     ```
+* Port Status
+    ```
+    Switch# show interfaces fa0/18 switchport
+    ```
 
 ## Configure Trunks
 * Configure G0/1 and G0/2 interfaces for tunking
@@ -699,21 +708,194 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     ```
     Switch(config)# show interfaces trunk
     ```
-* asd
+
+## 802.1Q Encapsulation
+* Create AUbinterface G0/0.10
+  * Set encapsulation type to 802.1Q and assign VLAN10 to the subinterface
     ```
-    Switch(config)# 
-    Switch(config-if)# 
-    ```
-* asd
-    ```
-    Switch(config)# 
-    Switch(config-if)# 
-    ```
-* asd
-    ```
-    Switch(config)# 
-    Switch(config-if)# 
+    Router(config)# int g0/0.10
+    Router(config-if)# encapsulation dot1Q 10
+    Router(config-if)# ip address 172.17.10.1 255.255.255.0
     ```
 
+## Activity : Configure Layer 3 Switching and Inter-VLAN Routing
+
+* Objectives:
+  * Part 1 : [Configure Layer 3 Switching](#part-1--configure-layer-3-switching)
+  * Part 2 : [Configure Inter-VLAN Routing](#part-2--configure-inter-vlan-routing)
+  * Part 3 : [Configure IPv6 Inter-VLAN Routing](#part-3--configure-ipv6-inter-vlan-routing)
+<br><br>
+* **Scenario** :  A multilayer switch like the Cisco Catalyst 3650 is capable of both Layer 2 switching and Layer 3 routing. One of the advantages of using a multilayer switch is this dual functionality. A benefit for a small to medium-sized company would be the ability to purchase a single multilayer switch instead of separate switching and routing network devices. Capabilities of a multilayer switch include the ability to route from one VLAN to another using multiple switched virtual interfaces (SVIs), as well as the ability to convert a Layer 2 switchport to a Layer 3 interface. <br><img src="pics/activity_table1.png" width="500"><br><img src="pics/activity_diagram.png" width="500">
+
+### Part 1 : Configure Layer 3 Switching
+* Configure the GigabitEthernet 0/2 port on switch MLS as a routed port and verify that you can ping another Layer 3 address.
+  - On MLS, configure G0/2 as a routed port and assign an IP address according to the Addressing Table.
+    ```bash
+    MLS(config)# interface g0/2
+    MLS(config-if)# no switchport
+    MLS(config-if)# ip address 209.165.200.225 255.255.255.252
+    ```
+  - Verify connectivity to Cloud by pinging 209.165.200.226.
+    ```bash
+    MLS# ping 209.165.200.226
+
+    Type escape sequence to abort.
+    Sending 5, 100-byte ICMP Echos to 209.165.200.226, timeout is 2 seconds:
+    !!!!!
+    Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
+    ```
+
+### Part 2 : Configure Inter-VLAN Routing
+- **Step 1: Add VLANs** : Add VLANs to MLS according to the table below. Packet Tracer scoring is case-sensitive, so type the names exactly as shown.
+
+    | VLAN Number   | VLAN Name     | 
+    | -------       | ----------    |
+    | 10            | Staff         |
+    | 20            | Student       |
+    | 30            | Faculty       |
+    
+    ```bash
+    MLS(config)# vlan 10
+    MLS(config)# name Staff
+    MLS(config)# vlan 20
+    MLS(config)# name Student
+    MLS(config)# vlan 30
+    MLS(config)# name Faculty
+    ```
+- **Step 2: Configure SVI on MLS** : Configure and activate the SVI interfaces for **VLANs 10, 20, 30, and 99** according to the Addressing Table. The configuration for VLAN 10 is shown below as an example.
+    ```bash
+    MLS(config)# interface vlan 10
+    MLS(config-if)# ip address 192.168.10.254 255.255.255.0
+    MLS(config-if)# ipv6 address 2001:db8:acad:10::1/64
+    MLS(config)# interface vlan 20
+    MLS(config-if)# ip address 192.168.20.254 255.255.255.0
+    MLS(config-if)# ipv6 address 2001:db8:acad:20::1/64
+    MLS(config)# interface vlan 30
+    MLS(config-if)# ip address 192.168.30.254 255.255.255.0
+    MLS(config-if)# ipv6 address 2001:db8:acad:30::1/64
+    MLS(config)# interface vlan 99
+    MLS(config-if)# ip address 192.168.99.254 255.255.255.0   
+    ```
+- **Step 3: Configure Trunking on MLS** : Trunk configuration differs slightly on a Layer 3 switch. On the Layer 3 switch, the trunking interface needs to be encapsulated with the dot1q protocol, however it is not necessary to specify VLAN numbers as it is when working with a router and subinterfaces.
+  * On MLS, configure interface g0/1.
+      ```bash
+      MLS(config)# interface g0/1
+      ```  
+  * Make the interface a static trunk port.
+      ```bash
+      MLS(config-if)# switchport mode trunk
+      ```
+  * Specify the native VLAN as 99.
+      ```bash
+      MLS(config-if)# switchport trunk native vlan 99
+      ```
+  * Encapsulate the link with the dot1q protocol.
+      ```bash
+      MLS(config-if)# switchport trunk encapsulation dot1q
+      ```
+  Note: Packet Tracer may not score the trunk encapsulation.
+
+- **Step 4: Configure Trunking on S1** :
+  * Configure interface g0/1 of S1 as a static trunk.
+    ```bash
+    S1(config)# int g0/1
+    S1(config-if)# switchport mode trunk
+    ```
+  * Configure the native VLAN on the trunk.
+    ```bash
+    S1(config-if)# switchport trunk native vlan 99
+    ```
+
+- **Step 5: Enable routing** :
+  * Use the ```show ip route``` command. Are there any active routes?
+
+  * Enter the ip routing command to enable routing in global configuration mode.
+    ```bash
+    MLS(config)# ip routing
+    ```
+  * Use the ```show ip route``` command to verify routing is enabled.
+    ```bash
+    MLS# show ip route
+    Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+    D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+    N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+    E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+    i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+    * - candidate default, U - per-user static route, o - ODR
+    P - periodic downloaded static route
+
+    Gateway of last resort is not set
+
+    C 192.168.10.0/24 is directly connected, Vlan10
+    C 192.168.20.0/24 is directly connected, Vlan20
+    C 192.168.30.0/24 is directly connected, Vlan30
+    C 192.168.99.0/24 is directly connected, Vlan99
+    209.165.200.0/30 is subnetted, 1 subnets
+    C 209.165.200.224 is directly connected, GigabitEthernet0/2
+    ```
+- **Step 6: Verify end-to-end connectivity** :
+  * From PC0, ping PC3 or MLS to verify connectivity within VLAN 10.
+  * From PC1, ping PC4 or MLS to verify connectivity within VLAN 20.
+  * From PC2, ping PC5 or MLS to verify connectivity within VLAN 30.
+  * From S1, ping S2, S3, or MLS to verify connectivity with VLAN 99.
+  * To verify inter-VLAN routing, ping devices outside the sender’s VLAN.
+  * From any device, ping this address inside Cloud, 209.165.200.226.
+  The Layer 3 switch is now routing between VLANs and providing routed connectivity to the cloud.
+
+### Part 3 : Configure IPv6 Inter-VLAN Routing
+Layer 3 switches also route between IPv6 networks.
+- **Step 1: Enable IPv6 routing** : Enter the ipv6 unicast-routing command to enable IPv6 routing in global configuration mode.
+  ```bash
+  MLS(config)# ipv6 unicast-routing
+  ```
+- **Step 2: Configure SVI for IPv6 on MLS** : Configure IPv6 addressing on SVI for VLANs 10, 20, and 30 according to the Addressing Table. The configuration for VLAN 10 is shown below.
+    ```bash
+    MLS(config)# interface vlan 10
+    MLS(config-if)# ipv6 address 2001:db8:acad:10::1/64
+    ```
+- **Step 3: Configure G0/2 with IPv6 on MLS**
+  * Configure IPv6 addressing on G0/2.
+    ```bash
+    MLS(config)# interface G0/2
+    MLS(config-if)# ipv6 address 2001:db8:acad:a::1/64
+    ```
+  * Use the show ipv6 route command to verify IPv6 connected networks.
+    ```bash
+    MLS# show ipv6 route
+    IPv6 Routing Table - 10 entries
+    Codes: C - Connected, L - Local, S - Static, R - RIP, B - BGP
+    U - Per-user Static route, M - MIPv6
+    I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea, IS - ISIS summary
+    O - OSPF intra, OI - OSPF inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+    ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2
+    D - EIGRP, EX - EIGRP external
+    S ::/0 [1/0]
+    via 2001:DB8:ACAD:A::2, GigabitEthernet0/2
+    C 2001:DB8:ACAD:A::/64 [0/0]
+    via ::, GigabitEthernet0/2
+    L 2001:DB8:ACAD:A::1/128 [0/0]
+    via ::, GigabitEthernet0/2
+    C 2001:DB8:ACAD:10::/64 [0/0]
+    via ::, Vlan10
+    L 2001:DB8:ACAD:10::1/128 [0/0]
+    via ::, Vlan10
+    C 2001:DB8:ACAD:20::/64 [0/0]
+    via ::, Vlan20
+    L 2001:DB8:ACAD:20::1/128 [0/0]
+    via ::, Vlan20
+    C 2001:DB8:ACAD:30::/64 [0/0]
+    via ::, Vlan30
+    L 2001:DB8:ACAD:30::1/128 [0/0]
+    via ::, Vlan30
+    L FF00::/8 [0/0]
+    via ::, Null0
+    ```
+
+- **Step 4: Verify IPv6 connectivity** : Devices PC3, PC4, and PC5 have been configured with IPv6 addresses. Verify IPv6 inter-VLAN routing and connectivity to Cloud.
+  * From PC3, ping MLS to verify connectivity within VLAN 10.
+  * From PC4, ping MLS to verify connectivity within VLAN 20.
+  * From PC5, ping MLS to verify connectivity within VLAN 30.
+  * To verify inter-VLAN routing, ping between devices PC3, PC4, and PC5.
+  * From PC3 ping the address inside Cloud, 2001:db8:acad:a::2.
 
 [Back to Top](#cisco-cli-commands)
