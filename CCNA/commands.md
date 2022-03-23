@@ -23,6 +23,7 @@
   - [Switch SVI Configuration Example](#switch-svi-configuration-example)
   - [VLAN Configuration](#vlan-configuration)
   - [Configure Trunks](#configure-trunks)
+  - [Dynamic Trunking Protocol(DTP)](#dynamic-trunking-protocoldtp)
 
 <!-- /TOC -->
 
@@ -656,7 +657,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     ```
     Switch(config)# interface f0/11
     Switch(config-if)# switchport mode access
-    Switch(config-if)# switchport mode vlan 10
+    Switch(config-if)# switchport access vlan 10
     ```
 * Assign voice VLAN
     ```
@@ -678,6 +679,41 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     Switch(config-if) switchport trunk native vlan 99
     ```
 
+## Dynamic Trunking Protocol(DTP)
+ * Disable DTP negotiation
+    ```
+    Switch(config)# interface range g0/1-2
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport nonegotiate
+    ```
+* Configure the trunk link to **Dynamic Desirable** on G0/1
+    ```
+    Switch(config)# interface g0/1
+    Switch(config-if)# switchport mode dynamic desirable
+    ```
+* Verify status of DTP
+    ```
+    Switch(config)# show dtp
+    ```
+* verify trunking is enabled
+    ```
+    Switch(config)# show interfaces trunk
+    ```
+* asd
+    ```
+    Switch(config)# 
+    Switch(config-if)# 
+    ```
+* asd
+    ```
+    Switch(config)# 
+    Switch(config-if)# 
+    ```
+* asd
+    ```
+    Switch(config)# 
+    Switch(config-if)# 
+    ```
 
 
 [Back to Top](#cisco-cli-commands)
