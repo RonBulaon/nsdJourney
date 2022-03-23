@@ -1,5 +1,8 @@
+### Table of Contents
+
 <!-- TOC -->
 
+        - [Table of Contents](#table-of-contents)
 - [CCNA I : Introduction to Networks](#ccna-i--introduction-to-networks)
   - [Global Commands](#global-commands)
   - [Secure Management Access](#secure-management-access)
@@ -29,6 +32,7 @@
     - [Part 1 : Configure Layer 3 Switching](#part-1--configure-layer-3-switching)
     - [Part 2 : Configure Inter-VLAN Routing](#part-2--configure-inter-vlan-routing)
     - [Part 3 : Configure IPv6 Inter-VLAN Routing](#part-3--configure-ipv6-inter-vlan-routing)
+    - [Summary of Commands](#summary-of-commands)
 
 <!-- /TOC -->
 
@@ -70,8 +74,9 @@
     ```
 * All info about the device, OS, interfaces, size of flash memory etc.
     ```bash
-    Switch# show version 
+    Switch# show version
     ```
+
 * show contents of flash memory 
     ```bash
     Switch# show flash
@@ -84,7 +89,7 @@
     Switch# show start
     Switch# reload
     ```
- [Back to Top](#cisco-cli-commands)
+ [Back to Top](#table-of-contents)
 
 ## Secure Management Access
 * Secure console lines
@@ -121,7 +126,7 @@
     Switch(config)# service password-encryption
     ```
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## IP Addressing Switch
 * Show mac address table
@@ -141,7 +146,7 @@
     Switch(config)# ip default-gateway 192.168.1.1
     ```
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## Switch Port
 * Configure  port speed and duplex auto sensing. 
@@ -182,7 +187,7 @@
     Switch# show port-security interface fa0/2
     ```
 
- [Back to Top](#cisco-cli-commands)
+ [Back to Top](#table-of-contents)
 
 ## VLANs
 * Show current VLAN settings
@@ -238,7 +243,7 @@
     Switch(config)# show interfaces trunk
     ```
 
- [Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## Router
 * Show information about the Interfaces
@@ -295,7 +300,7 @@
     ```
     Note: *Clock rate* is the speed of the link
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## Routing
 * Show routing table
@@ -318,7 +323,7 @@
     Router(config)# ip route 0.0.0.0 0.0.0.0 s0/0/1
     ```
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## Dynamic Routing
 * Enabling and configuring RIPv2
@@ -339,7 +344,7 @@
     Router(config)# router rip
     Router(config-router)# default-information originate
     ```
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## IPv6 Commands
 * Enable the router to forward IPv6 packets.
@@ -361,7 +366,7 @@
     Router(config-if)# no ipv6 address 2001:db8:1:5::1/64
     ```
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## Basic Router Security
 * Encrypt all plaintext passwords.
@@ -414,7 +419,7 @@
     Switch(config-if-range)# shutdown
     ```
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ## Sample Command Sequence
 
@@ -446,7 +451,7 @@ enable secret Ciscoenpa55
 service password-encryption
 ```
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 ### Router
 
@@ -497,7 +502,7 @@ login block-for 180 attempts 4 within 120
 security password min-length 10
 ```
 
-[Back to Top](#cisco-cli-commands)
+[Back to Top](#table-of-contents)
 
 
 ### Case Study : CCNA Level 1
@@ -642,11 +647,11 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 
 ## VLAN Configuration
 * Display current VLANs
-    ```
+    ```bash
     Switch# show vlan brief
     ```
 * Create VLANs
-    ```
+    ```bash
     Switch(config)# vlan 10
     Switch(config-if)# name Faculty/Staff
     Switch(config-if)# vlan 20
@@ -659,19 +664,19 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     Switch(config-if)# name VOICE
     ```
 * Assign an interface to VLAN
-    ```
+    ```bash
     Switch(config)# interface f0/11
     Switch(config-if)# switchport mode access
     Switch(config-if)# switchport access vlan 10
     ```
 * Assign voice VLAN
-    ```
+    ```bash
     Switch(config)# interface f0/18
     Switch(config-if)# mls qos trust cos
     Switch(config-if)# switchport voice vlan 150
     ```
 * Port Status
-    ```
+    ```bash
     Switch# show interfaces fa0/18 switchport
     ```
 
@@ -682,7 +687,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     Switch(config-if)# switchport mode trunk
     ```
 * Configure vlan 99 as the native vlan for G0/1 and G0/2 interfaces
-    ```
+    ```bash
     Switch(config)# interface range g0/1-2
     Switch(config-if)# switchport mode trunk
     Switch(config-if) switchport trunk native vlan 99
@@ -690,29 +695,29 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 
 ## Dynamic Trunking Protocol(DTP)
  * Disable DTP negotiation
-    ```
+    ```bash
     Switch(config)# interface range g0/1-2
     Switch(config-if)# switchport mode trunk
     Switch(config-if)# switchport nonegotiate
     ```
 * Configure the trunk link to **Dynamic Desirable** on G0/1
-    ```
+    ```bash
     Switch(config)# interface g0/1
     Switch(config-if)# switchport mode dynamic desirable
     ```
 * Verify status of DTP
-    ```
+    ```bash
     Switch(config)# show dtp
     ```
 * verify trunking is enabled
-    ```
+    ```bash
     Switch(config)# show interfaces trunk
     ```
 
 ## 802.1Q Encapsulation
 * Create AUbinterface G0/0.10
   * Set encapsulation type to 802.1Q and assign VLAN10 to the subinterface
-    ```
+    ```bash
     Router(config)# int g0/0.10
     Router(config-if)# encapsulation dot1Q 10
     Router(config-if)# ip address 172.17.10.1 255.255.255.0
@@ -766,13 +771,10 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     ```bash
     MLS(config)# interface vlan 10
     MLS(config-if)# ip address 192.168.10.254 255.255.255.0
-    MLS(config-if)# ipv6 address 2001:db8:acad:10::1/64
     MLS(config)# interface vlan 20
     MLS(config-if)# ip address 192.168.20.254 255.255.255.0
-    MLS(config-if)# ipv6 address 2001:db8:acad:20::1/64
     MLS(config)# interface vlan 30
     MLS(config-if)# ip address 192.168.30.254 255.255.255.0
-    MLS(config-if)# ipv6 address 2001:db8:acad:30::1/64
     MLS(config)# interface vlan 99
     MLS(config-if)# ip address 192.168.99.254 255.255.255.0   
     ```
@@ -848,10 +850,15 @@ Layer 3 switches also route between IPv6 networks.
   ```bash
   MLS(config)# ipv6 unicast-routing
   ```
-- **Step 2: Configure SVI for IPv6 on MLS** : Configure IPv6 addressing on SVI for VLANs 10, 20, and 30 according to the Addressing Table. The configuration for VLAN 10 is shown below.
+- **Step 2: Configure SVI for IPv6 on MLS** : Configure IPv6 addressing on SVI for **VLANs 10, 20, and 30** according to the Addressing Table. The configuration for VLAN 10 is shown below.
     ```bash
     MLS(config)# interface vlan 10
     MLS(config-if)# ipv6 address 2001:db8:acad:10::1/64
+    MLS(config)# interface vlan 20
+    MLS(config-if)# ipv6 address 2001:db8:acad:20::1/64
+    MLS(config)# interface vlan 30
+    MLS(config-if)# ipv6 address 2001:db8:acad:30::1/64
+
     ```
 - **Step 3: Configure G0/2 with IPv6 on MLS**
   * Configure IPv6 addressing on G0/2.
@@ -898,4 +905,59 @@ Layer 3 switches also route between IPv6 networks.
   * To verify inter-VLAN routing, ping between devices PC3, PC4, and PC5.
   * From PC3 ping the address inside Cloud, 2001:db8:acad:a::2.
 
-[Back to Top](#cisco-cli-commands)
+### Summary of Commands
+* Router
+    ```bash
+    MLS(config)# interface g0/2
+    MLS(config-if)# no switchport
+    MLS(config-if)# ip address 209.165.200.225 255.255.255.252
+
+    MLS(config)# vlan 10
+    MLS(config)# name Staff
+    MLS(config)# vlan 20
+    MLS(config)# name Student
+    MLS(config)# vlan 30
+    MLS(config)# name Faculty
+
+    MLS(config)# interface vlan 10
+    MLS(config-if)# ip address 192.168.10.254 255.255.255.0
+
+    MLS(config)# interface vlan 20
+    MLS(config-if)# ip address 192.168.20.254 255.255.255.0
+
+    MLS(config)# interface vlan 30
+    MLS(config-if)# ip address 192.168.30.254 255.255.255.0
+
+    MLS(config)# interface vlan 99
+    MLS(config-if)# ip address 192.168.99.254 255.255.255.0 
+
+    MLS(config)# interface g0/1
+    MLS(config-if)# switchport mode trunk
+    MLS(config-if)# switchport trunk native vlan 99
+    MLS(config-if)# switchport trunk encapsulation dot1q
+
+    MLS(config)# ip routing
+    MLS(config)# ipv6 unicast-routing
+
+    MLS(config)# interface vlan 10
+    MLS(config-if)# ipv6 address 2001:db8:acad:10::1/64
+
+    MLS(config)# interface vlan 20
+    MLS(config-if)# ipv6 address 2001:db8:acad:20::1/64
+
+    MLS(config)# interface vlan 30
+    MLS(config-if)# ipv6 address 2001:db8:acad:30::1/64
+
+    MLS(config)# interface G0/2
+    MLS(config-if)# ipv6 address 2001:db8:acad:a::1/64
+    ```
+* Switch
+    ```bash
+    S1(config)# int g0/1
+    S1(config-if)# switchport mode trunk
+    S1(config-if)# switchport trunk native vlan 99
+    ```
+
+
+
+[Back to Top](#table-of-contents)
