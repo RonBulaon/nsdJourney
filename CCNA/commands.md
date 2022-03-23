@@ -1,8 +1,6 @@
-# Cisco CLI Commands
-
 <!-- TOC -->
 
-- [Cisco CLI Commands](#cisco-cli-commands)
+- [CCNA I : Introduction to Networks](#ccna-i--introduction-to-networks)
   - [Global Commands](#global-commands)
   - [Secure Management Access](#secure-management-access)
   - [IP Addressing Switch](#ip-addressing-switch)
@@ -21,11 +19,17 @@
       - [Router Side Configuration](#router-side-configuration)
       - [Switch Side Configuration](#switch-side-configuration)
       - [Other Commands](#other-commands)
+- [CCNA II : Switching, Routing, and Wireless Essentials](#ccna-ii--switching-routing-and-wireless-essentials)
+  - [Switch SVI Configuration Example](#switch-svi-configuration-example)
+  - [VLAN Configuration](#vlan-configuration)
 
 <!-- /TOC -->
 
 [Back to README](../README.md)
 
+<br/><br/>
+
+# CCNA I : Introduction to Networks
 ## Global Commands
 * Go to configuration mode
     ```bash
@@ -608,6 +612,58 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```show ipv6 interface brief```           | Display a summary of IPv6 interface addresses and status.|
 | ```show cdp neighbors```                  | Display information about the devices connected to R1. Information should include Device ID, Local Interface, Hold time, Capability, Platform, and Port ID.|
 | ```copy running-config startup-config```  | Save the current configuration so it will be used the next time the router is started.|
+
+<br/><br/>
+
+# CCNA II : Switching, Routing, and Wireless Essentials
+
+| Command                       | Specification     | Task          | 
+| -------                       | ----------        | ----------    | 
+| ```sdm prefer dual-ipv4-and-ipv6 default ```    |                   |The switch may need to be configured for IPv6.   |   
+| ```cmc```   | asd                 | asd | 
+
+## Switch SVI Configuration Example
+| Command                       | Specification     | Task          | 
+| -------                       | ----------        | ----------    | 
+|	```S1# configure terminal```	|	|	Enter global configuration mode.	|
+|	```S1(config)# interface vlan 99```	|	|	Enter interface configuration mode for the SVI.	|
+|	```S1(config-if)# ip address 172.17.99.11 255.255.255.0```	|	|	Configure the management interface IPv4 address.	|
+|	```S1(config-if)# ipv6 address 2001:db8:acad:99::1/64```	|	|	Configure the management interface IPv6 address	|
+|	```S1(config-if)# no shutdown```	|	|	Enable the management interface.	|
+|	```S1(config-if)# end```	|	|	Return to the privileged EXEC mode.	|
+|	```S1# copy running-config startup-config```	|	|	Save the running config to the startup config.	|
+
+## VLAN Configuration
+* Display current VLANs
+    ```
+    Switch# show vlan brief
+    ```
+* Create VLANs
+    ```
+    Switch(config)# vlan 10
+    Switch(config-if)# name Faculty/Staff
+    Switch(config-if)# vlan 20
+    Switch(config-if)# name Students
+    Switch(config-if)# vlan 30
+    Switch(config-if)# name Guest(Default)
+    Switch(config-if)# vlan 99
+    Switch(config-if)# name Management&Native
+    Switch(config-if)# vlan 150
+    Switch(config-if)# name VOICE
+    ```
+* Assign an interface to VLAN
+    ```
+    Switch(config)# interface f0/11
+    Switch(config-if)# switchport mode access
+    Switch(config-if)# switchport mode vlan 10
+    ```
+* Assign voice VLAN
+    ```
+    Switch(config)# interface f0/18
+    Switch(config-if)# mls qos trust cos
+    Switch(config-if)# switchport voice vlan 150
+    ```
+
 
 
 [Back to Top](#cisco-cli-commands)
