@@ -11,6 +11,12 @@
   - [Switch Boot Sequence](#switch-boot-sequence)
   - [Switch LED Indicator](#switch-led-indicator)
   - [Recovering from System Crash](#recovering-from-system-crash)
+  - [Routing](#routing)
+    - [Router-on-a-Stick Scenario on a ***Router***](#router-on-a-stick-scenario-on-a-router)
+    - [Inter-VLAN Routing on ***L3 Switch***](#inter-vlan-routing-on-l3-switch)
+    - [STP](#stp)
+    - [EtherChannel](#etherchannel)
+    - [Configuration Guidelines and Restrictions for EtherChannel](#configuration-guidelines-and-restrictions-for-etherchannel)
 
 <!-- /TOC -->
 
@@ -91,6 +97,73 @@ The Mode button is used to move between the different modes – STAT, DUPLX, SPE
   The boot loader command line supports commands to format the flash file system, reinstall the operating system software, and recover a lost or forgotten password. For example, the dir command can be used to view a list of files within a specified directory.
 
 
+## Routing
+### Router-on-a-Stick Scenario on a ***Router***
+  * Create subinterface on an interface using encapsulation dot1q
+  * On a single router interface
+  
+### Inter-VLAN Routing on ***L3 Switch***
+  * L3 must have SVI vlans of the connecting switches. With an IP of member of the connecting network vlan
+  * Issue ```ip routing``` command
+  * Physical connection must be trunking
+
+### STP
+
+### EtherChannel
+* More than 1 cable going to same switch/router
+* Act as 1 interface
+* Max 8 interfaces per EtherChannel
+* Load Balance : SHould have same configuaration for:
+  * Duplex
+  * Speed
+  * Access/Trunk
+  * Vlans
+  * STP interface settings (port priority)
+* State for each side of the cable
+  * On / On                 - Static  
+  * Desirable / Desirable   - PAgP
+  * Desirable / Auto        - PAgP    - Passive
+  * Active / Active         - LACP
+  * Active / Passive        - LACP
+
+### Configuration Guidelines and Restrictions for EtherChannel
+EtherChannel has some specific guidelines that must be followed in order to avoid configuration problems.
+
+1. All Ethernet interfaces support EtherChannel up to a maximum of eight interfaces with no requirement that the interfaces be on the same interface module.
+
+1. All interfaces within an EtherChannel must operate at the same speed and duplex.
+
+1. EtherChannel links can function as either single VLAN access ports or as trunk links between switches.
+
+1. All interfaces in a Layer 2 EtherChannel must be members of the same VLAN or be configured as trunks.
+
+1. If configured as trunk links, Layer 2 EtherChannel must have the same native VLAN and have the same VLANs allowed on both switches connected to the trunk.
+
+1. When configuring EtherChannel links, all interfaces should be shutdown prior to beginning the EtherChannel configuration. When configuration is complete, the links can be re-enabled.
+
+1. After configuring the EtherChannel, verify that all interfaces are in the up/up state.
+
+1. It is possible to configure an EtherChannel as static, or for it to use either PAgP or LACP to negotiate the EtherChannel connection. The determination of how an EtherChannel is setup is the value of the channel-group number mode command. Valid values are:
+
+    * **active** LACP is enabled unconditionally
+    * **passive** LACP is enabled only if another LACP-capable device is connected.
+    * **desirable** PAgP is enabled unconditionally
+    * **auto** PAgP is enabled only if another PAgP-capable device is connected.
+    * **on** EtherChannel is enabled, but without either LACP or PAgP.
+
+1. LAN ports can form an EtherChannel using PAgP if the modes are compatible. Compatible PAgP modes are:
+    * desirable => desirable
+    * desirable => auto
+     
+    If both interfaces are in auto mode, an Etherchannel cannot form.
+
+1.  LAN ports can form an EtherChannel using LACP if the modes are compatible. Compatible LACP modes are:
+     * **active => active**
+     * **active => passive**
+  
+    If both interfaces are in passive mode, an EtherChannel cannot form using LACP.
+
+1. Channel-group numbers are local to the individual switch. Although this activity uses the same Channel-group number on either end of the EtherChannel connection, it is not a requirement. Channel-group 1 (interface po1) on one switch can form an EtherChannel with Channel-group 5 (interface po5) on another switch.
 
 [Back to Top](#random-notes)
 
