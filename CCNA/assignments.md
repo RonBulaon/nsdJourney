@@ -1,36 +1,53 @@
+
+ 
 # Table of Contents
 
 <!-- TOC -->
 
 - [Table of Contents](#table-of-contents)
-- [Assignments](#assignments)
-  - [4.4.8 Troublehoot Inter-VLAN routing](#448-troublehoot-inter-vlan-routing)
-  - [4.5.1 Inter-VLAN routing Challenge](#451-inter-vlan-routing-challenge)
-- [Case Studies](#case-studies)
-  - [Case Study : CCNA Level 1](#case-study--ccna-level-1)
-      - [Host Side Configuration](#host-side-configuration)
-      - [Router Side Configuration](#router-side-configuration)
-      - [Switch Side Configuration](#switch-side-configuration)
-      - [Other Commands](#other-commands)
-  - [Activity : Configure Layer 3 Switching and Inter-VLAN Routing](#activity--configure-layer-3-switching-and-inter-vlan-routing)
-    - [Objectives:](#objectives)
-    - [Part 1 : Configure Layer 3 Switching](#part-1--configure-layer-3-switching)
-    - [Part 2 : Configure Inter-VLAN Routing](#part-2--configure-inter-vlan-routing)
-    - [Part 3 : Configure IPv6 Inter-VLAN Routing](#part-3--configure-ipv6-inter-vlan-routing)
-    - [Summary of Commands](#summary-of-commands)
-  - [Configure EtherChannel](#configure-etherchannel)
-    - [Objectives](#objectives-1)
-    - [Scenario](#scenario)
-    - [Part 1](#part-1)
-    - [Part 2 : Configure an EtherChannel with Cisco PAgP](#part-2--configure-an-etherchannel-with-cisco-pagp)
-    - [Part 3 : Configure an 802.3ad LACP EtherChannel](#part-3--configure-an-8023ad-lacp-etherchannel)
-    - [Part 4 : Configure a Redundant EtherChannel Link](#part-4--configure-a-redundant-etherchannel-link)
-    - [Command Summary](#command-summary)
+- [4.4.8 Troublehoot Inter-VLAN routing](#448-troublehoot-inter-vlan-routing)
+- [4.5.1 Inter-VLAN routing Challenge](#451-inter-vlan-routing-challenge)
+- [Case Study : CCNA Level 1](#case-study--ccna-level-1)
+  - [Host Side Configuration](#host-side-configuration)
+  - [Router Side Configuration](#router-side-configuration)
+  - [Switch Side Configuration](#switch-side-configuration)
+  - [Other Commands](#other-commands)
+- [Activity : Configure Layer 3 Switching and Inter-VLAN Routing](#activity--configure-layer-3-switching-and-inter-vlan-routing)
+  - [Objectives:](#objectives)
+  - [Part 1 : Configure Layer 3 Switching](#part-1--configure-layer-3-switching)
+  - [Part 2 : Configure Inter-VLAN Routing](#part-2--configure-inter-vlan-routing)
+  - [Part 3 : Configure IPv6 Inter-VLAN Routing](#part-3--configure-ipv6-inter-vlan-routing)
+  - [Summary of Commands](#summary-of-commands)
+- [Configure EtherChannel](#configure-etherchannel)
+  - [Objectives](#objectives-1)
+  - [Scenario](#scenario)
+  - [Part 1 : Basic router setup](#part-1--basic-router-setup)
+  - [Part 2 : Configure an EtherChannel with Cisco PAgP](#part-2--configure-an-etherchannel-with-cisco-pagp)
+  - [Part 3 : Configure an 802.3ad LACP EtherChannel](#part-3--configure-an-8023ad-lacp-etherchannel)
+  - [Part 4 : Configure a Redundant EtherChannel Link](#part-4--configure-a-redundant-etherchannel-link)
+  - [Command Summary](#command-summary)
+- [7.2.10 Configure DHCP](#7210-configure-dhcp)
+  - [Configure a Router as a DHCP Server](#configure-a-router-as-a-dhcp-server)
+  - [Configure a DHCP Relay](#configure-a-dhcp-relay)
+  - [*Configure a Router as a DHCP Client](#configure-a-router-as-a-dhcp-client)
+- [HSRP Configuration](#hsrp-configuration)
+  - [Configure HSRP on two routers](#configure-hsrp-on-two-routers)
+- [Port Security](#port-security)
+- [11.6.1 Switch Security](#1161-switch-security)
+  - [Create a secure Trunk](#create-a-secure-trunk)
+  - [Secure Unused switchports](#secure-unused-switchports)
+  - [Implement Port Security](#implement-port-security)
+  - [Configure DHCP Snooping](#configure-dhcp-snooping)
+  - [Configure Rapid PVST PortFast and BPDU Guard](#configure-rapid-pvst-portfast-and-bpdu-guard)
+  - [Command Summary](#command-summary-1)
 
 <!-- /TOC -->
 
-# Assignments
-## 4.4.8 Troublehoot Inter-VLAN routing
+<br><br>
+<h1> Assignments, Case studies and Activities</h1>
+<br><br>
+
+# 4.4.8 Troublehoot Inter-VLAN routing
 1. PC-3 Gateway needs update
 2. Enable trunking on S1
     ```bash
@@ -52,11 +69,11 @@
     R1(config-if)# encapsulation dot1Q 30
     R1(config-if)# ip address 172.17.30.1 255.255.255.0
     ```
-[Back to Top](#table-of-copntents)
+[Back to Top](#table-of-contents)
 
 <br><br>
 
-## 4.5.1 Inter-VLAN routing Challenge
+# 4.5.1 Inter-VLAN routing Challenge
 Configure the devices to meet the following requirements.
 * Assign IP addressing to R1 and S1 based on the Addressing Table.
   * S1
@@ -152,21 +169,11 @@ Configure the devices to meet the following requirements.
 
 * Verify connectivity. R1, S1, and all PCs should be able to ping each other and the server.
 
-[Back to Top](#table-of-copntents)
+[Back to Top](#table-of-contents)
 
 <br><br>
 
-
-
-
-
-
-
-
-
-# Case Studies
-
-## Case Study : CCNA Level 1
+# Case Study : CCNA Level 1
 
 **Topology**<br/><img src="pics/topology1.png">
 
@@ -217,7 +224,7 @@ Write down the IP address information for each device:
 | PC-B      | ```172.16.16.1```   | ```255.255.255.0```     | ```172.16.16.254 ```|
 
 
-#### Host Side Configuration
+## Host Side Configuration
 **IPv4**
 
 | Device    | IP Addess     | Subnet Mask       | Gateway       |
@@ -236,7 +243,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | PC-A    |             |  ```2001:DB8:BEEF:A:240:BFF:FEB2:6B7D/64```  | ```fe80::1``` |
 | PC-B    |             |  ```2001:DB8:BEEF:B:290:21FF:FE91:5D96/64``` | ```fe80::1``` |
 
-#### Router Side Configuration 
+## Router Side Configuration 
 
 | Command                       | Specification     | Task          | 
 | -------                       | ----------        | ----------    |
@@ -260,7 +267,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```interface g0/1 ``` <br>```ipv6 address 2001:DB8:BEEF:B::/64``` <br> ```ipv6 address fe80::1 link-local``` | Configure G0/0 to use the first address in subnet B. 2001:DB8:BEEF:B::/64 |  Assign the IPv6 Global Unicast Address <br> Assign the IPv6 link-local address |
 | ```ipv6 unicast-routing ```|  |Enable IPv6 unicast routing.|
 
-#### Switch Side Configuration 
+## Switch Side Configuration 
 
 | Command                       | Specification     | Task          | 
 | -------                       | ----------        | ----------    | 
@@ -274,7 +281,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 | ```line console 0``` <br> ```password ciscoconpass``` <br> ```login``` <br> ```exit```| ciscoconpass              | Console access password(case sensitive)|
 | ```line vty 0 15```<br>```transport input telnet```<br>```password ciscovtypass```<br>```login local```| ciscovtypass              | Telnet access password ( vty line 0 to 15) – allow only telnet(case sensitive)|
 
-#### Other Commands
+## Other Commands
 | Command                                   | Description       | 
 | -------                                   | ----------        | 
 | ```show ip interface brief```             | Display a summary of important information about the interfaces on R1.|
@@ -288,20 +295,20 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
 
 <br><br>
 
-[Back to Top](#table-of-copntents)
+[Back to Top](#table-of-contents)
 
 <br><br>
 
-## Activity : Configure Layer 3 Switching and Inter-VLAN Routing
+# Activity : Configure Layer 3 Switching and Inter-VLAN Routing
 
-### Objectives:
+## Objectives:
 * Part 1 : [Configure Layer 3 Switching](#part-1--configure-layer-3-switching)
 * Part 2 : [Configure Inter-VLAN Routing](#part-2--configure-inter-vlan-routing)
 * Part 3 : [Configure IPv6 Inter-VLAN Routing](#part-3--configure-ipv6-inter-vlan-routing)
 <br><br>
 * **Scenario** :  A multilayer switch like the Cisco Catalyst 3650 is capable of both Layer 2 switching and Layer 3 routing. One of the advantages of using a multilayer switch is this dual functionality. A benefit for a small to medium-sized company would be the ability to purchase a single multilayer switch instead of separate switching and routing network devices. Capabilities of a multilayer switch include the ability to route from one VLAN to another using multiple switched virtual interfaces (SVIs), as well as the ability to convert a Layer 2 switchport to a Layer 3 interface. <br><img src="pics/activity_table1.png" width="500"><br><img src="pics/activity_diagram.png" width="500">
 
-### Part 1 : Configure Layer 3 Switching
+## Part 1 : Configure Layer 3 Switching
 * Configure the GigabitEthernet 0/2 port on switch MLS as a routed port and verify that you can ping another Layer 3 address.
   - On MLS, configure G0/2 as a routed port and assign an IP address according to the Addressing Table.
     ```bash
@@ -319,7 +326,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
     Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
     ```
 
-### Part 2 : Configure Inter-VLAN Routing
+## Part 2 : Configure Inter-VLAN Routing
 - **Step 1: Add VLANs** : Add VLANs to MLS according to the table below. Packet Tracer scoring is case-sensitive, so type the names exactly as shown.
 
     | VLAN Number   | VLAN Name     | 
@@ -413,7 +420,7 @@ Given an IPv6 network address of **2001:DB8:BEEF::/64**, configure IPv6 addresse
   * From any device, ping this address inside Cloud, 209.165.200.226.
   The Layer 3 switch is now routing between VLANs and providing routed connectivity to the cloud.
 
-### Part 3 : Configure IPv6 Inter-VLAN Routing
+## Part 3 : Configure IPv6 Inter-VLAN Routing
 Layer 3 switches also route between IPv6 networks.
 - **Step 1: Enable IPv6 routing** : Enter the ipv6 unicast-routing command to enable IPv6 routing in global configuration mode.
   ```bash
@@ -474,7 +481,7 @@ Layer 3 switches also route between IPv6 networks.
   * To verify inter-VLAN routing, ping between devices PC3, PC4, and PC5.
   * From PC3 ping the address inside Cloud, 2001:db8:acad:a::2.
 
-### Summary of Commands
+## Summary of Commands
 * Router
     ```bash
     MLS(config)# interface g0/2
@@ -529,18 +536,18 @@ Layer 3 switches also route between IPv6 networks.
 
 <br><br>
 
-[Back to Top](#table-of-copntents)
+[Back to Top](#table-of-contents)
 
 <br><br>
 
-## Configure EtherChannel
-### Objectives
+# Configure EtherChannel
+## Objectives
 * Part 1: [Configure Basic Switch Settings]()
 * Part 2: [Configure an EtherChannel with Cisco PAgP]()
 * Part 3: [Configure an 802.3ad LACP EtherChannel]()
 * Part 4: [Configure a Redundant EtherChannel Link]()
 
-### Scenario
+## Scenario
 * Three switches have just been installed. There are redundant uplinks between the switches. As configured, only one of these links can be used; otherwise, a bridging loop might occur. However, using only one link utilizes only half of the available bandwidth. EtherChannel allows up to eight redundant links to be bundled together into one logical link. In this lab, you will configure Port Aggregation Protocol (PAgP), a Cisco EtherChannel protocol, and Link Aggregation Control Protocol (LACP), an IEEE 802.3ad open standard version of EtherChannel. <br> <br> Before beginning the configuration, review the EtherChannel Configuration Guidelines and Restrictions listed at the end of this activity. <br/><img src="pics/etherChannel1.png">
 
 | Channel Group | Ports                                 | Protocol          | 
@@ -550,7 +557,7 @@ Layer 3 switches also route between IPv6 networks.
 | 3             | S2 F0/23, F0/24 <br> S3 F0/23, F0/24  | Negotiated LACP   | 
 
 
-### Part 1
+## Part 1 : Basic router setup
 * Assign each switch a hostname according to the topology diagram.
     ```bash
     Switch(config)# hostname S1
@@ -593,7 +600,7 @@ Layer 3 switches also route between IPv6 networks.
 
     Note: If the ports are configured with DTP dynamic auto mode, and you do not set the mode of the ports to trunk, the links do not form trunks and remain access ports. The default mode on a 2960 switch is for DTP to be enabled and set to dynamic auto. DTP can be disabled on interfaces with the switchport nonegotiate command.
 
-### Part 2 : Configure an EtherChannel with Cisco PAgP
+## Part 2 : Configure an EtherChannel with Cisco PAgP
     Note: When configuring EtherChannels, it is recommended to shut down the physical ports being grouped on both devices before configuring them into channel groups. Otherwise, EtherChannel Misconfig Guard may place these ports into err-disabled state. The ports and port channels can be re-enabled after EtherChannel is configured.
 
 * Step 1 : Configure Port Channel 1
@@ -650,7 +657,7 @@ Layer 3 switches also route between IPv6 networks.
     ```
   * If the EtherChannel does not come up, shut down the physical interfaces on both ends of the EtherChannel and then bring them back up again. The show interfaces trunk and show spanning-tree commands should show the port channel as one logical link.
 
-### Part 3 : Configure an 802.3ad LACP EtherChannel
+## Part 3 : Configure an 802.3ad LACP EtherChannel
 * Step 1 : Configure POrt Channel 2
   * In 2000, the IEEE released 802.3ad, which is an open standard version of EtherChannel. It is commonly referred to as LACP. Using the previous commands, configure the link between S1 and S2, using ports G0/1 and G0/2, as an LACP EtherChannel. You must use a different port channel number on S1 than 1, because you already used that in the previous step. To configure port channel 2 as LACP, use the interface configuration mode channel-group 2 mode active command. Active mode indicates that the switch actively tries to negotiate that link as LACP, as opposed to PAgP. The configuration of S1 is shown below.
     ```bash
@@ -672,7 +679,7 @@ Layer 3 switches also route between IPv6 networks.
 
 * Step 2 : Verify port Channel 2 status using ```show etherchannel summary```.
 
-### Part 4 : Configure a Redundant EtherChannel Link
+## Part 4 : Configure a Redundant EtherChannel Link
 * There are various options for the channel-group number mode command:
     ```bash
     S2(config)# interface range f0/23 - 24
@@ -743,7 +750,7 @@ Layer 3 switches also route between IPv6 networks.
     Check out [EtherChannel Configuration Guidelines and Restrictions](./randomNotes.md#configuration-guidelines-and-restrictions-for-etherchannel)
 
 
-### Command Summary
+## Command Summary
 * S1
     ```bash
     Switch(config)# hostname S1
@@ -814,5 +821,261 @@ Layer 3 switches also route between IPv6 networks.
     S3(config-if-range)# interface port-channel 3
     S3(config-if)# switchport mode trunk
     ```
+[Back to Top](#table-of-contents)
 
+<br><br>
 
+# 7.2.10 Configure DHCP
+
+* Addressing Table <br><img src="pics/iptable01.png"><br><img src="pics/activityDiagram2.png">
+
+## Configure a Router as a DHCP Server
+* Configure R2 as DHCP server
+    ```bash 
+    R2(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.10
+    R2(config)# ip dhcp excluded-address 192.168.30.1 192.168.30.10
+
+    R2(config)# ip dhcp pool R1-LAN
+    R2(dhcp-config)# network 192.168.10.0 255.255.255.0
+    R2(dhcp-config)# default-router 192.168.10.1
+    R2(dhcp-config)# dns-server 192.168.20.254
+
+    R2(config)# ip dhcp pool R3-LAN
+    R2(dhcp-config)# network 192.168.30.0 255.255.255.0
+    R2(dhcp-config)# default-router 192.168.30.1
+    R2(dhcp-config)# dns-server 192.168.20.254
+    ```
+
+## Configure a DHCP Relay
+* Configure R1 and R3 as DHCP relay agent
+    ```bash
+    R1(config)# interface g0/0
+    R1(config)# ip helper-address 10.1.1.2
+    ```
+
+    ```bash
+    R3(config)# interface g0/0
+    R3(config)# ip helper-address 10.2.2.1
+    ```
+
+## *Configure a Router as a DHCP Client
+* Configure Router R2 as DHCP client from ISP
+    ```bash
+    R2(config)# interface g0/1
+    R2(config-if)# ip address dhcp
+    R2(config-if)# no shutdown
+    R2(config-if)# show ip interface brief
+    ```
+
+* **Verify Connectivity**
+    ```bash
+    R2# show ip shcp binding
+    ```
+
+# HSRP Configuration
+## Configure HSRP on two routers
+* R1 and R3 in this case
+    ```bash
+    R1(config)# interface g0/1
+    R1(config-if)# standby version 2
+    R1(config-if)# standby 1 ip 192.168.1.254
+    R1(config-if)# standby 1 priority 150
+    R1(config-if)# standby 1 preempt
+    ```
+    ```bash
+    R3(config)# interface g0/0
+    R3(config-if)# standby version 2
+    R3(config-if)# standby 1 ip 192.168.1.254
+    R3(config-if)# standby 1 priority 150
+    R3(config-if)# standby 1 preempt
+    ```
+
+# Port Security
+* From a switch
+    ```bash
+    S1(config)# interface range f0/1-2
+    S1(config-if-range)# switchport port-security
+    S1(config-if-range)# switchport port-security maximum 1
+    S1(config-if-range)# switchport port-security mac-address sticky
+    S1(config-if-range)# switchport port-security violation restrict
+    ```
+* block the remaining unused ports
+    ```bash
+    S1(config-if-range)# interface range f0/3-24, g0/1-2
+    S1(config-if-range)# shutdown
+    ```
+* Verify commands
+    ```bash
+    S1# show port-security
+    S1# show port security address
+    S1# show port-security interface f0/2
+    ```
+
+# 11.6.1 Switch Security
+## Create a secure Trunk
+  * Connect the G0/2 ports of the two access layer switches.
+  * Configure ports G0/1 and G0/2 as static trunks on both switches.
+  * Disable DTP negotiation on both sides of the link.
+  * Create VLAN 100 and give it the name Native on both switches.
+  * Configure all trunk ports on both switches to use VLAN 100 as the native VLAN.
+
+    ```bash
+    SW-1(config)# int range g0/1 - 2
+    SW-1(config-if-range)# switchport mode trunk
+    SW-1(config-if-range)# switchport nonegotiate
+
+    SW-1(config-if-range)# vlan 100
+    SW-1(config-vlan)# name Native
+
+    SW-1(config-vlan)# int range GigabitEthernet0/1 - 2
+    SW-1(config-if-range)# switchport trunk native vlan 100
+    ```
+
+    ```bash
+    SW-2(config)# int range g0/1 - 2
+    SW-2(config-if-range)# switchport mode trunk
+    SW-2(config-if-range)# switchport nonegotiate
+
+    SW-2(config-if-range)# vlan 100
+    SW-2(config-vlan)# name Native
+
+    SW-2(config-vlan)# int range GigabitEthernet0/1 - 2
+    SW-2(config-if-range)# switchport trunk native vlan 100
+    ```
+
+## Secure Unused switchports
+  * Shutdown all unused switch ports on SW-1.
+  * On SW-1, create a VLAN 999 and name it BlackHole. The configured name must match the requirement exactly.
+  * Move all unused switch ports to the BlackHole VLAN.
+  
+    ```bash
+    SW-1# show ip interface brief 
+
+    SW-1(config)# int range f0/3-9, f0/11-23
+    SW-1(config-if-range)# shut
+    SW-1(config-if-range)# exit
+
+    SW-1(config)# vlan 999
+    SW-1(config-vlan)# name BlackHole
+    SW-1(config-vlan)# exit
+
+    SW-1(config)# int range f0/3-9, f0/11-23
+    SW-1(config-if-range)# switchport access vlan 999
+    ```
+
+## Implement Port Security
+  * Activate port security on all the active access ports on switch SW-1.
+    ```bash
+    SW-1(config-if-range)#int range f0/1-2, f0/10,f0/24
+    SW-1(config-if-range)#switchport mode access 
+    SW-1(config-if-range)#switchport port-security 
+    ```
+  * Configure the active ports to allow a maximum of 4 MAC addresses to be learned on the ports.
+    ```bash
+    SW-1(config-if-range)#switchport port-security maximum 4
+    ```
+  * For ports F0/1 on SW-1, statically configure the MAC address of the PC using port security.
+    ```bash
+    SW-1(config-if-range)#int f0/1
+    SW-1(config-if)#switchport port-security mac-address 0010.11E8.3CBB
+    ```
+  * Configure each active access port so that it will automatically add the MAC addresses learned on the port to the running configuration.
+    ```bash
+    SW-1(config-if-range)#int range f0/1-2, f0/10, f0/24
+    SW-1(config-if-range)#switchport port-security mac-address sticky
+    ```
+  * Configure the port security violation mode to drop packets from MAC addresses that exceed the maximum, generate a Syslog entry, but not disable the ports.
+    ```bash
+    SW-1(config-if-range)#int range f0/1-2, f0/10, f0/24
+    SW-1(config-if-range)#switchport port-security violation restrict
+    ```
+
+## Configure DHCP Snooping
+
+  * Configure the trunk ports on SW-1 as trusted ports.
+    ```bash
+    SW-1(config-if)#int range g0/1-2
+    SW-1(config-if-range)#ip dhcp snooping trust 
+    ```
+  * Limit the untrusted ports on SW-1 to five DHCP packets per second.
+    ```bash
+    SW-1(config-if-range)#int range f0/2, f0/10, f0/24
+    SW-1(config-if-range)#ip dhcp snooping limit rate 5
+    ```
+
+  * On SW-2, enable DHCP snooping globally and for VLANs 10, 20 and 99.
+    ```bash
+    SW-2(config)#ip dhcp snooping
+    SW-2(config)#ip dhcp snooping vlan 10,20,99
+    ```
+
+## Configure Rapid PVST PortFast and BPDU Guard
+  * Enable PortFast on all the access ports that are in use on SW-1.
+  * Enable BPDU Guard on all the access ports that are in use on SW-1.
+    ```bash
+    SW-1(config-if-range)#int range f0/2, f0/10, f0/24
+    SW-1(config-if-range)#spanning-tree portfast 
+    SW-1(config-if-range)#spanning-tree bpduguard enable
+    ```
+  * Configure SW-2 so that all access ports will use PortFast by default.
+    ```bash
+    SW-2(config)#spanning-tree portfast default
+    ```
+
+## Command Summary
+  * SW-1
+    ```bash
+    SW-1(config-if-range)# vlan 100
+    SW-1(config-vlan)# name Native
+    SW-1(config-vlan)# exit
+
+    SW-1(config)# vlan 999
+    SW-1(config-vlan)# name BlackHole
+    SW-1(config-vlan)# exit
+
+    SW-1(config)# int range g0/1 - 2
+    SW-1(config-if-range)# switchport mode trunk
+    SW-1(config-if-range)# switchport nonegotiate
+    SW-1(config-if-range)# switchport trunk native vlan 100
+    SW-1(config-if-range)# exit
+
+    SW-1# show ip interface brief 
+
+    SW-1(config)# int range f0/3-9, f0/11-23
+    SW-1(config-if-range)# shut
+    SW-1(config-if-range)# switchport access vlan 999
+    SW-1(config-if-range)# exit
+
+    SW-1(config-if-range)#int range f0/1-2, f0/10,f0/24
+    SW-1(config-if-range)#switchport mode access 
+    SW-1(config-if-range)#switchport port-security 
+    SW-1(config-if-range)#switchport port-security maximum 4
+    SW-1(config-if-range)#switchport port-security mac-address sticky
+    SW-1(config-if-range)#switchport port-security violation restrict
+    SW-1(config-if-range)#ip dhcp snooping limit rate 5
+    SW-1(config-if-range)#spanning-tree portfast 
+    SW-1(config-if-range)#spanning-tree bpduguard enable
+
+    SW-1(config-if-range)#int f0/1
+    SW-1(config-if)#switchport port-security mac-address 0010.11E8.3CBB
+
+    SW-1(config-if)#int range g0/1-2
+    SW-1(config-if-range)#ip dhcp snooping trust 
+    ```
+  * SW-2
+    ```bash
+    SW-2(config-if-range)# vlan 100
+    SW-2(config-vlan)# name Native
+    SW-2(config)# exit
+
+    SW-2(config)# int range g0/1 - 2
+    SW-2(config-if-range)# switchport mode trunk
+    SW-2(config-if-range)# switchport nonegotiate
+    SW-2(config-if-range)# switchport trunk native vlan 100
+    SW-2(config)# exit
+    
+    SW-2(config)#spanning-tree portfast default
+
+    SW-2(config)#ip dhcp snooping
+    SW-2(config)#ip dhcp snooping vlan 10,20,99
+    ```
