@@ -29,17 +29,29 @@
 - [7.2.10 Configure DHCP](#7210-configure-dhcp)
   - [Configure a Router as a DHCP Server](#configure-a-router-as-a-dhcp-server)
   - [Configure a DHCP Relay](#configure-a-dhcp-relay)
-  - [*Configure a Router as a DHCP Client](#configure-a-router-as-a-dhcp-client)
-- [HSRP Configuration](#hsrp-configuration)
-  - [Configure HSRP on two routers](#configure-hsrp-on-two-routers)
-- [Port Security](#port-security)
-- [11.6.1 Switch Security](#1161-switch-security)
+  - [Configure a Router as a DHCP Client](#configure-a-router-as-a-dhcp-client)
+- [HSRP Configuration : Configure HSRP on two routers](#hsrp-configuration--configure-hsrp-on-two-routers)
+- [11.1.10 : Port Security](#11110--port-security)
+  - [Limit Mac address on port](#limit-mac-address-on-port)
+  - [Block unsed port](#block-unsed-port)
+  - [Verify Port Security](#verify-port-security)
+- [11.6.1 : Switch Security](#1161--switch-security)
   - [Create a secure Trunk](#create-a-secure-trunk)
   - [Secure Unused switchports](#secure-unused-switchports)
   - [Implement Port Security](#implement-port-security)
   - [Configure DHCP Snooping](#configure-dhcp-snooping)
   - [Configure Rapid PVST PortFast and BPDU Guard](#configure-rapid-pvst-portfast-and-bpdu-guard)
   - [Command Summary](#command-summary-1)
+- [Basic Router Configuration](#basic-router-configuration)
+  - [Background / Scenario](#background--scenario)
+  - [Objectives](#objectives-2)
+    - [Part 1: Configure Devices and Verify Connecttivity](#part-1-configure-devices-and-verify-connecttivity)
+- [IPv4 and IPv6 Static and Default routes](#ipv4-and-ipv6-static-and-default-routes)
+  - [Part 1 : COnfigure IPv4 Static and FLoating Static Default Routes](#part-1--configure-ipv4-static-and-floating-static-default-routes)
+  - [Part 2 : Configure an IPv6 floating Static Default Routes](#part-2--configure-an-ipv6-floating-static-default-routes)
+  - [Part 3: Configure IPv4 Static and Floating Static Routes to the Internal LANS](#part-3-configure-ipv4-static-and-floating-static-routes-to-the-internal-lans)
+  - [Part 4: Configure IPv6 Static and Floating Static Routes to the Internal LANs.](#part-4-configure-ipv6-static-and-floating-static-routes-to-the-internal-lans)
+  - [Part 5: Configure Host](#part-5-configure-host)
 
 <!-- /TOC -->
 
@@ -175,7 +187,7 @@ Configure the devices to meet the following requirements.
 
 # Case Study : CCNA Level 1
 
-**Topology**<br/><img src="pics/topology1.png">
+**Topology**<br/><img src="pics/topology001.png">
 
 **Scenario** <br/>
 In this Case Study, you will configure the devices in a small network. You must configure a router, switch, and PCs to support both IPv4 and IPv6 connectivity. You will configure security, including SSH, on the router. In addition, you will test and document the network using common CLI commands. 
@@ -827,7 +839,7 @@ Layer 3 switches also route between IPv6 networks.
 
 # 7.2.10 Configure DHCP
 
-* Addressing Table <br><img src="pics/iptable01.png"><br><img src="pics/activityDiagram2.png">
+* Addressing Table <br><img src="pics/iptable001.png"><br><img src="pics/activityDiagram2.png">
 
 ## Configure a Router as a DHCP Server
 * Configure R2 as DHCP server
@@ -858,7 +870,7 @@ Layer 3 switches also route between IPv6 networks.
     R3(config)# ip helper-address 10.2.2.1
     ```
 
-## *Configure a Router as a DHCP Client
+## Configure a Router as a DHCP Client
 * Configure Router R2 as DHCP client from ISP
     ```bash
     R2(config)# interface g0/1
@@ -872,9 +884,11 @@ Layer 3 switches also route between IPv6 networks.
     R2# show ip shcp binding
     ```
 
-# HSRP Configuration
-## Configure HSRP on two routers
-* R1 and R3 in this case
+# HSRP Configuration : Configure HSRP on two routers
+* HSRP - Hot Standby Router Protocol 
+* Configure HSRP to provide redundant default gateway devices to host LANs.
+* IP 192.168.1.254 will be a floating ip for both routers R1 and R3 <br/><img src="pics/hsrp01.png">
+
     ```bash
     R1(config)# interface g0/1
     R1(config-if)# standby version 2
@@ -890,8 +904,11 @@ Layer 3 switches also route between IPv6 networks.
     R3(config-if)# standby 1 preempt
     ```
 
-# Port Security
-* From a switch
+# 11.1.10 : Port Security
+In this activity, you will configure and verify oirt security on a switch. Port security allows you to restrict a port's ingress traffic bu limmiting the MAC addresses that are allowed to send traffic into the port.
+
+## Limit Mac address on port
+  * From a switch
     ```bash
     S1(config)# interface range f0/1-2
     S1(config-if-range)# switchport port-security
@@ -899,19 +916,22 @@ Layer 3 switches also route between IPv6 networks.
     S1(config-if-range)# switchport port-security mac-address sticky
     S1(config-if-range)# switchport port-security violation restrict
     ```
-* block the remaining unused ports
+## Block unsed port
+  * block the remaining unused ports
     ```bash
     S1(config-if-range)# interface range f0/3-24, g0/1-2
     S1(config-if-range)# shutdown
     ```
-* Verify commands
+## Verify Port Security
+  * Verify commands
     ```bash
     S1# show port-security
     S1# show port security address
     S1# show port-security interface f0/2
     ```
 
-# 11.6.1 Switch Security
+# 11.6.1 : Switch Security
+
 ## Create a secure Trunk
   * Connect the G0/2 ports of the two access layer switches.
   * Configure ports G0/1 and G0/2 as static trunks on both switches.
@@ -1079,3 +1099,221 @@ Layer 3 switches also route between IPv6 networks.
     SW-2(config)#ip dhcp snooping
     SW-2(config)#ip dhcp snooping vlan 10,20,99
     ```
+
+# Basic Router Configuration
+## Background / Scenario
+  * This activity requires you to configure the R2 router using the settings from the Addressing Table and the specifications listed. The R1 router and the devices connected to it have been configured. This is a comprehensive review of previously covered IOS router commands. In Part 1, you will complete basic configurations and interface settings on the router. In Part 2, you will use SSH to connect to the router remotely and utilize the IOS commands to retrieve information from the device to answer questions about the router. For review purposes, this lab provides the commands necessary for specific router configurations. <br/><img src="pics/iptable002.png"><br/><img src="pics/topology002.png">
+  
+## Objectives
+* **Part 1** : Configure Devices and Verify Connectivity
+  * Assign static IPv4 and IPv6 addresses to the PC interfaces.
+  * Configure basic router settings.
+  * Configure the router for SSH.
+  * Verify network connectivity.
+
+* **Part 2** : Display Router Information
+  * Retrieve hardware and software information from the router.
+  * Interpret the startup configuration.
+  * Interpret the routing table.
+  * Verify the status of the interfaces.
+
+Note : **Part 2 solution is not here!**
+
+### Part 1: Configure Devices and Verify Connecttivity
+  * Step 1: Configure the PC interfaces.
+    * Configure the IPv4 and IPv6 addresses on PC3 as listed in the Addressing Table.
+    * Configure the IPv4 and IPv6 addresses on PC4 as listed in the Addressing Table.
+  * Step 2: Configure the router.
+    1. On the R2 router, open a terminal. Move to privileged EXEC mode.
+      ```bash
+      Router> en
+      Router# 
+      ```
+    2. Enter configuration mode.
+      ```bash
+      Router# config t
+      Enter configuration commands, one per line.  End with CNTL/Z.
+      Router(config)#
+      ```
+    3. Assign a device name of R2 to the router.
+      ```bash
+      Router(config)# hostname R2
+      R2(config)#
+      ```
+    4. Configure c1sco1234 as the encrypted privileged EXEC mode password. 
+      ```bash
+      R2(config)# enable secret c1sco1234
+      R2(config)# enable password c1sco1234
+      ```
+    5. Set the domain name of the router to ccna-lab.com.
+      ```bash
+      R2(config)# ip domain-name ccna-lab.com
+      ```
+    6.  Disable DNS lookup to prevent the router from attempting to translate incorrectly entered commands as though they were host names.
+      ```bash
+      R2(config)# no ip domain-lookup
+      ```
+    7. Encrypt the plaintext passwords. 
+      ```bash
+      R2(config)# service password-encryption
+      ```
+    8. Configure the username SSHadmin with an encrypted password of 55Hadm!n.
+      ```bash
+      R2(config)# username SSHadmin secret 0 55Hadm!n
+      ```
+    9.  Generate a set of crypto keys with a 1024 bit modulus.
+      ```bash
+      R2(config)# crypto key generate rsa
+      ```
+    10.  Assign cisco as the console password, configure sessions to disconnect after six minutes of inactivity, and enable login. To prevent console messages from interrupting commands, use the logging synchronous command.
+      ```bash
+      R2(config)# line console 0
+      R2(config-line)# exec-timeout 6
+      R2(config-line)# logging synchronous
+      R2(config-line)# password cisco
+      R2(config-line)# login
+      R2(config-line)# exit
+      ```
+    11. Assign cisco as the vty password, configure the vty lines to accept SSH connections only, configure sessions to disconnect after six minutes of inactivity, and enable login using the local database.
+      ```bash
+      R2(config)# line vty 0
+      R2(config-line)# exec-timeout 6
+      R2(config-line)# transport input ssh
+      R2(config-line)# password cisco
+      R2(config-line)# login local
+      R2(config-line)# exit
+      ```
+    12. Create a banner that warns anyone accessing the device that unauthorized access is prohibited.
+      ```bash
+      R2(config)# banner motd $ Warning! This is for Authorized Users Only! $
+      ```
+    13. Enable IPv6 Routing.
+      ```bash
+      R2(config)# ipv6 unicast-routing
+      ```
+    14. Configure all four interfaces on the router with the IPv4 and IPv6 addressing information from the addressing table above. Configure all four interfaces with descriptions. Activate all four interfaces.
+      ```bash
+      R2(config)# int g0/0/0
+      R2(config-if)# description Connection to S3
+      R2(config-if)# ip address 10.0.4.1 255.255.255.0 
+      R2(config-if)# ipv6 address 2001:db8:acad:4::1/64
+      R2(config-if)# ipv6 address fe80::2:a link-local
+      R2(conconfig-iffig)# no shut
+
+      R2(config-if)# int g0/0/1
+      R2(config-if)# description Connection to S4
+      R2(config-if)# ip address 10.0.5.1 255.255.255.0 
+      R2(config-if)# ipv6 address 2001:db8:acad:5::1/64
+      R2(config-if)# ipv6 address fe80::2:b link-local
+      R2(config-if)# no shut
+
+      R2(config-if)# int s0/1/0
+      R2(config-if)# description this is a description
+      R2(config-if)# ip address 10.0.3.2 255.255.255.0 
+      R2(config-if)# ipv6 address 2001:db8:acad:3::2/64
+      R2(config-if)# ipv6 address fe80::1:c link-local
+      R2(config-if)# no shut
+
+      R2(config-if)# int s0/1/1
+      R2(config-if)# description this is a description
+      R2(config-if)# ip address 209.165.200.225 255.255.255.252
+      R2(config-if)# ipv6 address 2001:db8:feed:224::1/64
+      R2(config-if)# ipv6 address fe80::1:d link-local
+      R2(config-if)# no shut    
+      ```
+    15. Save the running configuration to the startup configuration file.
+      ```bash
+      R2(config)# copy run start
+      ```
+
+# IPv4 and IPv6 Static and Default routes
+
+<br/><img src="pics/iptable003.png"><br/><img src="pics/topology003.png">
+
+## Part 1 : COnfigure IPv4 Static and FLoating Static Default Routes
+
+  * **Step 1: Configure an IPv4 static default route** : On Edge_Router, configure a **directly connected IPv4 default static route**. This primary default route should be through router **ISP1**.
+    ```bash
+    Edge_Router(config)#ip route 0.0.0.0 0.0.0.0 10.10.10.1
+    ```
+  * **Step 2: Configure an IPv4 floating static default route.** : On Edge_Router, configure a directly connected IPv4 **floating static default route**. This default route should be through router **ISP2**. It should have an administrative distance of **5**.
+    ```bash
+    Edge_Router(config)#ip route 0.0.0.0 0.0.0.0 10.10.10.5 5
+    ```
+
+## Part 2 : Configure an IPv6 floating Static Default Routes
+  * **Step 1: Configure an IPv6 static default route.** : On Edge_Router, configure a next hop static default route. This primary default route should be through router ISP1.
+    ```bash
+    Edge_Router(config)#ipv6 route ::/0 2001:db8:a:1::1
+    ```
+
+  * **Step 2: Configure an IPv6 floating static default route.** : On Edge_Router, configure a next hop IPv6 floating static default route. The route should be via router ISP2. Use an administrative distance of 5.
+    ```bash
+    Edge_Router(config)#ipv6 route ::/0 2001:db8:a:2::1
+    ```
+
+## Part 3: Configure IPv4 Static and Floating Static Routes to the Internal LANS
+  * **Step 1: Configure IPv4 static routes to the internal LANs.**
+    1. On ISP1, configure a next hop IPv4 static route to the LAN 1 network through Edge_Router.
+        ```bash
+        ISP1(config)#ip route 192.168.10.16 255.255.255.240 10.10.10.2
+        ```
+    2. On ISP1, configure a next hop IPv4 static route to the LAN 2 network through Edge_Router.
+        ```bash
+        ISP1(config)#ip route 192.168.11.32 255.255.255.224 10.10.10.2
+        ```
+
+  * **Step 2: Configure IPv4 floating static routes to the internal LANs.**
+    1. On ISP1, configure a directly connected floating static route to LAN 1 through the ISP2 router. Use an administrative distance of 5.
+        ```bash
+        ISP1(config)#ip route 192.168.10.16 255.255.255.240 g0/0 5
+        ```
+
+    2. On ISP1, configure a directly connected floating static route to LAN 2 through the ISP2 router. Use an administrative distance of 5.
+        ```bash
+        ISP1(config)#ip route 192.168.11.32 255.255.255.224 g0/0 5
+        ```
+
+## Part 4: Configure IPv6 Static and Floating Static Routes to the Internal LANs.
+  * **Step 1: Configure IPv6 static routes to the internal LANs.**
+    1. On ISP1, configure a next hop IPv6 static route to the LAN 1 network through Edge_Router.
+        ```bash
+        ISP1(config)#ipv6 route 2001:db8:1:10::/64 2001:db8:a:1::2
+        ```
+    2. On ISP1, configure a next hop IPv6 static route to the LAN 2 network through Edge_Router.
+        ```bash
+        ISP1(config)#ipv6 route 2001:db8:1:11::/64 2001:db8:a:1::2
+        ```
+  * **Step 2: Configure IPv6 floating static routes to the internal LANs.**
+    1. On ISP1, configure a next hop IPv6 floating static route to LAN 1 through the ISP2 router. Use an administrative distance of 5.
+        ```bash
+        ISP1(config)#ipv6 route 2001:db8:1:10::/64 2001:db8:f:f::2 5
+        ```
+    2. On ISP1, configure a next hop IPv6 floating static route to LAN 2 through the ISP2 router. Use an administrative distance of 5.
+        ```bash
+        ISP1(config)#ipv6 route 2001:db8:1:11::/64 2001:db8:f:f::2 5
+        ```
+## Part 5: Configure Host
+  * Users on the corporate network frequently access a server that is owned by an important customer. In this part of the activity, you will configure static host routes to the server. One route will be a floating static route to support the redundant ISP connections.
+  * **Step 1: Configure IPv4 host routes.**
+    1. On Edge Router, configure an IPv4 directly connected host route to the customer server.
+        ```bash
+        Edge_Router(config)#ip route 198.0.0.10 255.255.255.255 serial0/0/0
+        ```
+    2. On Edger Router, configure an IPv4 directly connected floating host route to the customer sever. Use an administrative distance of 5.
+        ```bash
+        Edge_Router(config)#ip route 198.0.0.10 255.255.255.255 serial0/0/1 5
+        ```
+
+
+  * **Step 2: Configure IPv6 host routes.**
+    1. On Edge Router, configure an IPv6 next hop host route to the customer server through the ISP1 router.
+        ```bash
+        Edge_Router(config)#ipv6 route 2001:db8:f:f::10/128 2001:db8:a:1::1
+        ```
+    2. On Edger Router, configure an IPv6 directly connected floating host route to the customer sever through the ISP2 router. Use an administrative distance of 5.
+        ```bash
+        Edge_Router(config)#ipv6 route 2001:db8:f:f::10/128 2001:db8:a:2::1 5
+        ```
+
+
