@@ -1364,3 +1364,5 @@ Note : **Part 2 solution is not here!**
     ```bash
     R3(config)# ipv6 route 2001:DB8:1::/64 Serial0/0/1
     ```
+
+
