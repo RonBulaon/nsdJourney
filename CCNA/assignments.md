@@ -30,6 +30,7 @@
   - [Configure a Router as a DHCP Server](#configure-a-router-as-a-dhcp-server)
   - [Configure a DHCP Relay](#configure-a-dhcp-relay)
   - [Configure a Router as a DHCP Client](#configure-a-router-as-a-dhcp-client)
+  - [Verify configuration](#verify-configuration)
 - [HSRP Configuration : Configure HSRP on two routers](#hsrp-configuration--configure-hsrp-on-two-routers)
 - [11.1.10 : Port Security](#11110--port-security)
   - [Limit Mac address on port](#limit-mac-address-on-port)
@@ -52,6 +53,9 @@
   - [Part 3: Configure IPv4 Static and Floating Static Routes to the Internal LANS](#part-3-configure-ipv4-static-and-floating-static-routes-to-the-internal-lans)
   - [Part 4: Configure IPv6 Static and Floating Static Routes to the Internal LANs.](#part-4-configure-ipv6-static-and-floating-static-routes-to-the-internal-lans)
   - [Part 5: Configure Host](#part-5-configure-host)
+- [16.3.1 Troubleshooting Routes](#1631-troubleshooting-routes)
+  - [IPv4](#ipv4)
+  - [IPv6](#ipv6)
 
 <!-- /TOC -->
 
@@ -842,6 +846,11 @@ Layer 3 switches also route between IPv6 networks.
 * Addressing Table <br><img src="pics/iptable001.png"><br><img src="pics/activityDiagram2.png">
 
 ## Configure a Router as a DHCP Server
+* Enable / Disable
+    ```bash 
+    R2(config)# service dhcp
+    R2(config)# no service dhcp
+    ```
 * Configure R2 as DHCP server
     ```bash 
     R2(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.10
@@ -883,6 +892,13 @@ Layer 3 switches also route between IPv6 networks.
     ```bash
     R2# show ip shcp binding
     ```
+
+## Verify configuration
+```bash
+R2# show runing-config | section dhcp
+R2# show ip dhcp binding
+R2# ip dhcp servers statistics
+```
 
 # HSRP Configuration : Configure HSRP on two routers
 * HSRP - Hot Standby Router Protocol 
@@ -1316,4 +1332,35 @@ Note : **Part 2 solution is not here!**
         Edge_Router(config)#ipv6 route 2001:db8:f:f::10/128 2001:db8:a:2::1 5
         ```
 
+# 16.3.1 Troubleshooting Routes
+* Troubleshoot routes <br/><img src="pics/iptable004.png"><br/><img src="pics/topology004.png">
+## IPv4
+  * Round 1 : PC 1 to PC 2 - Cant Ping each other
+    ```bash
+    R1(config)#no ip route 0.0.0.0 0.0.0.0 172.31.1.195
+    R1(config)#ip route 0.0.0.0 0.0.0.0 172.31.1.193
+    ```
 
+    ```bash
+    R2(config)#no ip route 172.31.1.128 255.255.255.192 172.31.1.194
+    R2(config)#no ip route 172.31.1.0 255.255.255.128 172.31.1.198
+    R2(config)#ip route 172.31.1.0 255.255.255.128 172.31.1.194
+    ```
+
+  * Round 2: Server to PCs - PCs to Server Cant ping each other
+    ```bash
+    R2(config)#ip route 172.31.1.128 255.255.255.192 172.31.1.198
+    ```
+    ```bash
+    R3(config)#ip route 172.31.1.0 255.255.255.128 172.31.1.193
+    ```
+
+## IPv6
+  * Round 3: IPv6 configuration
+    ```bash
+    R2(config)# no ipv6 route 2001:DB6:1::/64 2001:DB8:2::194
+    R2(config)# ipv6 route 2001:DB8:1::/64 2001:DB8:2::194
+    ```
+    ```bash
+    R3(config)# ipv6 route 2001:DB8:1::/64 Serial0/0/1
+    ```
