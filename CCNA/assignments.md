@@ -1141,106 +1141,106 @@ Note : **Part 2 solution is not here!**
     * Configure the IPv4 and IPv6 addresses on PC4 as listed in the Addressing Table.
   * Step 2: Configure the router.
     1. On the R2 router, open a terminal. Move to privileged EXEC mode.
-      ```bash
-      Router> en
-      Router# 
-      ```
+        ```bash
+        Router> en
+        Router# 
+        ```
     2. Enter configuration mode.
-      ```bash
-      Router# config t
-      Enter configuration commands, one per line.  End with CNTL/Z.
-      Router(config)#
-      ```
+        ```bash
+        Router# config t
+        Enter configuration commands, one per line.  End with CNTL/Z.
+        Router(config)#
+        ```
     3. Assign a device name of R2 to the router.
-      ```bash
-      Router(config)# hostname R2
-      R2(config)#
-      ```
+        ```bash
+        Router(config)# hostname R2
+        R2(config)#
+        ```
     4. Configure c1sco1234 as the encrypted privileged EXEC mode password. 
-      ```bash
-      R2(config)# enable secret c1sco1234
-      R2(config)# enable password c1sco1234
-      ```
+        ```bash
+        R2(config)# enable secret c1sco1234
+        R2(config)# enable password c1sco1234
+        ```
     5. Set the domain name of the router to ccna-lab.com.
-      ```bash
-      R2(config)# ip domain-name ccna-lab.com
-      ```
+        ```bash
+        R2(config)# ip domain-name ccna-lab.com
+        ```
     6.  Disable DNS lookup to prevent the router from attempting to translate incorrectly entered commands as though they were host names.
-      ```bash
-      R2(config)# no ip domain-lookup
-      ```
+        ```bash
+        R2(config)# no ip domain-lookup
+        ```
     7. Encrypt the plaintext passwords. 
-      ```bash
-      R2(config)# service password-encryption
-      ```
+        ```bash
+        R2(config)# service password-encryption
+        ```
     8. Configure the username SSHadmin with an encrypted password of 55Hadm!n.
-      ```bash
-      R2(config)# username SSHadmin secret 0 55Hadm!n
-      ```
+        ```bash
+        R2(config)# username SSHadmin secret 0 55Hadm!n
+        ```
     9.  Generate a set of crypto keys with a 1024 bit modulus.
-      ```bash
-      R2(config)# crypto key generate rsa
-      ```
+        ```bash
+        R2(config)# crypto key generate rsa
+        ```
     10.  Assign cisco as the console password, configure sessions to disconnect after six minutes of inactivity, and enable login. To prevent console messages from interrupting commands, use the logging synchronous command.
-      ```bash
-      R2(config)# line console 0
-      R2(config-line)# exec-timeout 6
-      R2(config-line)# logging synchronous
-      R2(config-line)# password cisco
-      R2(config-line)# login
-      R2(config-line)# exit
-      ```
+        ```bash
+        R2(config)# line console 0
+        R2(config-line)# exec-timeout 6
+        R2(config-line)# logging synchronous
+        R2(config-line)# password cisco
+        R2(config-line)# login
+        R2(config-line)# exit
+        ```
     11. Assign cisco as the vty password, configure the vty lines to accept SSH connections only, configure sessions to disconnect after six minutes of inactivity, and enable login using the local database.
-      ```bash
-      R2(config)# line vty 0
-      R2(config-line)# exec-timeout 6
-      R2(config-line)# transport input ssh
-      R2(config-line)# password cisco
-      R2(config-line)# login local
-      R2(config-line)# exit
-      ```
+        ```bash
+        R2(config)# line vty 0
+        R2(config-line)# exec-timeout 6
+        R2(config-line)# transport input ssh
+        R2(config-line)# password cisco
+        R2(config-line)# login local
+        R2(config-line)# exit
+        ```
     12. Create a banner that warns anyone accessing the device that unauthorized access is prohibited.
-      ```bash
-      R2(config)# banner motd $ Warning! This is for Authorized Users Only! $
-      ```
+        ```bash
+        R2(config)# banner motd $ Warning! This is for Authorized Users Only! $
+        ```
     13. Enable IPv6 Routing.
-      ```bash
-      R2(config)# ipv6 unicast-routing
-      ```
+        ```bash
+        R2(config)# ipv6 unicast-routing
+        ```
     14. Configure all four interfaces on the router with the IPv4 and IPv6 addressing information from the addressing table above. Configure all four interfaces with descriptions. Activate all four interfaces.
-      ```bash
-      R2(config)# int g0/0/0
-      R2(config-if)# description Connection to S3
-      R2(config-if)# ip address 10.0.4.1 255.255.255.0 
-      R2(config-if)# ipv6 address 2001:db8:acad:4::1/64
-      R2(config-if)# ipv6 address fe80::2:a link-local
-      R2(conconfig-iffig)# no shut
+        ```bash
+        R2(config)# int g0/0/0
+        R2(config-if)# description Connection to S3
+        R2(config-if)# ip address 10.0.4.1 255.255.255.0 
+        R2(config-if)# ipv6 address 2001:db8:acad:4::1/64
+        R2(config-if)# ipv6 address fe80::2:a link-local
+        R2(conconfig-iffig)# no shut
 
-      R2(config-if)# int g0/0/1
-      R2(config-if)# description Connection to S4
-      R2(config-if)# ip address 10.0.5.1 255.255.255.0 
-      R2(config-if)# ipv6 address 2001:db8:acad:5::1/64
-      R2(config-if)# ipv6 address fe80::2:b link-local
-      R2(config-if)# no shut
+        R2(config-if)# int g0/0/1
+        R2(config-if)# description Connection to S4
+        R2(config-if)# ip address 10.0.5.1 255.255.255.0 
+        R2(config-if)# ipv6 address 2001:db8:acad:5::1/64
+        R2(config-if)# ipv6 address fe80::2:b link-local
+        R2(config-if)# no shut
 
-      R2(config-if)# int s0/1/0
-      R2(config-if)# description this is a description
-      R2(config-if)# ip address 10.0.3.2 255.255.255.0 
-      R2(config-if)# ipv6 address 2001:db8:acad:3::2/64
-      R2(config-if)# ipv6 address fe80::1:c link-local
-      R2(config-if)# no shut
+        R2(config-if)# int s0/1/0
+        R2(config-if)# description this is a description
+        R2(config-if)# ip address 10.0.3.2 255.255.255.0 
+        R2(config-if)# ipv6 address 2001:db8:acad:3::2/64
+        R2(config-if)# ipv6 address fe80::1:c link-local
+        R2(config-if)# no shut
 
-      R2(config-if)# int s0/1/1
-      R2(config-if)# description this is a description
-      R2(config-if)# ip address 209.165.200.225 255.255.255.252
-      R2(config-if)# ipv6 address 2001:db8:feed:224::1/64
-      R2(config-if)# ipv6 address fe80::1:d link-local
-      R2(config-if)# no shut    
-      ```
+        R2(config-if)# int s0/1/1
+        R2(config-if)# description this is a description
+        R2(config-if)# ip address 209.165.200.225 255.255.255.252
+        R2(config-if)# ipv6 address 2001:db8:feed:224::1/64
+        R2(config-if)# ipv6 address fe80::1:d link-local
+        R2(config-if)# no shut    
+        ```
     15. Save the running configuration to the startup configuration file.
-      ```bash
-      R2(config)# copy run start
-      ```
+        ```bash
+        R2(config)# copy run start
+        ```
 
 # IPv4 and IPv6 Static and Default routes
 
