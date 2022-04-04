@@ -56,6 +56,8 @@
 - [16.3.1 Troubleshooting Routes](#1631-troubleshooting-routes)
   - [IPv4](#ipv4)
   - [IPv6](#ipv6)
+- [Review for Finals](#review-for-finals)
+  - [Below are the topics it may cover in the Case Study and Final Skills](#below-are-the-topics-it-may-cover-in-the-case-study-and-final-skills)
 
 <!-- /TOC -->
 
@@ -900,6 +902,10 @@ R2# show ip dhcp binding
 R2# ip dhcp servers statistics
 ```
 
+[Back to Top](#table-of-contents)
+
+<br><br>
+
 # HSRP Configuration : Configure HSRP on two routers
 * HSRP - Hot Standby Router Protocol 
 * Configure HSRP to provide redundant default gateway devices to host LANs.
@@ -919,6 +925,9 @@ R2# ip dhcp servers statistics
     R3(config-if)# standby 1 priority 150
     R3(config-if)# standby 1 preempt
     ```
+[Back to Top](#table-of-contents)
+
+<br><br>
 
 # 11.1.10 : Port Security
 In this activity, you will configure and verify oirt security on a switch. Port security allows you to restrict a port's ingress traffic bu limmiting the MAC addresses that are allowed to send traffic into the port.
@@ -945,6 +954,10 @@ In this activity, you will configure and verify oirt security on a switch. Port 
     S1# show port security address
     S1# show port-security interface f0/2
     ```
+
+[Back to Top](#table-of-contents)
+
+<br><br>
 
 # 11.6.1 : Switch Security
 
@@ -1116,6 +1129,10 @@ In this activity, you will configure and verify oirt security on a switch. Port 
     SW-2(config)#ip dhcp snooping vlan 10,20,99
     ```
 
+[Back to Top](#table-of-contents)
+
+<br><br>
+
 # Basic Router Configuration
 ## Background / Scenario
   * This activity requires you to configure the R2 router using the settings from the Addressing Table and the specifications listed. The R1 router and the devices connected to it have been configured. This is a comprehensive review of previously covered IOS router commands. In Part 1, you will complete basic configurations and interface settings on the router. In Part 2, you will use SSH to connect to the router remotely and utilize the IOS commands to retrieve information from the device to answer questions about the router. For review purposes, this lab provides the commands necessary for specific router configurations. <br/><img src="pics/iptable002.png"><br/><img src="pics/topology002.png">
@@ -1242,6 +1259,10 @@ Note : **Part 2 solution is not here!**
         R2(config)# copy run start
         ```
 
+[Back to Top](#table-of-contents)
+
+<br><br>
+
 # IPv4 and IPv6 Static and Default routes
 
 <br/><img src="pics/iptable003.png"><br/><img src="pics/topology003.png">
@@ -1332,6 +1353,10 @@ Note : **Part 2 solution is not here!**
         Edge_Router(config)#ipv6 route 2001:db8:f:f::10/128 2001:db8:a:2::1 5
         ```
 
+[Back to Top](#table-of-contents)
+
+<br><br>
+
 # 16.3.1 Troubleshooting Routes
 * Troubleshoot routes <br/><img src="pics/iptable004.png"><br/><img src="pics/topology004.png">
 ## IPv4
@@ -1365,4 +1390,19 @@ Note : **Part 2 solution is not here!**
     R3(config)# ipv6 route 2001:DB8:1::/64 Serial0/0/1
     ```
 
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+
+# Review for Finals
+  ## Below are the topics it may cover in the Case Study and Final Skills
+  * Basic Device Settings
+  * Network Infrastructure Settings (STP, VLANs, Trunking, EtherChannel)
+  * Inter-VLAN routing
+  * DHCP
+  * HSRP
+  * LAN and Switch Security
+  * WLAN and WLC
+  * Routing
 

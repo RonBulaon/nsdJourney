@@ -167,5 +167,12 @@ EtherChannel has some specific guidelines that must be followed in order to avoi
 
 [Back to Top](#random-notes)
 
+
+## Routing Concepts
+* Path determination - determines which intewrface ise to forward the packet to the destination.
+* 
+
+[Back to Top](#random-notes)
+
 [Back to README](../README.md)
 
