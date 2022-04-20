@@ -1,10 +1,9 @@
 
  
-# Table of Contents
+<h1>Table of Contents</h1>
 
 <!-- TOC -->
 
-- [Table of Contents](#table-of-contents)
 - [4.4.8 Troublehoot Inter-VLAN routing](#448-troublehoot-inter-vlan-routing)
 - [4.5.1 Inter-VLAN routing Challenge](#451-inter-vlan-routing-challenge)
 - [Case Study : CCNA Level 1](#case-study--ccna-level-1)
@@ -56,8 +55,9 @@
 - [16.3.1 Troubleshooting Routes](#1631-troubleshooting-routes)
   - [IPv4](#ipv4)
   - [IPv6](#ipv6)
-- [Review for Finals](#review-for-finals)
-  - [Below are the topics it may cover in the Case Study and Final Skills](#below-are-the-topics-it-may-cover-in-the-case-study-and-final-skills)
+- [CCNA 3 : CCNAv7: Enterprise Networking, Security, and Automation](#ccna-3--ccnav7-enterprise-networking-security-and-automation)
+  - [2.2.13 Packet Tracer : Point-to-Point single area OSPF configuration](#2213-packet-tracer--point-to-point-single-area-ospf-configuration)
+  - [2.7.1 OSPF Configuration](#271-ospf-configuration)
 
 <!-- /TOC -->
 
@@ -1395,14 +1395,235 @@ Note : **Part 2 solution is not here!**
 <br><br>
 
 
-# Review for Finals
-  ## Below are the topics it may cover in the Case Study and Final Skills
-  * Basic Device Settings
-  * Network Infrastructure Settings (STP, VLANs, Trunking, EtherChannel)
-  * Inter-VLAN routing
-  * DHCP
-  * HSRP
-  * LAN and Switch Security
-  * WLAN and WLC
-  * Routing
+# CCNA 3 : CCNAv7: Enterprise Networking, Security, and Automation
+
+## 2.2.13 Packet Tracer : Point-to-Point single area OSPF configuration
+
+* **Background**: In this activity, you will activate OSPF routing using network statements and wildcard masks, configuring OSPF routing on interfaces, and by using network statements quad-zero masks. In addition, you will configure explicit router IDs and passive interfaces. <br/><img src="pics/ActivityDiagram0003.png">
+
+1. Part 1: Configure Router IDs.
+2. Part 2: Configure Networks for OSPF Routing.
+    * Configure networks for OSPF routing using network commands and wildcard masks.
+    * Configure networks for OSPF routing using interface IP addresses and quad-zero masks.
+    * Configure OSPF routing on router interfaces
+3. Part 3: Configure Passive Interfaces.
+4. Part 4: Verify OSPF configuration.
+
+
+    | R1 : Command | Description   | 
+    | ------- | ----          | 
+    |	R1>en	|		|
+    |	R1#config t	|		|
+    |	R1(config)#router ospf 10	|	 Start the OSPF routing process 	|
+    |	R1(config-router)#router-id 1.1.1.1	|	Use the router-id command to set the OSPF IDs	|
+    |	R1(config-router)#network 192.168.10.0 0.0.0.255 area 0 <br>R1(config-router)#network 10.1.1.0 0.0.0.3 area 0<br>R1(config-router)#network 10.1.1.4 0.0.0.3 area 0	|	Configure OSPF routing using network commands and wildcard masks.	|
+    |	R1(config-router)#do show run | section ospf	|	verify OSPF configuration	|
+    |	R1(config-router)#passive-interface g0/0/0	|	Configure OSPF Passive Interfaces	|
+    
+    <br/>
+
+    | R2 : Command | Description   | 
+    | ------- | ----          | 
+    |	R2>en	|		|
+    |	R2#config t	|		|
+    |	R2(config)#router ospf 10	|	 Start the OSPF routing process 	|
+    |	R2(config-router)#router-id 2.2.2.2	|	Use the router-id command to set the OSPF IDs	|
+    |	R2(config-router)#network 192.168.20.0 0.0.0.0 area 0	<br>R2(config-router)#network 10.1.1.8 0.0.0.0 area 0	<br>R2(config-router)#network 10.1.1.0 0.0.0.0 area 0	<br>	|	This should work as alternative to wildcard-mask but it did not work.	|
+    |	R2(config-router)#network 192.168.20.0 0.0.0.255 area 0	<br> R2(config-router)#network 10.1.1.0 0.0.0.3 area 0	<br>R2(config-router)#network 10.1.1.8 0.0.0.3 area 0		|	Configure OSPF routing using network commands and wildcard masks.	|
+    |	R2(config-router)#passive-interface g0/0/0	|	Configure OSPF Passive Interfaces	|
+    |	R2(config-router)#do show run | section ospf	|	verify OSPF configuration	|
+
+    <br/>
+
+    | R2 : Command | Description   | 
+    | ------- | ----          | 
+    |	R3>en	|		|
+    |	R3#config t	|		|
+    |	R3(config)#router ospf 10	|	 Start the OSPF routing process 	|
+    |	R3(config-router)#router-id 3.3.3.3	|	Use the router-id command to set the OSPF IDs	|
+    |	R3(config)#do show ip interface brief	|	Check interfaces	|
+    |	R3(config)#interface g0/0/1	<br>R3(config-if)#ip ospf 10 area 0	<br>R3(config-if)#interface s0/1/0	<br>R3(config-if)#ip ospf 10 area 0	<br>R3(config-if)#interface s0/1/1	<br>R3(config-if)#ip ospf 10 area 0	<br>R3(config-if)#interface g0/0/0	<br>R3(config-if)#ip ospf 10 area 0	<br>R3(config-if)#router ospf 10	|	Configure OSPF routing on router interfaces	|
+    |	R3(config-router)#passive-interface g0/0/0	|	Configure OSPF Passive Interfaces	|
+
+
+<br><br>
+
+
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 2.7.1 OSPF Configuration
+* Background: You are helping a network engineer test an OSPF set up by building the network in the lab where you work. You have interconnected the devices and configured the interfaces and have connectivity within the local LANs. Your job is to complete the OSPF configuration according to the requirements left by the engineer.<br/><br/>Use the information provided and the list of requirements to configure the test network. When the task has been successfully completed, all hosts should be able to ping the internet server.<br/><br/><img src="pics/activityDiagram0004.png"><br/><img src="pics/iptable006.png">
+
+1. Use process ID 10 for OSPF activation on all routers.
+   
+2. Activate OSPF using network statements and inverse masks on the routers in the Headquarters network.
+    ```bash
+    P2P-1>en
+    P2P-1#config t
+    P2P-1(config)#router ospf 10
+    P2P-1(config-router)#network 10.0.0.12 0.0.0.3 area 0
+    P2P-1(config-router)#network 10.0.0.0 0.0.0.3 area 0
+    P2P-1(config-router)#network 10.0.0.8 0.0.0.3 area 0
+    ```
+    ```bash
+    P2P-2>en
+    P2P-2#config
+    P2P-2(config)#router ospf 10
+    P2P-2(config-router)#network 10.0.0.0 0.0.0.3 area 0
+    P2P-2(config-router)#network 10.0.0.4 0.0.0.3 area 0
+    P2P-2(config-router)#network 192.168.1.0 0.0.0.255 area 0
+    P2P-2(config-router)#network 192.168.2.0 0.0.0.255 area 0
+    ```
+    ```bash
+    P2P-3>en
+    P2P-3#config t
+    P2P-3(config)#router ospf 10
+    P2P-3(config-router)#network 10.0.0.8 0.0.0.3 area 0
+    P2P-3(config-router)#network 10.0.0.4 0.0.0.3 area 0
+    P2P-3(config-router)#network 192.168.3.0 0.0.0.15 area 0
+    ```
+   
+3. Activate OSPF by configuring the interfaces of the network devices in the Data Service network, where required.
+
+1. Configure router IDs on the multiaccess network routers as follows:
+   * BC-1: 6.6.6.6
+   * BC-2: 5.5.5.5
+   * BC-3: 4.4.4.4
+  
+    ```bash
+    BC-1>en
+    BC-1#config t
+    BC-1(config)#do show ip interface brief
+    BC-1(config)#interface g0/0/0
+    BC-1(config-if)#ip ospf 10 area 0
+    BC-1(config-if)#interface s0/1/0
+    BC-1(config-if)#ip ospf 10 area 0
+    BC-1(config-if)#interface s0/1/1
+    BC-1(config-if)#ip ospf 10 area 0
+    BC-1(config-if)#router ospf 10
+    BC-1(config-router)#router-id 6.6.6.6
+    ```
+    ```bash
+    BC-2>en
+    BC-2#config t
+    BC-2(config)#router ospf 10
+    BC-2(config-router)#router-id 5.5.5.5
+    BC-2(config-router)#do show ip interface brief
+    BC-2(config-router)#int g0/0/0
+    BC-2(config-if)#ip ospf 10 area 0
+    BC-2(config-if)#no ip ospf 10 area 0
+    BC-2(config-if)#ip ospf 10 area 0
+    BC-2(config-if)#int g0/0/1
+    BC-2(config-if)#ip ospf 10 area 0
+    ```
+    ```bash
+    BC-3>en
+    BC-3#config
+    BC-3(config)#router ospf 10
+    BC-3(config-router)#router-id 4.4.4.4
+    BC-3(config-router)#do show ip interface brief
+    BC-3(config-router)#int g0/0/0
+    BC-3(config-if)#ip ospf 10 area 0
+    BC-3(config-if)#int g0/0/1
+    BC-3(config-if)#ip ospf 10 area 0
+    ```
+2. Configure OSPF so that routing updates are not sent into networks where they are not required.
+    ```bash
+    P2P-2(config-router)#do show ip interface brief
+    P2P-2(config-router)#passive-interface g0/0/0
+    P2P-2(config-router)#passive-interface g0/0/1
+    ```
+    ```bash
+    P2P-3(config-router)#do show ip interface brief
+    P2P-3(config-router)#passive-interface g0/0/0
+    ```
+    ```bash
+    BC-1(config-if)#router ospf 10
+    BC-1(config-router)#passive-interface s0/1/1
+    ```
+    ```bash
+    BC-2(config-if)#router ospf 10
+    BC-2(config-router)#passive-interface g0/0/0
+    ```
+    ```bash
+    BC-3(config-if)#router ospf 10
+    BC-3(config-router)#passive-interface g0/0/0
+    ```
+3. Configure router BC-1 with the highest OSPF interface priority so that it will always be the designated router of the multiaccess network.
+    ```bash
+    BC-1(config)#interface g0/0/0
+    BC-1(config-if)#ip ospf priority 255
+    ```
+4. Configure a default route to the ISP cloud using the exit interface command argument.
+    ```bash
+    BC-1(config)#ip route 0.0.0.0 0.0.0.0 s0/1/1
+    ```
+5. Automatically distribute the default route to all routers in the network.
+    ```bash
+    BC-1(config)#router ospf 10
+    BC-1(config-router)#default-information originate
+    ```
+
+6.  Configure the OSPF routers so that the Gigabit Ethernet interface cost will be 10 and the Fast Ethernet cost will be 100.
+    ```bash
+    P2P-1(config)#router ospf 10
+    P2P-1(config-router)#auto-cost reference-bandwidth 1000
+    ```
+    ```bash
+    P2P-2(config)#router ospf 10
+    P2P-2(config-router)#auto-cost reference-bandwidth 1000
+    ```
+    ```bash
+    P2P-3(config)#router ospf 10
+    P2P-3(config-router)#auto-cost reference-bandwidth 1000
+    ```
+    ```bash
+    BC-1(config-if)#router ospf 10
+    BC-1(config-router)#auto-cost reference-bandwidth 1000
+    ```
+    ```bash
+    BC-2(config)#router ospf 10
+    BC-2(config-router)#auto-cost reference-bandwidth 10000
+    ```
+    ```bash
+    BC-3(config)#router ospf 10
+    BC-3(config-router)#auto-cost reference-bandwidth 1000
+    ```
+
+1.  Configure the OSPF cost value of P2P-1 interface Serial0/1/1 to 50.
+    ```bash
+    P2P-1(config-router)#interface s0/1/1
+    P2P-1(config-if)#ip ospf cost 50
+    ```
+
+2.  Configure the hello and dead timer values on the interfaces that connect P2P-1 and BC-1 to be twice the default values.
+    ```bash
+    P2P-1(config-if)#do show ip interface brief
+    P2P-1(config-if)#interface s0/1/0
+    P2P-1(config-if)#ip ospf hello-interval 20
+    P2P-1(config-if)#ip ospf dead-interval 80
+    P2P-1(config-if)#interface s0/1/1
+    P2P-1(config-if)#ip ospf hello-interval 20
+    P2P-1(config-if)#ip ospf dead-interval 80
+    P2P-1(config-if)#interface s0/2/0
+    P2P-1(config-if)#ip ospf hello-interval 20
+    P2P-1(config-if)#ip ospf dead-interval 80
+    ```
+    ```bash
+    BC-1(config-router)#do show ip interface brief
+    BC-1(config-router)#interface g0/0/0
+    BC-1(config-if)#ip ospf hello-interval 20
+    BC-1(config-if)#ip ospf dead-interval 80
+    BC-1(config-if)#interface s0/1/0
+    BC-1(config-if)#ip ospf dead-interval 80
+    BC-1(config-if)#ip ospf hello-interval 20
+    BC-1(config-if)#interface s0/1/1
+    BC-1(config-if)#ip ospf hello-interval 20
+    BC-1(config-if)#ip ospf dead-interval 80
+    ```
+
+
 

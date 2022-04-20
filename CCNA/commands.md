@@ -1,9 +1,8 @@
-# Table of Contents
+<h2>Table of Contents</h2>
 
 <!-- TOC -->
 
-- [Table of Contents](#table-of-contents)
-- [CCNA I : Introduction to Networks](#ccna-i--introduction-to-networks)
+- [CCNA I : CCNAv7: Introduction to Networks](#ccna-i--ccnav7-introduction-to-networks)
   - [Global Commands](#global-commands)
   - [Secure Management Access](#secure-management-access)
   - [IP Addressing Switch](#ip-addressing-switch)
@@ -17,7 +16,7 @@
   - [Sample Command Sequence](#sample-command-sequence)
     - [Switch](#switch)
     - [Router](#router-1)
-- [CCNA II : Switching, Routing, and Wireless Essentials](#ccna-ii--switching-routing-and-wireless-essentials)
+- [CCNA II : CCNAv7: Switching, Routing, and Wireless Essentials](#ccna-ii--ccnav7-switching-routing-and-wireless-essentials)
   - [Switch SVI Configuration Example](#switch-svi-configuration-example)
   - [VLAN Configuration](#vlan-configuration)
   - [Configure Trunks](#configure-trunks)
@@ -25,6 +24,8 @@
   - [802.1Q Encapsulation](#8021q-encapsulation)
   - [Spanning Tree Protocol (STP)](#spanning-tree-protocol-stp)
   - [EtherChannel](#etherchannel)
+- [CCNA III : Enterprise Networking, Security, and Automation](#ccna-iii--enterprise-networking-security-and-automation)
+  - [OSPF Configuration](#ospf-configuration)
 
 <!-- /TOC -->
 
@@ -32,7 +33,7 @@
 
 <br/><br/>
 
-# CCNA I : Introduction to Networks
+# CCNA I : CCNAv7: Introduction to Networks
 ## Global Commands
 * Go to configuration mode
     ```bash
@@ -499,7 +500,7 @@ security password min-length 10
 
 
 
-# CCNA II : Switching, Routing, and Wireless Essentials
+# CCNA II : CCNAv7: Switching, Routing, and Wireless Essentials
 
 | Command                       | Specification     | Task          | 
 | -------                       | ----------        | ----------    | 
@@ -621,8 +622,80 @@ Switch(config)# show spanning-tree vlan 1
 
 [Back to Top](#table-of-contents)
 
-```
-switchport trunk encapsulation dot1q
-switchport no negotiate
-```
+
+# CCNA III : Enterprise Networking, Security, and Automation
+## OSPF Configuration
+* Start OSPF routing process
+    ```bash
+    R1(config)# router ospf 10
+    ```
+* Set router ID
+    ```bash
+    R1(config-router)# router-id 1.1.1.1
+    ```
+* Configure ```OSPF``` routing using **network commands and wildcard masks**.
+    ```bash
+    R1(config-router)# network 192.168.10.0 0.0.0.255 area 0
+    R1(config-router)# network 10.1.1.0 0.0.0.3 area 0
+    R1(config-router)# network 10.1.1.4 0.0.0.3 area 0
+    ```
+  ***Note: One for each interface***
+
+* COnfigure ```OSPF``` Using network and **quad zero**
+    ```bash
+    R2(config-router)#network 192.168.20.0 0.0.0.0 area 0
+    R2(config-router)#network 10.1.1.8 0.0.0.0 area 0
+    R2(config-router)#network 10.1.1.0 0.0.0.0 area 0
+    ```
+* COnfigure ```OSPF``` on **router interfaces**
+    ```bash
+    R3(config)#interface g0/0/1
+    R3(config-if)#ip ospf 10 area 0
+    R3(config-if)#interface s0/1/0
+    R3(config-if)#ip ospf 10 area 0
+    R3(config-if)#interface s0/1/1
+    R3(config-if)#ip ospf 10 area 0
+    R3(config-if)#interface g0/0/0
+    R3(config-if)#ip ospf 10 area 0
+    R3(config-if)#router ospf 10
+    ```
+* Configure OSPF passive interfaces
+  ```bash
+  R2(config-router)# passive-interface g0/0/0
+  ```
+
+* Verify the current OSPF neighbor states. Could be ```DR``` and ```BDR``` or if ```FULL/DROTHER```
+  ```bash
+  Router# show ip ospf neighbor
+  ```
+* CHange OSPF priority of an interface
+  ```bash
+  RB(config)#interface g0/0
+  RB(config-if)#ip ospf priority 100
+  ```
+* Adjust the ```hello``` and ```dead timers```
+  ```bash
+  R1(config)# interface s0/0/0
+  R1(config-if)# ip ospf hello-interval 15
+  R1(config-if)# ip ospf dead-interval 60  
+  ```
+  Both sides of the connection need to have the same timer values in order for the adjacency to be maintained. Adjust the other end of the router interaface to same settings.
+
+* Configure ```OSPF``` to **propagate** the **default route** in OSPF routing updates.
+  ```bash
+  R2(config)# router ospf 1
+  R2(config-router)# default-information originate
+  ```
+* SHow commands
+    ```bash
+    # show ip protocols
+    # show ip ospf neighbor detail
+    # show ip ospf interface <interface>
+    ```
+
+* Clear the OSPF i.e. reset the 
+    ```bash
+    # clear ospf process
+    ```
+<br/><br/><br/>
 

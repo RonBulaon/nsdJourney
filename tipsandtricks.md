@@ -6,3 +6,6 @@ Realizations and study habits I used through the course.
 * Whatever you do, take a break every 60 mins or every 90 mins at most.
 * Learn from multiple sources on your own. Its good to see other's perspective.
 * Build your own **Cheat Sheet**
+* Be very good at note taking.
+* Exchange notes with other to seee what you've missed.
+* Bullet journaling helps on my planning and scheduling.

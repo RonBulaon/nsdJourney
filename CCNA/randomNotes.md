@@ -1,12 +1,11 @@
-# Random Notes
+<h1>Random Notes</h1>
 
 <!-- TOC -->
 
-- [Random Notes](#random-notes)
-  - [CCNA I : CCNAv7: Introduction to Networks](#ccna-i--ccnav7-introduction-to-networks)
-    - [IPv4 CIDR Notation](#ipv4-cidr-notation)
-    - [OSI Layer](#osi-layer)
-    - [Cabling](#cabling)
+- [CCNA I : CCNAv7: Introduction to Networks](#ccna-i--ccnav7-introduction-to-networks)
+  - [IPv4 CIDR Notation](#ipv4-cidr-notation)
+  - [OSI Layer](#osi-layer)
+  - [Cabling](#cabling)
 - [CCNA II : Switching, Routing, and Wireless Essentials](#ccna-ii--switching-routing-and-wireless-essentials)
   - [Switch Boot Sequence](#switch-boot-sequence)
   - [Switch LED Indicator](#switch-led-indicator)
@@ -17,13 +16,24 @@
     - [STP](#stp)
     - [EtherChannel](#etherchannel)
     - [Configuration Guidelines and Restrictions for EtherChannel](#configuration-guidelines-and-restrictions-for-etherchannel)
+  - [Routing Concepts](#routing-concepts)
+- [CISCO III : Enterprise Networking, Security, and Automation](#cisco-iii--enterprise-networking-security-and-automation)
+  - [OSPF](#ospf)
+    - [Packets](#packets)
+      - [Agency database : Neighbor table](#agency-database--neighbor-table)
+      - [Link-State DB : Topology table](#link-state-db--topology-table)
+      - [Forwarding database : Routing table](#forwarding-database--routing-table)
+  - [Links tate operations](#links-tate-operations)
+  - [Single-Area and Multiaread](#single-area-and-multiaread)
+  - [OSPF Cost](#ospf-cost)
 
 <!-- /TOC -->
+<br/><br/>
 
 [Back to README](../README.md)
 
-## CCNA I : CCNAv7: Introduction to Networks
-### IPv4 CIDR Notation
+# CCNA I : CCNAv7: Introduction to Networks
+## IPv4 CIDR Notation
 * For subnet calculation and VLSM on /24
     | Bit       | 7     | 6     | 5     | 4     | 3     | 2     | 1     | 0     |
     | ---       | ---   | ---   | ---   | ---   | ---   | ---   | ---   | ---   |
@@ -31,23 +41,28 @@
     | .decimal  | 128   | 192   | 224   | 240   | 248   | 252   | 254   | 255   |
     | No. host  | 128   | 64    | 32    | 16    | 8     | 4     | 2     | 1     |
 
+<br/><br/>
+
 [Back to Top](#random-notes)
 
-### OSI Layer
+## OSI Layer
   <br/><img src="pics/osi1.png" width="800">
   <br/><img src="pics/osi2.gif" width="800">
   <br/><img src="pics/osi3.png" width="800">
   <br/><img src="pics/osi4.png" width="800">
 
+<br/><br/>
+
 [Back to Top](#random-notes)
 
-### Cabling
+## Cabling
   <br/><img src="pics/cabling2.png">
   <br/><img src="pics/cabling3.png">
   <br/><img src="pics/cabling1.png" width="800">
 
-[Back to Top](#random-notes)
+<br/><br/>
 
+[Back to Top](#random-notes)
 
 <br/><br/>
 
@@ -165,14 +180,83 @@ EtherChannel has some specific guidelines that must be followed in order to avoi
 
 1. Channel-group numbers are local to the individual switch. Although this activity uses the same Channel-group number on either end of the EtherChannel connection, it is not a requirement. Channel-group 1 (interface po1) on one switch can form an EtherChannel with Channel-group 5 (interface po5) on another switch.
 
-[Back to Top](#random-notes)
+<br/><br/>
 
+[Back to Top](#random-notes)
+<br/><br/>
 
 ## Routing Concepts
 * Path determination - determines which intewrface ise to forward the packet to the destination.
-* 
+
+<br/><br/>
 
 [Back to Top](#random-notes)
+
+<br/><br/>
+
+# CISCO III : Enterprise Networking, Security, and Automation
+## OSPF
+  * link-state routing protocol
+  * Alternative to distance verctor *Routing Infomration Protocol* (**RIP**)
+  * Concept of areas
+  
+  ### Packets
+  * Used to **discover** the neighboring routers to **exchange routring information** to **maintain accurate information** about the network.
+  * Packets:
+    1. Hello packet - multi cast - asking if there's an OSPF implemented
+    2. Database **decription** packet
+    3. Link-state **request** packet
+    4. Link-state **update** packet
+    5. Link-state **acknowledgement** packet
+  
+  #### Agency database : Neighbor table
+  ```
+  # show ip ospf neighbor
+  ``` 
+  
+  #### Link-State DB : Topology table
+  ```
+  # show ip ospf database  
+  ```
+  
+  #### Forwarding database : Routing table
+  ```
+  # show ip route ospf
+  ```
+
+  ## Links tate operations
+    1. Establish Network adjacencies
+    2. Exchange Link-State Advertisements
+    3. Build the link State Databse
+    4. Execute the SPF Algorithm
+    5. Chose Best Route
+
+  ## Single-Area and Multiaread
+    1. **Single-Area OSPF** use this when al routers are in one area.
+    2. **Multiarea OSPF** is implemented using multiple aareas in hierarchical fashion. *Not part of the course module.*
+      * Smaller routing tables
+      * Reducing the link-state update overhead
+      * Reduced frequency of SPF calculations
+  
+  
+  ## OSPF Cost
+  Cost = reference bandwidth / interface bandwidth
+
+  The default reference bandwidth is 10^8 (100,000,000); therefore, the formula is
+
+  Cost = 100,000,000 bps / interface bandwidth in bps
+
+  Thus the cost to reach the A LAN 172.16.1.0/24 from B is as follows:
+  Serial link (1544 Kbps) from B to A cost => 100,000,000 / 1,544,000 = 64
+  Gigabit Ethernet link on A cost => 100,000,000 / 1,000,000,000 = 1
+  Total cost to reach 172.16.1.0/24 = 64 + 1 = 65
+
+<br/><br/>
+
+[Back to Top](#random-notes)
+
+<br/><br/>
+
 
 [Back to README](../README.md)
 
