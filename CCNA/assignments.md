@@ -1,9 +1,10 @@
 
  
-<h1>Table of Contents</h1>
+# Table of Contents
 
 <!-- TOC -->
 
+- [Table of Contents](#table-of-contents)
 - [4.4.8 Troublehoot Inter-VLAN routing](#448-troublehoot-inter-vlan-routing)
 - [4.5.1 Inter-VLAN routing Challenge](#451-inter-vlan-routing-challenge)
 - [Case Study : CCNA Level 1](#case-study--ccna-level-1)
@@ -58,6 +59,34 @@
 - [CCNA 3 : CCNAv7: Enterprise Networking, Security, and Automation](#ccna-3--ccnav7-enterprise-networking-security-and-automation)
   - [2.2.13 Packet Tracer : Point-to-Point single area OSPF configuration](#2213-packet-tracer--point-to-point-single-area-ospf-configuration)
   - [2.7.1 OSPF Configuration](#271-ospf-configuration)
+  - [5.1.8 Configure **Numbered** Standard IPv4 ACLs](#518-configure-numbered-standard-ipv4-acls)
+    - [Objectives](#objectives-3)
+    - [Configure and Apply a numbered standard ACL on R2](#configure-and-apply-a-numbered-standard-acl-on-r2)
+    - [Configure and apply a numbered standard ACL on R3](#configure-and-apply-a-numbered-standard-acl-on-r3)
+    - [Verify](#verify)
+  - [5.1.9 Configure **Named** Standard IPv4 ACLs](#519-configure-named-standard-ipv4-acls)
+    - [Objectives](#objectives-4)
+    - [Configure a named standard ACL.](#configure-a-named-standard-acl)
+  - [5.2.7 Configure and Modify Standard IPv4 ACLs](#527-configure-and-modify-standard-ipv4-acls)
+    - [Objectives](#objectives-5)
+    - [Verify Connectivity](#verify-connectivity)
+    - [Configure and Verify Standard Numbered and Named ACLs](#configure-and-verify-standard-numbered-and-named-acls)
+      - [Standard ACL](#standard-acl)
+      - [Configured a **Numbered** standard ACL](#configured-a-numbered-standard-acl)
+      - [Configured a **Named** standard ACL](#configured-a-named-standard-acl)
+      - [Modify a Standard ACL](#modify-a-standard-acl)
+  - [5.4.13 Packet Tracer - Configure Extended IPv4 ACLs - Scenario 2](#5413-packet-tracer---configure-extended-ipv4-acls---scenario-2)
+    - [Objectives](#objectives-6)
+    - [Configure a Named Extended ACL](#configure-a-named-extended-acl)
+      - [Deny PC1 access to HTTP and HTTPS services on Server1 and Server2](#deny-pc1-access-to-http-and-https-services-on-server1-and-server2)
+      - [Deny PC2 to access FTP services on Server1 and Server2](#deny-pc2-to-access-ftp-services-on-server1-and-server2)
+      - [Deny PC3 to ping Server1 and Server2](#deny-pc3-to-ping-server1-and-server2)
+      - [Permit all other IP traffic.](#permit-all-other-ip-traffic)
+      - [Apply the ACL to the Interface](#apply-the-acl-to-the-interface)
+      - [Verify Consifiguration](#verify-consifiguration)
+      - [Command Summary](#command-summary-2)
+  - [5.5.1 Packet Tracer - IPv4 ACL Implementation Challenge](#551-packet-tracer---ipv4-acl-implementation-challenge)
+- [Current Assignments](#current-assignments)
 
 <!-- /TOC -->
 
@@ -1448,8 +1477,6 @@ Note : **Part 2 solution is not here!**
 
 <br><br>
 
-
-
 [Back to Top](#table-of-contents)
 
 <br><br>
@@ -1624,6 +1651,328 @@ Note : **Part 2 solution is not here!**
     BC-1(config-if)#ip ospf hello-interval 20
     BC-1(config-if)#ip ospf dead-interval 80
     ```
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 5.1.8 Configure **Numbered** Standard IPv4 ACLs
+### Objectives
+1. The following network policies are implemented on **R2**:
+   * The ```192.168.11.0/24``` network is not allowed access to the WebServer on the 192.168.20.0/24 network.
+   * All other access is permitted.
+
+    To restrict access from the 192.168.11.0/24 network to the WebServer at 192.168.20.254 without interfering with other traffic, an ACL must be created on R2. The access list must be placed on the outbound interface to the WebServer. A second rule must be created on R2 to permit all other traffic.
+
+2. The following network policies are implemented on **R3**:
+   * The ```192.168.10.0/24``` network is not allowed to communicate with the 192.168.30.0/24 network.
+   * All other access is permitted.
+  
+    To restrict access from the 192.168.10.0/24 network to the 192.168.30/24 network without interfering with other traffic, an access list will need to be created on R3. The ACL must be placed on the outbound interface to PC3. A second rule must be created on R3 to permit all other traffic.
+
+### Configure and Apply a numbered standard ACL on R2
+* Create an ACL
+  ```bash
+  R2(config)# access-list 1 deny 192.168.11.0 0.0.0.255
+  R2(config)# access-list 1 permit any
+  R2(config)# do show access-lists
+  Standard IP access list 1
+    10 deny 192.168.11.0 0.0.0.255
+    20 permit any
+  ```
+* Apply ACL to an interface
+  ```bash
+  R2(config)# int g0/0
+  R2(config-if)# ip access-group 1 out
+  ```
+  
+### Configure and apply a numbered standard ACL on R3
+* Create an ACL
+  ```bash
+  R3(config)#access-list 1 deny  192.168.10.0 0.0.0.255
+  R3(config)#access-list 1 permit any
+  R3(config)#do show access-list
+  Standard IP access list 1
+      10 deny 192.168.10.0 0.0.0.255
+      20 permit any
+  ```
+* Apply ACL to an interface
+  ```bash
+  R3(config)#interface g0/0
+  R3(config-if)#ip access-group 1 out
+  ```
+
+### Verify
+* Try ping to check for connection before and after implmenting the ACL
+* Use ```show access-lists``` to verify configuration.
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 5.1.9 Configure **Named** Standard IPv4 ACLs
+### Objectives
+* Configure and Apply a Named Standard ACL
+* Verify the ACL Implementation
+* Scenario : The senior network administrator has asked you to create a standard named ACL to prevent access to a file server. The file server contains the data base for the web applications. Only the Web Manager workstation PC1 and the Web Server need to access the File Server. All other traffic to the File Server should be denied.
+
+### Configure a named standard ACL.
+* Create ACL
+  ```bash
+  R1(config)# ip access-list standard File_Server_Restrictions
+  R1(config-std-nacl)# permit host 192.168.20.4
+  R1(config-std-nacl)# permit host 192.168.100.100
+  R1(config-std-nacl)# deny any
+  ```
+* Apply ACL
+  ```bash
+  R1(config-std-nacl)#int f0/1
+  R1(config-if)#shut
+  R1(config-if)#no shut
+  R1(config-if)#ip access-group File_Server_Restrictions out
+  R1(config-if)#do show ip interface f0/1
+  ```
+* Verify the name of access list is at the interface configuration
+  ```bash
+  R1(config-if)#do show access-lists
+  R1(config-if)#do show ip interface f0/1
+  ```
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 5.2.7 Configure and Modify Standard IPv4 ACLs
+### Objectives
+* Verify Connectivity
+* Configure and Verify Standard Numbered and Named ACLs
+* Modify a Standard ACL
+
+### Verify Connectivity
+* From PC-A, ping PC-C and PC-D. Were your pings successful? **yes**
+* From R1, ping PC-C and PC-D. Were your pings successful? **yes**
+* From PC-C, ping PC-A and PC-B. Were your pings successful? **yes**
+* From R3, ping PC-A and PC-B. Were your pings successful? **yes**
+* Can all of the PCs ping the server at 209.165.200.254? **yes**
+
+### Configure and Verify Standard Numbered and Named ACLs
+
+#### Standard ACL
+* **Standard ACLs** - based on **source IP address only**, configure as close to destination as possible.
+* The security policy also states that an explicit **deny any** access control entry (ACE), also referred to as an ACL statement, **should be present at the end of all ACLs**.
+
+#### Configured a **Numbered** standard ACL
+* Configure to allow ```192.168.10.0/24``` and ```192.168.20.0/24```  to have access to ```192.168.30.0/24```
+    * Create Standard ACLs
+      ```bash
+      R3(config)#access-list 1 remark allow R1 LANs Access
+      R3(config)#access-list 1 permit 192.168.10.0 0.0.0.255
+      R3(config)#access-list 1 permit 192.168.20.0 0.0.0.255
+      R3(config)#access-list 1 deny any
+      ```
+    * Assign Standard ACL to interface
+      ```bash
+      R3(config)#interface g0/0/0
+      R3(config-if)#ip access-group 1 out 
+      ```
+    * Verify
+      ```bash
+      R3(config-if)#do show access-list 1
+      Standard IP access list 1
+          permit 192.168.10.0 0.0.0.255
+          permit 192.168.20.0 0.0.0.255
+          deny any
+      R3(config-if)#do show ip int g0/0/0
+      ```
+
+#### Configured a **Named** standard ACL
+  * Allow traffic from all hosts on the ```192.168.40.0/24``` network access to all hosts on the ```192.168.10.0/24``` network. 
+  * Also, only allow host PC-C access to the ```192.168.10.0/24``` network. The name of this access list should be called ```BRANCH-OFFICE-POLICY```.
+  * Create the standard named ACL BRANCH-OFFICE-POLICY on R1.
+    ```bash
+    R1(config)#ip access-list standard BRANCH-OFFICE-POLICY
+    R1(config-std-nacl)#permit host 192.168.30.3
+    R1(config-std-nacl)#permit 192.168.40.0 0.0.0.255
+    R1(config-std-nacl)#end
+    R1#
+    %SYS-5-CONFIG_I: Configured from console by console
+    ```
+  * Apply the ACL to the appropriate interface in the proper direction.
+    ```bash
+    R1(config)#interface g0/0/0
+    R1(config-if)#ip access-group BRANCH-OFFICE-POLICY out
+    ```
+  * Verify
+    ```bash
+    R1# show access-lists 
+    Standard IP access list BRANCH-OFFICE-POLICY
+        10 permit host 192.168.30.3
+        20 permit 192.168.40.0 0.0.0.255
+
+    R1# show ip interface g0/0/0
+    ```
+  
+#### Modify a Standard ACL
+* Add ACE ```30``` & ```40```.
+  ```bash
+  R1#show access-lists 
+  Standard IP access list BRANCH-OFFICE-POLICY
+      10 permit host 192.168.30.3
+      20 permit 192.168.40.0 0.0.0.255
+  R1(config)#ip access-list standard BRANCH-OFFICE-POLICY
+  R1(config-std-nacl)#30 permit 209.165.200.224 0.0.0.31
+  R1(config-std-nacl)#40 deny any
+  R1(config-std-nacl)#end
+  R1#
+  %SYS-5-CONFIG_I: Configured from console by console
+
+  R1#show acces
+  R1#show access-lists 
+  Standard IP access list BRANCH-OFFICE-POLICY
+      10 permit host 192.168.30.3
+      20 permit 192.168.40.0 0.0.0.255
+      30 permit 209.165.200.224 0.0.0.31
+      40 deny any
+  R1#
+  ```
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 5.4.13 Packet Tracer - Configure Extended IPv4 ACLs - Scenario 2
+### Objectives 
+* Configure a Named Extended ACL
+* Apply and Verify the Extended ACL
+* Scenario : In this scenario, specific devices on the LAN are allowed to various services on servers located on the internet.
+
+### Configure a Named Extended ACL
+* Configure one named ACL to implement the following policy:
+  1. Block HTTP and HTTPS access from PC1 to Server1 and Server2. The servers are inside the cloud and you only know their IP addresses.
+  2. Block FTP access from PC2 to Server1 and Server2.
+  3. Block ICMP access from PC3 to Server1 and Server2.<br><img src="pics/iptable0007.png" width="500">
+
+#### Deny PC1 access to HTTP and HTTPS services on Server1 and Server2
+* Begin the ACL configuration with a statement that denies access from PC1 to Server1, only for HTTP (port 80). Refer to the addressing table for the IP address of PC1 and Server1.
+  ```bash
+  RT1(config)#ip access-list extended ACL
+  RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.101.255.254 eq 80
+  ```
+* Next, enter the statement that denies access from PC1 to Server1, only for HTTPS (port 443).
+  ```bash
+  RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.101.255.254 eq 443
+  ```
+* Enter the statement that denies access from PC1 to Server2, only for HTTP. Refer to the addressing table for the IP address of Server 2.
+  ```bash
+  RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.103.255.254 eq 80
+  ```
+* Enter the statement that denies access from PC1 to Server2, only for HTTPS.
+  ```bash
+  RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.103.255.254 eq 443
+  ```
+
+#### Deny PC2 to access FTP services on Server1 and Server2
+* Enter the statement that denies access from PC2 to Server1, only for FTP (port 21 only).
+  ```bash
+  RT1(config-ext-nacl)# deny tcp host 172.31.1.102 host 64.101.255.254 eq 21
+  ```
+* Enter the statement that denies access from PC2 to Server2, only for FTP (port 21 only).
+  ```bash
+  RT1(config-ext-nacl)# deny tcp host 172.31.1.102 host 64.103.255.254 eq 21
+  ```
+
+#### Deny PC3 to ping Server1 and Server2
+* Enter the statement that denies ICMP access from PC3 to Server1.
+  ```bash
+  RT1(config-ext-nacl)# deny icmp host 172.31.1.103 host 64.101.255.254
+  ```
+* Enter the statement that denies ICMP access from PC3 to Server2.
+  ```bash
+  RT1(config-ext-nacl)# deny icmp host 172.31.1.103 host 64.103.255.254
+  ```
+
+#### Permit all other IP traffic.
+* By default, an access list denies all traffic that does not match any rule in the list. Commadn below permits all traffic that does not match any of the configured access list statements.
+  ```bash
+  RT1(config-ext-nacl)#permit ip any any
+  ```
+
+#### Apply the ACL to the Interface
+```bash
+RT1(config-ext-nacl)#interface g0/0
+RT1(config-if)#ip access-group ACL in
+```
+
+#### Verify Consifiguration
+```bash
+RT1(config-ext-nacl)#do show access-lists
+Extended IP access list ACL
+    10 deny tcp host 172.31.1.101 host 64.101.255.254 eq www
+    20 deny tcp host 172.31.1.101 host 64.101.255.254 eq 443
+    30 deny tcp host 172.31.1.101 host 64.103.255.254 eq www
+    40 deny tcp host 172.31.1.101 host 64.103.255.254 eq 443
+    50 deny tcp host 172.31.1.102 host 64.101.255.254 eq ftp
+    60 deny tcp host 172.31.1.102 host 64.103.255.254 eq ftp
+    70 deny icmp host 172.31.1.103 host 64.101.255.254
+    80 deny icmp host 172.31.1.103 host 64.103.255.254
+    90 permit ip any any
+RT1(config-ext-nacl)#do show running-config | begin access-list
+ip access-list extended ACL
+ deny tcp host 172.31.1.101 host 64.101.255.254 eq www
+ deny tcp host 172.31.1.101 host 64.101.255.254 eq 443
+ deny tcp host 172.31.1.101 host 64.103.255.254 eq www
+ deny tcp host 172.31.1.101 host 64.103.255.254 eq 443
+ deny tcp host 172.31.1.102 host 64.101.255.254 eq ftp
+ deny tcp host 172.31.1.102 host 64.103.255.254 eq ftp
+ deny icmp host 172.31.1.103 host 64.101.255.254
+ deny icmp host 172.31.1.103 host 64.103.255.254
+ permit ip any any
+...
+```
+
+#### Command Summary
+```bash
+RT1(config)#ip access-list extended ACL
+RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.101.255.254 eq 80
+RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.101.255.254 eq 443
+RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.103.255.254 eq 80
+RT1(config-ext-nacl)#deny tcp host 172.31.1.101 host 64.103.255.254 eq 443
+RT1(config-ext-nacl)# deny tcp host 172.31.1.102 host 64.101.255.254 eq 21
+RT1(config-ext-nacl)# deny tcp host 172.31.1.102 host 64.103.255.254 eq 21
+RT1(config-ext-nacl)# deny icmp host 172.31.1.103 host 64.101.255.254
+RT1(config-ext-nacl)# deny icmp host 172.31.1.103 host 64.103.255.254
+RT1(config-ext-nacl)#permit ip any any
+RT1(config-ext-nacl)#interface g0/0
+RT1(config-if)#ip access-group ACL in
+```
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+
+## 5.5.1 Packet Tracer - IPv4 ACL Implementation Challenge
 
 
 
+
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+<br><br><br>
+
+# Current Assignments
+- [ ] Sample here 
