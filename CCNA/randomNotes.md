@@ -26,6 +26,7 @@
   - [Links tate operations](#links-tate-operations)
   - [Single-Area and Multiaread](#single-area-and-multiaread)
   - [OSPF Cost](#ospf-cost)
+  - [NAT](#nat)
 
 <!-- /TOC -->
 <br/><br/>
@@ -257,6 +258,13 @@ EtherChannel has some specific guidelines that must be followed in order to avoi
 
 <br/><br/>
 
+## NAT
 
+
+<br/><br/>
+
+[Back to Top](#random-notes)
+
+<br/><br/>
 [Back to README](../README.md)
 

@@ -26,6 +26,11 @@
   - [EtherChannel](#etherchannel)
 - [CCNA III : Enterprise Networking, Security, and Automation](#ccna-iii--enterprise-networking-security-and-automation)
   - [OSPF Configuration](#ospf-configuration)
+  - [ACL](#acl)
+  - [NAT](#nat)
+    - [Static NAT](#static-nat)
+    - [Configure Dynamic NAT](#configure-dynamic-nat)
+    - [Helpful COmmands](#helpful-commands)
 
 <!-- /TOC -->
 
@@ -697,5 +702,83 @@ Switch(config)# show spanning-tree vlan 1
     ```bash
     # clear ospf process
     ```
+
+## ACL 
+* Create ACL
+  ```bash
+  HQ(config)#ip access-list extended 101
+  HQ(config)#ip access-list standard vty_block
+  ```
+* Create either ```permit``` or ```deny```.
+  ```bash
+  HQ(config-ext-nacl)#deny tcp any host 192.168.1.70 eq 21
+  HQ(config-ext-nacl)#deny icmp any 192.168.1.0 0.0.0.6   
+  HQ(config-ext-nacl)#deny ip 192.168.1.0 0.0.0.63 192.168.2.45 0.0.0.0
+  ```
+* Allow all traffic
+  ```bash
+  HQ(config-ext-nacl)#permit ip any any
+  ```
+* Assign it to an interface
+  ```bash
+  HQ(config-ext-nacl)#int g0/0/0
+  HQ(config-if)#ip access-group 111 in
+  ```
+
+  ## NAT
+  ### Static NAT
+    * **Step 1** - Create a mapping between the inside local address and the inside global addresses using the ```ip nat inside source static <inside> <outside>``` command.
+      ```bash
+      R2(config)# ip nat inside source static 192.168.10.254 209.165.201.5
+      ```
+    * **Step 2** - The interfaces participating in the translation are configured as inside or outside relative to NAT with the ip nat ```inside``` and ip nat ```outside``` commands.
+
+      ```bash
+      R2(config)# interface serial 0/1/0
+      R2(config-if)# ip address 192.168.1.2 255.255.255.252
+      R2(config-if)# ip nat inside
+      R2(config-if)# exit
+      R2(config)# interface serial 0/1/1
+      R2(config-if)# ip address 209.165.200.1 255.255.255.252
+      R2(config-if)# ip nat outside
+      ```
+### Configure Dynamic NAT
+  * **Step 1** - Define the pool of addresses that will be used for translation using the ```ip nat pool <Start_IP> <End_IP> netmask <Netmask>``` command. 
+  ```bash
+  R2(config)# ip nat pool NAT-POOL1 209.165.200.226 209.165.200.240 netmask 255.255.255.224
+  ```
+  * **Step 2** - Configure a standard ACL to identify (permit) only those addresses that are to be translated.
+  ```bash
+  R2(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+  ```
+  * **Step 3** - Bind the ACL to the pool, using the ip nat inside source list command.
+  ```bash
+  R2(config)# ip nat inside source list 1 pool NAT-POOL1
+  ```
+    * If you want to Configure PAT to Use an Address Pool use the ```overload``` command.
+        ```bash
+        R2(config)# ip nat inside source list 1 pool NAT-POOL2 overload
+        ```
+* **Step 4** - Identify which interfaces are inside. 
+  ```bash
+  R2(config)# interface serial 0/1/0
+  R2(config-if)# ip nat inside
+  ```
+* **Step 5** - Identify which interfaces are outside. 
+  ```bash
+  R2(config-if)# interface serial 0/1/1
+  R2(config-if)# ip nat outside
+  ```
+
+### Helpful COmmands
+```bash
+R2# clear ip nat translation *
+R2(config)# do show ip nat translation
+R2(config)# show ip nat statistics
+```
+
+
+
+
 <br/><br/><br/>
 

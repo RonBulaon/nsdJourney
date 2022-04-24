@@ -86,6 +86,18 @@
       - [Verify Consifiguration](#verify-consifiguration)
       - [Command Summary](#command-summary-2)
   - [5.5.1 Packet Tracer - IPv4 ACL Implementation Challenge](#551-packet-tracer---ipv4-acl-implementation-challenge)
+    - [Objectives](#objectives-7)
+    - [Step 1: Verify Connectivity in the New Company Network](#step-1-verify-connectivity-in-the-new-company-network)
+    - [Step 2: Configure Standard and Extended ACLs per Requirements.](#step-2-configure-standard-and-extended-acls-per-requirements)
+      - [ACL 1 Requirements](#acl-1-requirements)
+      - [ACL 2 Requirements](#acl-2-requirements)
+      - [ACL 3: Requirements](#acl-3-requirements)
+      - [ACL 4: Requirements](#acl-4-requirements)
+  - [6.5.6 Packet Tracer - Configure Dynamic NAT](#656-packet-tracer---configure-dynamic-nat)
+  - [6.6.7 Packet Tracer - Configure PAT](#667-packet-tracer---configure-pat)
+    - [Configure Dynamic NAT with Overload](#configure-dynamic-nat-with-overload)
+    - [Configure PAT using an Interface](#configure-pat-using-an-interface)
+  - [6.8.1 Packet Tracer - Configure NAT for IPv4](#681-packet-tracer---configure-nat-for-ipv4)
 - [Current Assignments](#current-assignments)
 
 <!-- /TOC -->
@@ -1961,10 +1973,114 @@ RT1(config-if)#ip access-group ACL in
 
 
 ## 5.5.1 Packet Tracer - IPv4 ACL Implementation Challenge
+### Objectives
+* Configure a router with standard named ACLs.
+* Configure a router with extended named ACLs.
+* Configure a router with extended ACLs to meet specific communication requirements.
+* Configure an ACL to control access to network device terminal lines.
+* Configure the appropriate router interfaces with ACLs in the appropriate direction.
+* Verify the operation of the configured ACLs.
+* **Scenario** : In this activity you will configure extended, standard named, and extended named ACLs to meet specified communication requirements. <br/><img src="pics/topology005.png"><br/><img src="pics/iptable0008.png">
 
+### Step 1: Verify Connectivity in the New Company Network
+* First, test connectivity on the network as it is before configuring the ACLs. All hosts should be able to ping all other hosts.
+  
+### Step 2: Configure Standard and Extended ACLs per Requirements.
+* Configure ACLs to meet the following requirements:
+* Important guidelines:
+  1. Do not use explicit deny any statements at the end of your ACLs.
+  2. Use shorthand (host and any) whenever possible.
+  3. Write your ACL statements to address the requirements in the order that they are specified here.
+  4. Place your ACLs in the most efficient location and direction.
+   
+#### ACL 1 Requirements
+  * Create ACL 101.
+  * Explicitly block FTP access to the Enterprise Web Server from the internet.
+  * No ICMP traffic from the internet should be allowed to any hosts on HQ LAN 1
+  * Allow all other traffic.
+    ```bash
+    HQ>en
+    HQ#config t
+    Enter configuration commands, one per line.  End with CNTL/Z.
+    HQ(config)#ip access-list extended 101
+    HQ(config-ext-nacl)#deny tcp any host 192.168.1.70 eq 21
+    HQ(config-ext-nacl)#deny icmp any 192.168.1.0 0.0.0.63
+    HQ(config-ext-nacl)#permit ip any any
+    HQ(config-ext-nacl)#int s0/1/0
+    HQ(config-if)#shut
+    HQ(config-if)#no shut
+    HQ(config-if)#ip access-group 101 in
+    ```
 
+#### ACL 2 Requirements
+  * Use ACL number 111
+  * No hosts on HQ LAN 1 should be able to access the Branch Server.
+  * All other traffic should be permitted.
+    ```bash
+    HQ(config)#ip access-list extended 111
+    HQ(config-ext-nacl)#deny ip 192.168.1.0 0.0.0.63 192.168.2.45 0.0.0.0
+    HQ(config-ext-nacl)#permit ip any any
+    HQ(config-ext-nacl)#int g0/0/0
+    HQ(config-if)#shut
+    HQ(config-if)#no shut
+    HQ(config-if)#ip access-group 111 in
+    ```
 
+#### ACL 3: Requirements
+  * Create a named standard ACL. Use the name vty_block. The name of your ACL must match this name exactly.
+  * Only addresses from the HQ LAN 2 network should be able to access the VTY lines of the HQ router.
+    ```bash
+    HQ(config)#ip access-list standard vty_block
+    HQ(config-std-nacl)#permit 192.168.1.64 0.0.0.7 
+    HQ(config-std-nacl)#line vty 0 4
+    HQ(config-line)#access-class vty_block in
+    ```
 
+#### ACL 4: Requirements
+  * Create a named extended ACL called branch_to_hq. The name of your ACL must match this name exactly.
+  * No hosts on either of the Branch LANs should be allowed to access HQ LAN 1. Use one access list statement for each of the Branch LANs.
+  * All other traffic should be allowed.
+    ```bash
+    Branch(config)#ip access-list extended branch_to_hq
+    Branch(config-ext-nacl)#deny ip 192.168.2.0 0.0.0.31 192.168.1.0 0.0.0.63
+    Branch(config-ext-nacl)#deny ip 192.168.2.32 0.0.0.15 192.168.1.0 0.0.0.63
+    Branch(config-ext-nacl)#permit ip any any
+    Branch(config-ext-nacl)#interface s0/1/1
+    Branch(config-if)#ip access-group branch_to_hq out
+    ```
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 6.5.6 Packet Tracer - Configure Dynamic NAT
+* Topology<br/><img src="pics/topology006.png">
+
+* **Step 1** : Configure traffic that will be permitted.
+  * On R2, configure one statement for ACL 1 to permit any address belonging to the 172.16.0.0/16 network.
+    ```bash
+    R2(config)#access-list 1 permit 172.16.0.0 0.0.255.255
+    ```
+* **Step 2** : Configure a pool of address for NAT.
+  * Configure R2 with a NAT pool that uses two addresses in the 209.165.200.228/30 address space.
+    ```bash
+    R2(config)#ip nat pool RON 209.165.200.229 209.165.200.230 netmask 255.255.255.252
+    ```
+* Step 3: Associate ACL 1 with the NAT pool.
+  * Enter the command that associates ACL 1 with the NAT pool that you just created.
+    ```bash
+    R2(config)#ip nat inside source list 1 pool RON
+    ```
+
+* Step 4: Configure the NAT interfaces.
+  * Configure R2 interfaces with the appropriate inside and outside NAT commands.
+    ```bash
+    R2(config)#int s0/0/0
+    R2(config-if)#ip nat outside
+    R2(config-if)#int s0/0/1
+    R2(config-if)#ip nat inside
+    ```
 
 <br><br>
 
@@ -1972,7 +2088,115 @@ RT1(config-if)#ip access-group ACL in
 
 <br><br>
 
+## 6.6.7 Packet Tracer - Configure PAT
+* Topology<br/><img src="pics/topology007.png">
+
+### Configure Dynamic NAT with Overload
+* **Step 1**: Configure traffic that will be permitted.
+  * On R1, configure one statement for ACL ```1``` to permit any address belonging to ```172.16.0.0/16```.
+    ```bash
+    R1(config)#access-list 1 permit 172.16.0.0 0.0.255.255
+    ```
+* **Step 2**: Configure a pool of address for NAT.
+  * Configure R1 with a NAT pool that uses the two useable addresses in the 209.165.200.232/30 address space.
+    ```bash
+    R1(config)#ip nat pool RON 209.165.200.233 209.165.200.234 netmask 255.255.255.252
+    ```
+* **Step 3**: Associate ACL 1 with the NAT pool and allow addresses to be reused.
+    ```bash
+    R1(config)#ip nat inside source list 1 pool RON overload
+    ```
+* **Step 4**: Configure the NAT interfaces.
+  * Configure R1 interfaces with the appropriate inside and outside NAT commands.
+    ```bash
+    R1(config)#int s0/1/0
+    R1(config-if)#ip nat outside
+    R1(config-if)#int g0/0/0
+    R1(config-if)#ip nat inside
+    R1(config-if)#int g0/0/1
+    R1(config-if)#ip nat inside
+    ```
+
+### Configure PAT using an Interface
+* **Step 1**: Configure traffic that will be permitted.
+  ```bash
+  R2(config)#access-list 2 permit 172.16.0.0 0.0.255.255
+  ```
+* **Step 2**: Associate ACL 2 with the NAT interface and allow addresses to be reused.
+  * Enter the R2 NAT statement to use the interface connected to the internet and provide translations for all internal devices.
+    ```bash
+    R2(config)#ip nat inside source list 2 interface s0/1/1 overload
+    ```
+* **Step 3**: Configure the NAT interfaces.
+  * Configure R2 interfaces with the appropriate inside and outside NAT commands.
+  ```bash
+  R2(config)#int s0/1/1
+  R2(config-if)#ip nat outside
+  R2(config-if)#int g0/0/0
+  R2(config-if)#ip nat inside
+  R2(config-if)#int g0/0/1
+  R2(config-if)#ip nat inside
+  ```
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 6.8.1 Packet Tracer - Configure NAT for IPv4
+* Topology<br/><img src="pics/topology008.png">
+* IP Table<br/><img src="pics/iptable009.png">
+* **Background / Scenario** : <br>In this lab, you will configure a router with dynamic NAT with PAT. This will translate addresses from the three internal LANs to a single outside address. In addition, you will configure static NAT to translate an internal server address to an outside address.
+
+* Use a named ACL to permit the addresses from LAN1, LAN2, and LAN3 to be translated. Specify the LANs in this order. Use the name **R2NAT**. The name you use must match this name exactly.
+  ```bash
+  R2(config)#ip access-list standard R2NAT
+  R2(config-std-nacl)#permit 192.168.10.0 0.0.0.255
+  R2(config-std-nacl)#permit 192.168.20.0 0.0.0.255
+  R2(config-std-nacl)#permit 192.168.30.0 0.0.0.255
+  ```
+
+* Create a NAT pool named **R2POOL**. The pool should use the **first** address from the ```209.165.202.128/30``` address space. The pool name you use must match this name exactly. All translated addresses must use this address as their outside address.
+  ```bash
+  R2(config-std-nacl)#ip nat pool R2POOL 209.165.202.129 209.165.202.129 netmask 255.255.255.252
+  ```
+
+* Configure NAT with the ACL and NAT pool that you have created.
+  ```bash
+  R2(config)#ip nat inside source list R2NAT pool R2POOL
+  ```
+
+* Configure static NAT to map the local.pka server inside address to the **second** address from the ```209.165.202.128/30``` address space.
+  ```bash
+  R2(config)#ip nat inside source static 192.168.20.254 209.165.202.130
+  ```
+
+* Configure the interfaces that will participate in NAT.
+  ```bash
+  R2(config)#do show ip interface brief
+  Interface              IP-Address      OK? Method Status                Protocol 
+  FastEthernet0/0        192.168.20.1    YES manual up                    up 
+  FastEthernet0/1        unassigned      YES unset  administratively down down 
+  Serial0/0/0            10.1.1.2        YES manual up                    up 
+  Serial0/0/1            10.2.2.1        YES manual up                    up 
+  Serial0/1/0            209.165.200.225 YES manual up                    up 
+  Serial0/1/1            unassigned      YES unset  administratively down down 
+  Vlan1                  unassigned      YES unset  administratively down down
+  
+  R2(config)#int s0/1/0
+  R2(config-if)#ip nat outside
+  R2(config-if)#int s0/0/1
+  R2(config-if)#ip nat inside
+  R2(config-if)#int s0/0/0
+  R2(config-if)#ip nat inside
+  R2(config-if)#int f0/0
+  R2(config-if)#ip nat inside
+  ```
+
 <br><br><br>
 
 # Current Assignments
-- [ ] Sample here 
+- [x] 6.4.5 Packet Tracer - Configure Static NAT
+- [x] 6.5.6 Packet Tracer - Configure Dynamic NAT
+- [ ] 6.6.7 Packet Tracer - Configure PAT
+- [ ] 6.8.1 Packet Tracer - Configure NAT for IPv4
