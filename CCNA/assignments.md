@@ -98,7 +98,39 @@
     - [Configure Dynamic NAT with Overload](#configure-dynamic-nat-with-overload)
     - [Configure PAT using an Interface](#configure-pat-using-an-interface)
   - [6.8.1 Packet Tracer - Configure NAT for IPv4](#681-packet-tracer---configure-nat-for-ipv4)
-- [Current Assignments](#current-assignments)
+  - [Configure and Verify a site-to-site IPSec VPN using CLI](#configure-and-verify-a-site-to-site-ipsec-vpn-using-cli)
+    - [Part 1: Configure IPSec Parameters on R1](#part-1-configure-ipsec-parameters-on-r1)
+      - [Step 1: Test connectivity.](#step-1-test-connectivity)
+      - [Step 2: Enable the Security Technology package.](#step-2-enable-the-security-technology-package)
+      - [Step 3: Identify interesting traffic on R1.](#step-3-identify-interesting-traffic-on-r1)
+      - [Step 4: Configure the IKE Phase 1 ISAKMP policy on R1.](#step-4-configure-the-ike-phase-1-isakmp-policy-on-r1)
+      - [Step 5: Configure the IKE Phase 2 IPsec policy on R1.](#step-5-configure-the-ike-phase-2-ipsec-policy-on-r1)
+      - [Step 6: Configure the crypto map on the outgoing interface.](#step-6-configure-the-crypto-map-on-the-outgoing-interface)
+    - [Part 2: Configure IPsec Parameters on R3](#part-2-configure-ipsec-parameters-on-r3)
+      - [Step 1: Enable the Security Technology package.](#step-1-enable-the-security-technology-package)
+      - [Step 2: Configure router R3 to support a site-to-site VPN with R1.](#step-2-configure-router-r3-to-support-a-site-to-site-vpn-with-r1)
+      - [Step 3: Configure the IKE Phase 1 ISAKMP properties on R3.](#step-3-configure-the-ike-phase-1-isakmp-properties-on-r3)
+      - [Step 4: Configure the IKE Phase 2 IPsec policy on R3.](#step-4-configure-the-ike-phase-2-ipsec-policy-on-r3)
+      - [Step 5: Configure the crypto map on the outgoing interface.](#step-5-configure-the-crypto-map-on-the-outgoing-interface)
+    - [Part 3: Verify the IPsec VPN](#part-3-verify-the-ipsec-vpn)
+      - [Step 1: Verify the tunnel prior to interesting traffic.](#step-1-verify-the-tunnel-prior-to-interesting-traffic)
+      - [Step 2: Create interesting traffic.](#step-2-create-interesting-traffic)
+      - [Step 3: Verify the tunnel after interesting traffic.](#step-3-verify-the-tunnel-after-interesting-traffic)
+      - [Step 4: Create uninteresting traffic.](#step-4-create-uninteresting-traffic)
+      - [Step 5: Verify the tunnel.](#step-5-verify-the-tunnel)
+      - [Step 6: Check results.](#step-6-check-results)
+  - [Configuring GRE](#configuring-gre)
+    - [Part 1:     Verify Router Connectivity](#part-1-----verify-router-connectivity)
+      - [Step 1:     Ping RA from RB.](#step-1-----ping-ra-from-rb)
+      - [Step 2:     Ping PCA from PCB.](#step-2-----ping-pca-from-pcb)
+    - [Part 2:     Configure GRE Tunnels](#part-2-----configure-gre-tunnels)
+      - [Step 1:     Configure the Tunnel 0 interface of RA.](#step-1-----configure-the-tunnel-0-interface-of-ra)
+      - [Step 2:     Configure the Tunnel 0 interface of RB.](#step-2-----configure-the-tunnel-0-interface-of-rb)
+      - [Step 3:     Configure a route for private IP traffic.](#step-3-----configure-a-route-for-private-ip-traffic)
+    - [Part 3:     Verify Router Connectivity](#part-3-----verify-router-connectivity)
+      - [Step 1:     Ping PCA from PCB.](#step-1-----ping-pca-from-pcb)
+      - [Step 2:     Trace the path from PCA to PCB.](#step-2-----trace-the-path-from-pca-to-pcb)
+- [Assignments](#assignments)
 
 <!-- /TOC -->
 
@@ -2192,11 +2224,257 @@ RT1(config-if)#ip access-group ACL in
   R2(config-if)#int f0/0
   R2(config-if)#ip nat inside
   ```
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## Configure and Verify a site-to-site IPSec VPN using CLI
+* Topology<br/><img src="pics/topology009.png">
+* IP Table<br/><img src="pics/iptable010.png">
+* Background / Scenario : The network topology shows three routers. Your task is to configure R1 and R3 to support a site-to-site IPsec VPN when traffic flows between their respective LANs. The IPsec VPN tunnel is from R1 to R3 via R2. R2 acts as a pass-through and has no knowledge of the VPN. IPsec provides secure transmission of sensitive information over unprotected networks, such as the Internet. IPsec operates at the network layer and protects and authenticates IP packets between participating IPsec devices (peers), such as Cisco routers.
+* ISAKMP Phase 1 Policy Parameters<br/><img src="pics/parameters001.png">
+  **Note**: Bolded parameters are defaults. Only unbolded parameters have to be explicitly configured.
+* IPsec Phase 2 Policy Parameters<br/><img src="pics/parameters002.png">
+* Other settings: The routers have been pre-configured with the following:
+  * Password for console line: ciscoconpa55
+  * Password for vty lines: ciscovtypa55
+  * Enable password: ciscoenpa55
+  * SSH username and password: SSHadmin / ciscosshpa55
+  * OSPF 101
+
+### Part 1: Configure IPSec Parameters on R1
+
+#### Step 1: Test connectivity.
+* Ping from PC-A to PC-C.
+  
+#### Step 2: Enable the Security Technology package.
+1. On R1, issue the ```show version``` command to view the Security Technology package license information.
+2. If the Security Technology package has not been enabled, use the following command to enable the package.
+    ```bash
+    R1(config)# do show version
+    R1(config)# license boot module c1900 technology-package securityk9
+    R1(config)# do show version
+    ```
+3. Accept the end-user license agreement.
+4. Save the running-config and reload the router to enable the security license.
+    ```bash
+    R1(config)# do copy run start
+    R1(config)# reload
+    ```
+5. Verify that the Security Technology package has been enabled by using the show version command.
+    ```bash
+    R1(config)# do show version
+    ```
+
+#### Step 3: Identify interesting traffic on R1.
+* Configure ACL ````110```` to identify the traffic from the LAN on R1 to the LAN on R3 as interesting. This interesting traffic will trigger the IPsec VPN to be implemented when there is traffic between the R1 to R3 LANs. All other traffic sourced from the LANs will not be encrypted. Because of the implicit **deny all**, there is no need to configure a **deny ip any any** statement.
+  ```bash
+  R1(config)#access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+  ```
+#### Step 4: Configure the IKE Phase 1 ISAKMP policy on R1.
+* Configure the **crypto ISAKMP policy 10** properties on R1 along with the shared crypto key ```vpnpa55```. Refer to the ISAKMP Phase 1 table for the specific parameters to configure. Default values do not have to be configured. Therefore, only the encryption method, key exchange method, and DH method must be configured. <br><br>**Note**: The highest DH group currently supported by Packet Tracer is group 5. In a production network, you would configure at least DH 14.
+  ```bash
+  R1(config)# crypto isakmp policy 10
+  R1(config-isakmp)# encryption aes 256
+  R1(config-isakmp)# authentication pre-share
+  R1(config-isakmp)# group 5
+  R1(config-isakmp)# exit
+  R1(config)# crypto isakmp key vpnpa55 address 10.2.2.2
+  ```
+
+#### Step 5: Configure the IKE Phase 2 IPsec policy on R1.
+* Create the transform-set VPN-SET to use **esp-aes** and **esp-sha-hmac**.
+    ```bash
+    R1(config)# crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
+    ```
+* Create the crypto map VPN-MAP that binds all of the Phase 2 parameters together. Use sequence number 10 and identify it as an ipsec-isakmp map.
+    ```bash
+    R1(config)# crypto map VPN-MAP 10 ipsec-isakmp
+    R1(config-crypto-map)# description VPN connection to R3
+    R1(config-crypto-map)# set peer 10.2.2.2
+    R1(config-crypto-map)# set transform-set VPN-SET
+    R1(config-crypto-map)# match address 110
+    R1(config-crypto-map)# exit
+    ```
+
+#### Step 6: Configure the crypto map on the outgoing interface.
+* Bind the VPN-MAP crypto map to the outgoing Serial 0/0/0 interface.
+    ```bash
+    R1(config)# interface s0/0/0
+    R1(config-if)# crypto map VPN-MAP
+    ```
+
+### Part 2: Configure IPsec Parameters on R3
+
+#### Step 1: Enable the Security Technology package.
+* On R3, issue the show version command to verify that the Security Technology package license information has been enabled.
+    ```bash
+    R1(config)# do show version
+    R1(config)# license boot module c1900 technology-package securityk9
+    R1(config)# do show version
+    ```
+* If the Security Technology package has not been enabled, enable the package and reload R3.
+      ```bash
+    R1(config)# do copy run start
+    R1(config)# reload
+    ```
+#### Step 2: Configure router R3 to support a site-to-site VPN with R1.
+* Configure reciprocating parameters on R3. Configure ACL 110 identifying the traffic from the LAN on R3 to the LAN on R1 as interesting.
+  ```bash
+  R3(config)# access-list 110 permit ip 192.168.3.0 0.0.0.255 192.168.1.0 0.0.0.255
+  ```
+#### Step 3: Configure the IKE Phase 1 ISAKMP properties on R3.
+* Configure the ```crypto ISAKMP policy 10``` properties on R3 along with the shared crypto key vpnpa55.
+  ```bash
+  R3(config)# crypto isakmp policy 10
+  R3(config-isakmp)# encryption aes 256
+  R3(config-isakmp)# authentication pre-share
+  R3(config-isakmp)# group 5
+  R3(config-isakmp)# exit
+  R3(config)# crypto isakmp key vpnpa55 address 10.1.1.2
+  ```
+#### Step 4: Configure the IKE Phase 2 IPsec policy on R3.
+* Create the ```transform-set VPN-SET``` to use **esp-aes** and **esp-sha-hmac**.
+  ```bash
+  R3(config)# crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
+  ```
+* Create the ```crypto map VPN-MAP``` that binds all of the Phase 2 parameters together. Use sequence number 10 and identify it as an **ipsec-isakmp map**.
+  ```bash
+  R3(config)# crypto map VPN-MAP 10 ipsec-isakmp
+  R3(config-crypto-map)# description VPN connection to R1
+  R3(config-crypto-map)# set peer 10.1.1.2
+  R3(config-crypto-map)# set transform-set VPN-SET
+  R3(config-crypto-map)# match address 110
+  R3(config-crypto-map)# exit
+  ```
+
+#### Step 5: Configure the crypto map on the outgoing interface.
+* Bind the VPN-MAP crypto map to the outgoing Serial 0/0/1 interface. **Note**: This is not graded.
+  ```bash
+  R3(config)# interface s0/0/1
+  R3(config-if)# crypto map VPN-MAP
+  ```
+
+### Part 3: Verify the IPsec VPN
+#### Step 1: Verify the tunnel prior to interesting traffic.
+* Issue the ```show crypto ipsec sa``` command on R1. Notice that the number of packets encapsulated, encrypted, decapsulated, and decrypted are all set to 0.
+
+#### Step 2: Create interesting traffic.
+* Ping PC-C from PC-A.
+
+#### Step 3: Verify the tunnel after interesting traffic.
+* On R1, re-issue the ```show crypto ipsec sa``` command. Notice that the number of packets is more than 0, which indicates that the IPsec VPN tunnel is working.
+
+#### Step 4: Create uninteresting traffic.
+* Ping PC-B from PC-A. **Note**: Issuing a ping from router R1 to PC-C or R3 to PC-A is not interesting traffic.
+
+#### Step 5: Verify the tunnel.
+* On R1, re-issue the ```show crypto ipsec sa``` command. Notice that the number of packets has not changed, which verifies that uninteresting traffic is not encrypted.
+
+#### Step 6: Check results.
+* Your completion percentage should be 100%. Click **Check Results** to see feedback and verification of which required components have been completed.
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## Configuring GRE
+* Topology<br/><img src="pics/topology010.png">
+* IP Table<br/><img src="pics/iptable011.png">
+* Scenario : You are the network administrator for a company which wants to set up a GRE tunnel to a remote office. Both networks are locally configured, and need only the tunnel configured.
+
+### Part 1:     Verify Router Connectivity
+#### Step 1:     Ping RA from RB.
+1. Use the ```show ip interface brief``` command on RA to determine the IP address of the ```S0/0/0``` port.
+  ```bash
+  RA#show ip interface brief
+  Interface              IP-Address      OK? Method Status                Protocol 
+  GigabitEthernet0/0     192.168.1.1     YES manual up                    up 
+  GigabitEthernet0/1     unassigned      YES unset  administratively down down 
+  GigabitEthernet0/2     unassigned      YES unset  administratively down down 
+  Serial0/0/0            64.103.211.2    YES manual up                    up 
+  Serial0/0/1            unassigned      YES unset  administratively down down 
+  Vlan1                  unassigned      YES unset  administratively down down
+  ```
+2. From RB ping the IP ```S0/0/0``` address of RA.
+
+#### Step 2:     Ping PCA from PCB.
+* Attempt to ping the IP address of PCA from PCB. We will repeat this test after configuring the GRE tunnel. What were the ping results? Why?
+
+### Part 2:     Configure GRE Tunnels
+#### Step 1:     Configure the Tunnel 0 interface of RA.
+1. Enter into the configuration mode for RA Tunnel 0.
+    ```bash
+    RA(config)# interface tunnel 0
+    ```
+2. Set the IP address as indicated in the Addressing Table.
+    ```bash
+    RA(config-if)# ip address 10.10.10.1 255.255.255.252
+    ```
+3. Set the source and destination for the endpoints of Tunnel 0.
+    ```bash
+    RA(config-if)# tunnel source s0/0/0
+    RA(config-if)# tunnel destination 209.165.122.2
+    ```
+4. Configure Tunnel 0 to convey IP traffic over GRE.
+    ```bash
+    RA(config-if)# tunnel mode gre ip
+    ```
+5. The Tunnel 0 interface should already be active. In the event that it is not, treat it like any other interface.
+   ```bash
+   RA(config-if)# no shutdown
+   ```
+#### Step 2:     Configure the Tunnel 0 interface of RB.
+* Repeat Steps 1a – e with RB. Be sure to change the IP addressing as appropriate.
+  ```bash
+  RB#config t
+  Enter configuration commands, one per line.  End with CNTL/Z.
+  RB(config)#interface tunnel 0
+  RB(config-if)#ip address 10.10.10.2 255.255.255.252
+  RB(config-if)#tunnel source s0/0/0
+  RB(config-if)#tunnel destination 64.103.211.2 
+  RB(config-if)#tunnel mode gre ip
+  RB(config-if)#no shut
+  ```
+#### Step 3:     Configure a route for private IP traffic.
+* Establish a route between the 192.168.X.X networks using the 10.10.10.0/30 network as the destination.
+  ```bash
+  RA(config)# ip route 192.168.2.0 255.255.255.0 10.10.10.2
+  RB(config)# ip route 192.168.1.0 255.255.255.0 10.10.10.1
+  ```
+
+### Part 3:     Verify Router Connectivity
+#### Step 1:     Ping PCA from PCB.
+* Attempt to ping the IP address of PCA from PCB. The ping should be successful.
+#### Step 2:     Trace the path from PCA to PCB.
+* Attempt to trace the path from PCA to PCB. Note the lack of public IP addresses in the output.
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+
+
+
 
 <br><br><br>
 
-# Current Assignments
-- [x] 6.4.5 Packet Tracer - Configure Static NAT
-- [x] 6.5.6 Packet Tracer - Configure Dynamic NAT
-- [ ] 6.6.7 Packet Tracer - Configure PAT
-- [ ] 6.8.1 Packet Tracer - Configure NAT for IPv4
+# Assignments
+  
+* Module 10 : Up Coming
+  - [ ] 10.1.5 Packet Tracer - Use CDP to Map a Network
+  - [ ] 10.2.6  Packet Tracer - Use LLDP to Map a Network
+  - [ ] 10.3.4 Packet Tracer - Configure and Verify NTP
+  - [ ] 10.6.10 Packet Tracer - Back Up Configuration Files
+  - [ ] 10.7.6 Packet Tracer - Use a TFTP Server to Upgrade a Cisco IOS Image
+  - [ ] 10.8.1 Packet Tracer - Configure CDP, LLDP, and NTP
+
+* Module 12 : Up Coming
+  - [ ] 12.5.13 Packet Tracer - Troubleshoot Enterprise Networks
+  - [ ] 12.6.1 Packet Tracer - Troubleshooting Challenge - Document the Network
+  - [ ] 12.6.2 Packet Tracer - Troubleshooting Challenge - Use Documentation to Solve Issues

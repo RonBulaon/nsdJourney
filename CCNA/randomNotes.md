@@ -26,7 +26,7 @@
   - [Links tate operations](#links-tate-operations)
   - [Single-Area and Multiaread](#single-area-and-multiaread)
   - [OSPF Cost](#ospf-cost)
-  - [NAT](#nat)
+  - [VPN/GRE](#vpngre)
 
 <!-- /TOC -->
 <br/><br/>
@@ -258,8 +258,14 @@ EtherChannel has some specific guidelines that must be followed in order to avoi
 
 <br/><br/>
 
-## NAT
+## VPN/GRE
 
+* HAGLE
+  * H - Hash            - SHA/MD5
+  * A - Authentication  - PKI/RSA
+  * G - Grpup           - Diffie-Hellman
+  * L - Lifetime        - Age of security Association
+  * E - Encryption      - AES/3DES
 
 <br/><br/>
 
