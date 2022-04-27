@@ -130,6 +130,9 @@
     - [Part 3:     Verify Router Connectivity](#part-3-----verify-router-connectivity)
       - [Step 1:     Ping PCA from PCB.](#step-1-----ping-pca-from-pcb)
       - [Step 2:     Trace the path from PCA to PCB.](#step-2-----trace-the-path-from-pca-to-pcb)
+  - [10.1.5 Packet Tracer - Use CDP to Map a Network](#1015-packet-tracer---use-cdp-to-map-a-network)
+    - [Part 1 : Use SSH to Remotely Access Network Devices](#part-1--use-ssh-to-remotely-access-network-devices)
+    - [Part 2: Use CDP to Discover Neighboring Devices](#part-2-use-cdp-to-discover-neighboring-devices)
 - [Assignments](#assignments)
 
 <!-- /TOC -->
@@ -2458,6 +2461,305 @@ RT1(config-if)#ip access-group ACL in
 
 <br><br>
 
+## 10.1.5 Packet Tracer - Use CDP to Map a Network
+* Topology<br/><img src="pics/topology011.png">
+* Objectives : Map a network using CDP and SSH remote access. Complete the table.
+* **Background / Scenario** : A senior network administrator requires you to map the Remote Branch Office network and discover the name of a recently installed switch that still needs an IP address to be configured. Your task is to create a map of the branch office network. You must record all of the network device names, IP addresses and subnet masks, and physical interfaces interconnecting the network devices, as well as the name of the switch that does not have an IP address. <br><br>To map the network, you will use SSH for remote access and the Cisco Discovery Protocol (CDP) to discover information about neighboring network devices. Because CDP is a Layer 2 protocol, it can be used to discover information about devices that do not have IP addresses. You will record the gathered information to complete the Addressing Table and provide a topology diagram of the Remote Branch Office network.
+
+  * Local Network<br>Username: ```admin01```<br>Password: ```S3cre7P@55```
+  * Branch Office Network<br>Username: ```branchadmin```<br>Password: ```S3cre7P@55```
+
+Note : in Bold are prefilled information  
+| Device      | Interface       | IP Address          | Subnet Mask          | Local Interface and Connected Neighbor|
+| -----       |  -----          |  -----              |  -----               |  -----                                |
+| **Edge1**   |  **G0/0**       | **192.168.1.1**     | **255.255.255.0**    |  **G0/1 - S1**                        |
+| **Edge1**   |  **S/0/0**      | ```209.165.200.5``` | ```255.255.255.252```|  **S0/0/0 - ISP**                     |
+| ```Branch-Edge``` | **S0/1**  | **209.165.200.10**  | ```255.255.255.252```|  **S0/0/1 - ISP**                     |
+| ```Branch-Edge``` | ```G0/0```| ```192.168.3.249``` | ```255.255.255.248```| |
+
+### Part 1 : Use SSH to Remotely Access Network Devices
+* Admin-PC, open a command prompt.```SSH``` into the gateway router at ```192.168.1.1``` using the username ```admin01``` and the password
+```cmd
+C:\>ssh -l admin01 192.168.1.1
+
+Password: <S3cre7P@55>
+```
+*  Use the ```show ip interface brief``` and ```show interfaces``` commands to document the Edge1 router’s **physical interfaces**, **IP addresses**, and **subnet masks** in the Addressing Table.
+
+  ```bash
+  Edge1#show ip interface brief
+  Interface              IP-Address      OK? Method Status                Protocol 
+  GigabitEthernet0/0     192.168.1.1     YES manual up                    up 
+  GigabitEthernet0/1     unassigned      YES unset  administratively down down 
+  Serial0/0/0            209.165.200.5   YES manual up                    up 
+  Serial0/0/1            unassigned      YES unset  administratively down down 
+  Vlan1                  unassigned      YES unset  administratively down down
+  ```
+  ```bash
+  Edge1#show interfaces g0/0
+  GigabitEthernet0/0 is up, line protocol is up (connected)
+    Hardware is CN Gigabit Ethernet, address is 00e0.a3dd.7001 (bia 00e0.a3dd.7001)
+    Internet address is 192.168.1.1/24
+    MTU 1500 bytes, BW 1000000 Kbit, DLY 10 usec,
+      reliability 255/255, txload 1/255, rxload 1/255
+    Encapsulation ARPA, loopback not set
+    Keepalive set (10 sec)
+    Full-duplex, 100Mb/s, media type is RJ45
+    output flow-control is unsupported, input flow-control is unsupported
+    ARP type: ARPA, ARP Timeout 04:00:00, 
+    Last input 00:00:08, output 00:00:05, output hang never
+    Last clearing of "show interface" counters never
+    Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+    Queueing strategy: fifo
+    Output queue :11/40 (size/max)
+    5 minute input rate 50 bits/sec, 0 packets/sec
+    5 minute output rate 37 bits/sec, 0 packets/sec
+      203 packets input, 8212 bytes, 0 no buffer
+      Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+      0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+      0 watchdog, 1017 multicast, 0 pause input
+      0 input packets with dribble condition detected
+      103 packets output, 4225 bytes, 0 underruns
+      0 output errors, 0 collisions, 1 interface resets
+      0 unknown protocol drops
+      0 babbles, 0 late collision, 0 deferred
+      0 lost carrier, 0 no carrier
+      0 output buffer failures, 0 output buffers swapped out
+
+  ```
+  ```bash
+  Edge1#show interfaces s0/0/0
+  Serial0/0/0 is up, line protocol is up (connected)
+    Hardware is HD64570
+    Internet address is 209.165.200.5/30
+    MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+      reliability 255/255, txload 1/255, rxload 1/255
+    Encapsulation HDLC, loopback not set, keepalive set (10 sec)
+    Last input never, output never, output hang never
+    Last clearing of "show interface" counters never
+    Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+    Queueing strategy: weighted fair
+    Output queue: 0/1000/64/0 (size/max total/threshold/drops)
+      Conversations  0/0/256 (active/max active/max total)
+      Reserved Conversations 0/0 (allocated/max allocated)
+      Available Bandwidth 1158 kilobits/sec
+    5 minute input rate 0 bits/sec, 0 packets/sec
+    5 minute output rate 0 bits/sec, 0 packets/sec
+      0 packets input, 0 bytes, 0 no buffer
+      Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+      0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+      0 packets output, 0 bytes, 0 underruns
+      0 output errors, 0 collisions, 0 interface resets
+      0 output buffer failures, 0 output buffers swapped out
+      0 carrier transitions
+      DCD=up  DSR=up  DTR=up  RTS=up  CTS=up
+  ```
+* From Edge1, use SSH to access the Remote Branch Office at 209.165.200.10 with the username branchadmin and the same password as above:
+  ```bash
+  Edge1#ssh -l branchadmin 209.165.200.10
+
+  Password: <S3cre7P@55>
+
+  Branch-Edge#show ip interface brief
+  Interface              IP-Address      OK? Method Status                Protocol 
+  GigabitEthernet0/0     192.168.3.249   YES manual up                    up 
+  GigabitEthernet0/1     unassigned      YES unset  administratively down down 
+  Serial0/0/0            unassigned      YES unset  administratively down down 
+  Serial0/0/1            209.165.200.10  YES manual up                    up 
+  Vlan1                  unassigned      YES unset  administratively down down
+
+  Branch-Edge#show interfaces s0/0/1
+  Serial0/0/1 is up, line protocol is up (connected)
+    Hardware is HD64570
+    Internet address is 209.165.200.10/30
+    MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+      reliability 255/255, txload 1/255, rxload 1/255
+    Encapsulation HDLC, loopback not set, keepalive set (10 sec)
+    Last input never, output never, output hang never
+    Last clearing of "show interface" counters never
+    Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+    Queueing strategy: weighted fair
+    Output queue: 13/1000/64/0 (size/max total/threshold/drops)
+      Conversations  1/1/256 (active/max active/max total)
+      Reserved Conversations 0/0 (allocated/max allocated)
+      Available Bandwidth 1158 kilobits/sec
+    5 minute input rate 32 bits/sec, 0 packets/sec
+    5 minute output rate 24 bits/sec, 0 packets/sec
+      121 packets input, 4908 bytes, 0 no buffer
+      Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+      0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+      67 packets output, 2746 bytes, 0 underruns
+      0 output errors, 0 collisions, 0 interface resets
+      0 output buffer failures, 0 output buffers swapped out
+      0 carrier transitions
+      DCD=up  DSR=up  DTR=up  RTS=up  CTS=up
+  ```
+
+### Part 2: Use CDP to Discover Neighboring Devices
+* You are now remotely connected to the Branch-Edge router. Using CDP, begin looking for connected network devices.
+  1. Issue the show ip interface brief and show interfaces commands to document the Branch-Edge router’s network interfaces, IP addresses, and subnet masks. Add the missing information to the Addressing Table to map the network:
+      ```bash
+      Branch-Edge#show ip interface brief
+        Interface              IP-Address      OK? Method Status                Protocol 
+        GigabitEthernet0/0     192.168.3.249   YES manual up                    up 
+        GigabitEthernet0/1     unassigned      YES unset  administratively down down 
+        Serial0/0/0            unassigned      YES unset  administratively down down 
+        Serial0/0/1            209.165.200.10  YES manual up                    up 
+        Vlan1                  unassigned      YES unset  administratively down down
+
+        Branch-Edge#show interfaces s0/0/1
+        Serial0/0/1 is up, line protocol is up (connected)
+          Hardware is HD64570
+          Internet address is 209.165.200.10/30
+          MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+            reliability 255/255, txload 1/255, rxload 1/255
+          Encapsulation HDLC, loopback not set, keepalive set (10 sec)
+          Last input never, output never, output hang never
+          Last clearing of "show interface" counters never
+          Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+          Queueing strategy: weighted fair
+          Output queue: 13/1000/64/0 (size/max total/threshold/drops)
+            Conversations  1/1/256 (active/max active/max total)
+            Reserved Conversations 0/0 (allocated/max allocated)
+            Available Bandwidth 1158 kilobits/sec
+          5 minute input rate 32 bits/sec, 0 packets/sec
+          5 minute output rate 24 bits/sec, 0 packets/sec
+            121 packets input, 4908 bytes, 0 no buffer
+            Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+            0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+            67 packets output, 2746 bytes, 0 underruns
+            0 output errors, 0 collisions, 0 interface resets
+            0 output buffer failures, 0 output buffers swapped out
+            0 carrier transitions
+            DCD=up  DSR=up  DTR=up  RTS=up  CTS=up
+
+      Branch-Edge#show interfaces g0/0
+      GigabitEthernet0/0 is up, line protocol is up (connected)
+        Hardware is CN Gigabit Ethernet, address is 0001.9660.0053 (bia 0001.9660.0053)
+        Internet address is 192.168.3.249/29
+        MTU 1500 bytes, BW 1000000 Kbit, DLY 10 usec,
+          reliability 255/255, txload 1/255, rxload 1/255
+        Encapsulation ARPA, loopback not set
+        Keepalive set (10 sec)
+        Full-duplex, 100Mb/s, media type is RJ45
+        output flow-control is unsupported, input flow-control is unsupported
+        ARP type: ARPA, ARP Timeout 04:00:00, 
+        Last input 00:00:08, output 00:00:05, output hang never
+        Last clearing of "show interface" counters never
+        Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+        Queueing strategy: fifo
+        Output queue :0/40 (size/max)
+        5 minute input rate 0 bits/sec, 0 packets/sec
+        5 minute output rate 0 bits/sec, 0 packets/sec
+          0 packets input, 0 bytes, 0 no buffer
+          Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+          0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+          0 watchdog, 1017 multicast, 0 pause input
+          0 input packets with dribble condition detected
+          0 packets output, 0 bytes, 0 underruns
+          0 output errors, 0 collisions, 1 interface resets
+          0 unknown protocol drops
+          0 babbles, 0 late collision, 0 deferred
+          0 lost carrier, 0 no carrier
+          0 output buffer failures, 0 output buffers swapped out
+      ```
+
+
+      ```bash
+      Branch-Edge#show cdp
+      % CDP is not enabled
+      Branch-Edge#configure terminal 
+      Enter configuration commands, one per line.  End with CNTL/Z.
+
+      Branch-Edge(config)#cdp run
+      Branch-Edge(config)#interface s0/0/1
+      Branch-Edge(config-if)#no cdp enable
+      Branch-Edge(config-if)#exit
+      Branch-Edge(config)#
+      Branch-Edge(config)#
+      Branch-Edge(config)#do show cdp neighbors
+      Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                        S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+      Device ID    Local Intrfce   Holdtme    Capability   Platform    Port ID
+      Branch-Firewall
+                  Gig 0/0          153            R       C1900       Gig 0/0
+      Branch-Edge(config)#
+      Branch-Edge(config)#
+      Branch-Edge(config)#
+      Branch-Edge(config)#do show cdp neighbors detail
+
+      Device ID: Branch-Firewall
+      Entry address(es): 
+        IP address : 192.168.3.253
+      Platform: cisco C1900, Capabilities: Router
+      Interface: GigabitEthernet0/0, Port ID (outgoing port): GigabitEthernet0/0
+      Holdtime: 135
+
+      Version :
+      Cisco IOS Software, C1900 Software (C1900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)
+      Technical Support: http://www.cisco.com/techsupport
+      Copyright (c) 1986-2012 by Cisco Systems, Inc.
+      Compiled Thurs 5-Jan-12 15:41 by pt_team
+
+      advertisement version: 2
+      Duplex: full
+        
+      Branch-Edge(config)#exit
+      Branch-Edge#ssh -l branchadmin 192.168.3.253
+
+      Password: <S3cre7P@55>
+
+      Branch-Firewall#show cdp neighbors
+      Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                        S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+      Device ID    Local Intrfce   Holdtme    Capability   Platform    Port ID
+      sw-br-floor2 
+                  Gig 0/1          171            S       2960        Gig 0/1
+      Branch-Edge  Gig 0/0          169            R       C1900       Gig 0/0
+      Branch-Firewall#show cdp neighbors detail
+
+      Device ID: sw-br-floor2
+      Entry address(es): 
+        IP address : 192.168.4.132
+      Platform: cisco 2960, Capabilities: Switch
+      Interface: GigabitEthernet0/1, Port ID (outgoing port): GigabitEthernet0/1
+      Holdtime: 155
+
+      Version :
+      Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4, RELEASE SOFTWARE (fc1)
+      Technical Support: http://www.cisco.com/techsupport
+      Copyright (c) 1986-2013 by Cisco Systems, Inc.
+      Compiled Wed 26-Jun-13 02:49 by mnguyen
+
+      advertisement version: 2
+      Duplex: full
+      ---------------------------
+
+      Device ID: Branch-Edge
+      Entry address(es): 
+        IP address : 192.168.3.249
+      Platform: cisco C1900, Capabilities: Router
+      Interface: GigabitEthernet0/0, Port ID (outgoing port): GigabitEthernet0/0
+      Holdtime: 152
+
+      Version :
+      Cisco IOS Software, C1900 Software (C1900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)
+      Technical Support: http://www.cisco.com/techsupport
+      Copyright (c) 1986-2012 by Cisco Systems, Inc.
+      Compiled Thurs 5-Jan-12 15:41 by pt_team
+
+      advertisement version: 2
+      Duplex: full
+
+      Branch-Firewall#
+      ```
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
 
 
 
@@ -2467,7 +2769,7 @@ RT1(config-if)#ip access-group ACL in
 # Assignments
   
 * Module 10 : Up Coming
-  - [ ] 10.1.5 Packet Tracer - Use CDP to Map a Network
+  - [x] 10.1.5 Packet Tracer - Use CDP to Map a Network
   - [ ] 10.2.6  Packet Tracer - Use LLDP to Map a Network
   - [ ] 10.3.4 Packet Tracer - Configure and Verify NTP
   - [ ] 10.6.10 Packet Tracer - Back Up Configuration Files
