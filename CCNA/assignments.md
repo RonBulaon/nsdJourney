@@ -133,6 +133,23 @@
   - [10.1.5 Packet Tracer - Use CDP to Map a Network](#1015-packet-tracer---use-cdp-to-map-a-network)
     - [Part 1 : Use SSH to Remotely Access Network Devices](#part-1--use-ssh-to-remotely-access-network-devices)
     - [Part 2: Use CDP to Discover Neighboring Devices](#part-2-use-cdp-to-discover-neighboring-devices)
+  - [10.2.6 Use LLDP to Map a Network](#1026-use-lldp-to-map-a-network)
+    - [Part 1: Use SSH to Remotely Access Network Devices](#part-1-use-ssh-to-remotely-access-network-devices)
+    - [Part 2: Use LLDP to Discover Neighboring Devices](#part-2-use-lldp-to-discover-neighboring-devices)
+  - [10.2.4 Configure and Veridy NTP](#1024-configure-and-veridy-ntp)
+    - [Step 1: NTP Server](#step-1-ntp-server)
+    - [Step 2: Configure the NTP Clients](#step-2-configure-the-ntp-clients)
+  - [10.6.10 Backup / Restore Configuration Files](#10610-backup--restore-configuration-files)
+    - [Part 1: Establish Connectivity to the TFTP Server](#part-1-establish-connectivity-to-the-tftp-server)
+    - [Part 2: Transfer the Configuration File from the TFTP Server](#part-2-transfer-the-configuration-file-from-the-tftp-server)
+    - [Part 3: Back Up Configuration and IOS to TFTP Server](#part-3-back-up-configuration-and-ios-to-tftp-server)
+  - [10.7.6 Use a TFTP Server to Upgrade a Cisco IOS Image](#1076-use-a-tftp-server-to-upgrade-a-cisco-ios-image)
+    - [Part 1: Upgrade an IOS Image on a Cisco Device](#part-1-upgrade-an-ios-image-on-a-cisco-device)
+    - [Part 2: Backup an IOS Image to a TFTP Server](#part-2-backup-an-ios-image-to-a-tftp-server)
+  - [10.8.1 Configure CDP, LLDP, and NTP](#1081-configure-cdp-lldp-and-ntp)
+    - [Configure LLDP as follows:](#configure-lldp-as-follows)
+    - [Configure CDP as follows:](#configure-cdp-as-follows)
+    - [Configure NTP:](#configure-ntp)
 - [Assignments](#assignments)
 
 <!-- /TOC -->
@@ -2760,8 +2777,464 @@ Password: <S3cre7P@55>
 
 <br><br>
 
+## 10.2.6 Use LLDP to Map a Network
+* Topology<br/><img src="pics/topology012.png">
+* Objectives : Map a network using LLDP and SSH remote access.
+* **Background / Scenario** : A senior network administrator requires you to map the Remote Branch Office network and discover information about all of the devices in the network. You must record all of the network device names, IP addresses and subnet masks, and physical interfaces interconnecting the network devices. <br><br>To map the network, you will use SSH for remote access and the Link Layer Discovery Protocol (LLDP) to discover information about neighboring network devices. Because LLDP is a Layer 2 protocol, it can be used to discover information about devices that do not have Layer 3 connectivity. You will record the information that you gather to complete the Addressing Table and provide a topology diagram of the Remote Branch Office network. <br><br> You will need the IP address for the remote branch office, which is 209.165.200.10. The local and remote administrative usernames and passwords are:
+
+  * Local Network<br>Username: ```admin01```<br>Password: ```S3cre7P@55```<br><br>
+  * Remote Branch Office Network<br>Username: ```RBOadmin```<br>Password: ```S3cre7P@55```
+
+Note : in Bold are prefilled information  
+| Device      | Interface       | IP Address          | Subnet Mask          | Local Interface and Connected Neighbor|
+| -----       |  -----          |  -----              |  -----               |  -----                                |
+| **Edge**    | **G0/0**        |  **192.168.1.1**    |  **255.255.255.0**       | ```-----```                                 |
+| **Edge**    |  **S0/0/0**     |  ```-----```              |  ```-----```               |  **S0/0/0 - ISP**                                |
+| ```-----```       |  **SVI**        |  **192.168.1.2**    |  ```-----```               |  ```-----```                                |
+| ```S1```       |  **G0/0**       |  **209.165.200.10** |  ```-----```               |  **G0/0 - ISP**                                |
+
+### Part 1: Use SSH to Remotely Access Network Devices
+* LLDP can be configured to both transmit and receive on a specific interface. Configure Edge so that it receives LLDP messages from S1 but does not send messages to S1 for security purposes Enable LLDP.
+  ```bash
+  PC> ssh –l admin01 192.168.1.1
+  Edge(config)# no cdp run
+  Edge(config)# lldp run
+  Edge(config)# int g0/0
+  Edge(config-if)# no lldp transmit
+  Edge(config-if)# exit
+  ```
+
+* Use the ```show lldp neighbors``` command to **verify** that *Edge is receiving messages from S1*.
+  ```bash
+  Edge(config)#do show lldp neighbors
+  Capability codes:
+      (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+      (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+  Device ID           Local Intf     Hold-time  Capability      Port ID
+  S1                  Gig0/0         120        B               Gig0/1
+  ```
+* Connect to **S1** with SSH from Edge router using the admin01 credentials. Issue the ```show lldp neighbors``` command. Notice that S1 did not receive information from Edge.
+  ```bash
+  Edge#ssh -l admin01 192.168.1.2
+
+  S1>show lldp neighbors
+  Capability codes:
+      (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+      (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+  Device ID           Local Intf     Hold-time  Capability      Port ID
+  ```
+* Exit from the connection with S1 to return to the Edge router CLI. Use the show ip interface brief and show interfaces commands to document the Edge router’s physical interfaces, IP addresses, and subnet masks in the Addressing Table
+  ```bash
+  Edge# show ip interface brief
+  Edge# show interfaces
+  Edge# ssh –l RBOadmin 209.165.200.10
+  ```
+* Exit from the connection with S1 to return to the Edge router CLI. Use the ```show ip interface brief``` and ```show interfaces``` commands to document the Edge router’s **physical interfaces, IP addresses, and subnet masks** in the Addressing Table.
+  ```bash
+  Edge# show ip interface brief
+  Edge# show interfaces
+  ```
+
+### Part 2: Use LLDP to Discover Neighboring Devices
+* Issue the show ip interface brief and show interfaces commands to document the RBO-Edge router’s network interfaces, IP addresses, and subnet masks. Add the missing information to the Addressing Table.
+  ```bash
+  Edge# ssh –l RBOadmin 209.165.200.10
+
+  RBO-Edge#show ip interface brief
+  RBO-Edge#show interfaces
+  ```
+* Security best practice recommends only running LLDP when needed, so LLDP may need to be turned on. Use a ```show lldp command``` to test its status.
+  ```bash
+  RBO-Edge# show lldp
+  % LLDP is not enabled
+  ```
+* You need to turn on LLDP, but it is a good idea to **only send LLDP information to internal network** devices and not to external networks. Discover which interface is connected to the internet by issuing the command show ip interface brief. Enable the LLDP protocol and completely disable LLDP on the interface that is connected to the internet.
+  ```bash
+  RBO-Edge(config)#lldp run
+  RBO-Edge(config)#interface g0/0
+  RBO-Edge(config-if)#no lldp transmit
+  RBO-Edge(config-if)#no lldp receive
+  RBO-Edge(config-if)#exit
+  RBO-Edge(config)#
+  ```
+* Issue a ```show lldp neighbors``` command to find any neighboring network devices.
+* To find additional information from the neighboring device, use the ```show lldp neighbors detail``` command.
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 10.2.4 Configure and Veridy NTP 
+* In this activity, you will configure NTP on R1 and R2 to allow time synchronization.
+
+### Step 1: NTP Server
+1. Server N1 is already configured as the NTP Server for this topology. Verify its configuration under Services > NTP.
+2. From R1, ping N1 (209.165.200.225) to verify connectivity. The ping should be successful.
+3. Repeat the ping to N1 from R2 to verify connectivity to N1.
+
+### Step 2: Configure the NTP Clients
+* Cisco devices can be configured to refer to an NTP server to use to synchronize their clocks. It is important to keep time consistent among all devices. Configure R1 and R2 as NTP clients so their clocks are synchronized. Both R1 and R2 will use N1 server as their NTP server.
+1. Check the current NTP and clock settings as shown below:
+    ``bash
+    R1# show ntp status
+    %NTP is not enabled.
+    R1# show clock detail
+    *0:1:53.745 UTC Mon Mar 1 1993
+    Time source is hardware calendar
+    ```
+2. Configure R1 and R2 as NTP Clients. Use the ntp server command to specify an NTP server, as shown below:
+    ```bash
+    R1# config t
+    R1(config)# ntp server 209.165.200.225
+    ```
+3. Repeat this configuration on R2.
+    ```bash
+    R2#show ntp status
+    %NTP is not enabled.
+
+    R2#show clock details
+    R2#show clock detail
+    *23:8:25.18 UTC Sun Feb 28 1993
+    Time source is hardware calendar
+
+    R2#config t
+    Enter configuration commands, one per line.  End with CNTL/Z.
+    R2(config)#ntp server 209.165.200.225
+    R2(config)#do show ntp status
+    Clock is unsynchronized, stratum 16, no reference clock
+    nominal freq is 250.0000 Hz, actual freq is 249.9990 Hz, precision is 2**24
+    reference time is 00000000.00000000 (00:00:00.000 UTC Mon Jan 1 1990)
+    clock offset is 0.00 msec, root delay is 0.00  msec
+    root dispersion is 0.00 msec, peer dispersion is 0.00 msec.
+    loopfilter state is 'FSET' (Drift set from file), drift is - 0.000001193 s/s system poll interval is 4, never updated.
+    ```
+4. Check the NTP status and NTP associations by using the following commands to verify NTP operation and configuration.
+    ```bash
+    R1# show ntp status
+    R1# show ntp associations
+    ```
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 10.6.10 Backup / Restore Configuration Files
+### Part 1: Establish Connectivity to the TFTP Server
+* Note: Because this is a new router, the initial configuration will be performed using a console connection to the router.
+1. Click PCA, then the Desktop tab, followed by Terminal to access the RTA command line.
+2. Configure and activate the Gigabit Ethernet 0/0 interface. The IP address should match the default gateway for the TFTP Server.
+3. Test connectivity to TFTP Server. Troubleshoot, if necessary.
+    ```bash
+    Router>
+    Router>en
+    Router#show ip interface brief
+    Interface              IP-Address      OK? Method Status                Protocol 
+    GigabitEthernet0/0     unassigned      YES unset  administratively down down 
+    GigabitEthernet0/1     unassigned      YES unset  administratively down down 
+    Vlan1                  unassigned      YES unset  administratively down down
+      
+    Router#config t
+    Router(config)#int g0/0
+    Router(config-if)#ip add
+    Router(config-if)#ip address 172.16.1.5 255.255.255.0
+    Router(config-if)#no shut
+    <ctrl-z>
+    Router#ping 172.16.1.2
+
+    Type escape sequence to abort.
+    Sending 5, 100-byte ICMP Echos to 172.16.1.2, timeout is 2 seconds:
+    !!!!!
+    Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
+    ```
+### Part 2: Transfer the Configuration File from the TFTP Server
+* to be done in privilleged EXEC mode
+  ```bash
+  Router#copy tftp running-config 
+  Address or name of remote host []? 172.16.1.2
+  Source filename []? RTA-confg
+  Destination filename [running-config]? 
+
+  Accessing tftp://172.16.1.2/RTA-confg...
+  Loading RTA-confg from 172.16.1.2: !
+  [OK - 785 bytes]
+  ```
+### Part 3: Back Up Configuration and IOS to TFTP Server
+* Copy ```running-config``` to tftp
+    ```bash
+    RTA#config t
+    Enter configuration commands, one per line.  End with CNTL/Z.
+    RTA(config)#hostname RTA-1
+    RTA-1(config)#do copy run start
+    RTA-1(config)#^Z
+    RTA-1#
+    RTA-1#copy running-config tftp
+    Address or name of remote host []? 172.16.1.2
+    Destination filename [RTA-1-confg]? 
+
+    Writing running-config...!!
+    [OK - 861 bytes]
+
+    861 bytes copied in 0.023 secs (37434 bytes/sec)
+    ```
+* Copy IOS image to tftp
+    ```bash
+    RTA-1#copy flash tftp
+    Source filename []? c1900-universalk9-mz.SPA.151-4.M4.bin
+    Address or name of remote host []? 172.16.1.2
+    Destination filename [c1900-universalk9-mz.SPA.151-4.M4.bin]? 
+
+    Writing c1900-universalk9-mz.SPA.151-4.M4.bin...!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    [OK - 33591768 bytes]
+
+    33591768 bytes copied in 0.82 secs (4301215 bytes/sec)
+    RTA-1#
+    ```
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 10.7.6 Use a TFTP Server to Upgrade a Cisco IOS Image
+### Part 1: Upgrade an IOS Image on a Cisco Device
+* Step 1: Upgrade an IOS image on a router. 
+  ```bash
+  R2>show flash:
+
+  System flash directory:
+  File  Length   Name/status
+    3   33591768 c1900-universalk9-mz.SPA.151-4.M4.bin
+    2   28282    sigdef-category.xml
+    1   227537   sigdef-default.xml
+  [33847587 bytes used, 221896413 available, 255744000 total]
+  249856K bytes of processor board System flash (Read/Write)
+    
+  R2>en
+  R2#copy tftp: flash:
+  Address or name of remote host []? 192.168.2.254
+  Source filename []? c1900-universalk9-mz.SPA.155-3.M4a.bin
+  Destination filename [c1900-universalk9-mz.SPA.155-3.M4a.bin]? 
+
+  Accessing tftp://192.168.2.254/c1900-universalk9-mz.SPA.155-3.M4a.bin....
+  Loading c1900-universalk9-mz.SPA.155-3.M4a.bin from 192.168.2.254: !!!!!!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  [OK - 33591768 bytes]
+
+  33591768 bytes copied in 3.896 secs (905286 bytes/sec)
+  R2#show flash:
+
+  System flash directory:
+  File  Length   Name/status
+    3   33591768 c1900-universalk9-mz.SPA.151-4.M4.bin
+    5   33591768 c1900-universalk9-mz.SPA.155-3.M4a.bin
+    2   28282    sigdef-category.xml
+    1   227537   sigdef-default.xml
+  [67439355 bytes used, 188304645 available, 255744000 total]
+  249856K bytes of processor board System flash (Read/Write)
+
+  R2#config t
+  Enter configuration commands, one per line.  End with CNTL/Z.
+  R2(config)#boot system flash c1900-universalk9-mz.SPA.155-3.M4a.bin
+  R2(config)#exit
+  R2#reload
+  --------------------------------------------------------------------
+  R2# show version
+  ```
+* Step 2: Upgrade an IOS image on a switch.
+  ```bash
+  S1>en
+  S1#copy tftp: flash:
+  Address or name of remote host []? 192.168.2.254
+  Source filename []? c2960-lanbasek9-mz.150-2.SE4.bin
+  Destination filename [c2960-lanbasek9-mz.150-2.SE4.bin]? 
+
+  S1(config)#boot system c2960-lanbasek9-mz.150-2.SE4.bin
+  S1(config)#exit
+  S1#
+  ```
+
+### Part 2: Backup an IOS Image to a TFTP Server
+* Use the copy command to back up the IOS image in flash memory on R1 to a TFTP server. 
+  ```bash
+  R1# copy flash: tftp:
+  Source filename []? isr4300-universalk9.03.16.05.S.155-3.S5-ext.SPA.bin
+  Address or name of remote host []? 192.168.2.254
+  Destination filename [isr4300-universalk9.03.16.05.S.155-3.S5-ext.SPA.bin]?
+  ```
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 10.8.1 Configure CDP, LLDP, and NTP
+* Topology<br/><img src="pics/topology013.png">
+* Addressing Table<br/><img src="pics/iptable012.png">
+* Objectives : In this activity, you will configure a router to receive time information over NTP and configure devices with CDP and LLDP.
+    - Configure CDP to run globally on a device.
+    - Disable CDP on device interfaces where necessary.
+    - Configure LLDP to run globally on a device.
+    - Configure LLDP to send and receive messages according to requirements.
+    - Configure a router to use an NTP server.
+* Background / Scenario
+  A network administrator has been asked to investigate a new client’s network. Documentation is incomplete for the network, so some information needs to be discovered. In addition, the NTP server needs to be configured on a router. Discovery protocols must also be adjusted to control traffic discovery protocol traffic and prevent information about the network from being received by potentially unauthorized hosts.<br><br>Some of the device IP addresses are unknown to you. You must determine what the IP addresses are so that you can connect to the devices over SSH in order to configure them. You can enter them into the Addressing Table as you discover them.
+* Instructions : Use the table below to logon to the Branch switches when you need to do so.
+  | Device  | Username  | User Password | Enable Secret |
+  | BR-SW1  |  admin    |  SW1admin#    | SW1EnaAccess# |                     
+  | BR-SW2  |  admin    |  SW2admin#    | SW2EnaAccess# |                
+  | BR-SW3  |  admin    |  SW3admin#    | SW3EnaAccess# |        
+
+### Configure LLDP as follows:
+* Disable CDP on the HQ router.
+  ```bash
+  HQ>en
+  HQ#config t
+  HQ(config)#no CDP run 
+  ```
+* Enable LLDP globally on HQ.
+  ```bash
+  HQ(config)#lldp run
+  ```
+* On HQ, configure the links to the switches to only receive LLDP messages.
+  ```bash
+  HQ(config)#int g0/0/0
+  HQ(config-if)#no lldp transmit
+  HQ(config-if)#lldp receive
+  HQ(config-if)#int g0/0/1
+  HQ(config-if)#no lldp transmit
+  HQ(config-if)#lldp receive
+  ```
+* Disable CDP on the HQ-SW-1 and HQ-SW-2 switches.
+  ```bash
+  HQ-SW-1(config)#no cdp run
+  ```
+  ```bash
+  HQ-SW-2(config)#no cdp run
+  ```
+* On the HQ-SW-1 and HQ-SW-2 switches, configure the links to the HQ router to only send, not receive, LLDP messages.
+  ```bash
+  HQ-SW-1(config)#int g0/1
+  HQ-SW-1(config-if)#lldp transmit
+  HQ-SW-1(config-if)#no lldp receive
+  ```
+  ```bash
+  HQ-SW-1(config)#int g0/1
+  HQ-SW-1(config-if)#lldp transmit
+  HQ-SW-1(config-if)#no lldp receive
+  ```
+* Disable LLDP completely on the HQ-SW-1 and HQ-SW-2 access ports that are in use.   
+  ```bash
+  HQ-SW-1(config)#lldp run
+  HQ-SW-1(config-if)#int f0/24
+  HQ-SW-1(config-if)#no lldp transmit 
+  HQ-SW-1(config-if)#no lldp receive 
+  ```
+  ```bash
+  HQ-SW-2(config)#lldp run
+  HQ-SW-2(config-if)#int f0/1
+  HQ-SW-2(config-if)#no lldp transmit 
+  HQ-SW-2(config-if)#no lldp receive 
+  ```
+
+### Configure CDP as follows:
+* Activate CDP on the Branch router.
+  ```bash
+  Branch(config)#cdp run
+  ```
+* Connect to switch BR-SW1 over SSH. You will not be able to open a CLI window by clicking the Branch switches.
+    ```bash
+    Branch#show cdp neighbors 
+    Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                      S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+    Device ID    Local Intrfce   Holdtme    Capability   Platform    Port ID
+    BR-SW-1      Gig 0/0/0.10     163            S       2960        Gig 0/1
+
+    Branch#show cdp neighbors detail 
+
+    Device ID: BR-SW-1
+    Entry address(es): 
+      IP address : 192.168.4.250
+    Platform: cisco 2960, Capabilities: Switch
+    Interface: GigabitEthernet0/0/0.10, Port ID (outgoing port): GigabitEthernet0/1
+    Holdtime: 137
+
+    Version :
+    Cisco IOS Software, C2960 Software (C2960-LANBASE-M), Version 12.2(25)FX, RELEASE SOFTWARE (fc1)
+    Copyright (c) 1986-2005 by Cisco Systems, Inc.
+    Compiled Wed 12-Oct-05 22:05 by pt_team
+
+    advertisement version: 2
+    Duplex: full
+
+    Branch#ssh -l admin 192.168.4.250
+    ```
+  
+* Connect to switches BR-SW2 and BR-SW3 over SSH. Configure the access ports that are in use to not send CDP messages out of the ports.
+  ```bash
+  BR-SW-1#show cdp neighbors 
+  Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                    S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+  Device ID    Local Intrfce   Holdtme    Capability   Platform    Port ID
+  BR-SW-2      Gig 0/2          175            S       2960        Gig 0/2
+  BR-SW-3      Fas 0/24         175            S       2960        Gig 0/1
+  Branch       Gig 0/1          152            R       ISR4300     Gig 0/0/0
+  Branch       Gig 0/1          152            R       ISR4300     Gig 0/0/0.10
+  BR-SW-1#show cdp neighbors detail
+
+  <redacted info>
+
+  Device ID: BR-SW-2
+  Entry address(es): 
+    IP address : 192.168.4.253
+
+  <redacted info>
+
+  Device ID: BR-SW-3
+  Entry address(es): 
+    IP address : 192.168.4.254
+
+  <redacted info>
+
+  BR-SW-1#ssh -l admin 192.168.4.253
+
+  BR-SW-2>en
+  BR-SW-2#config t
+  BR-SW-2(config)#int f0/1
+  BR-SW-2(config-if)#no cdp enable
+  BR-SW-2(config)#exit
+  BR-SW-2#exit
+
+  BR-SW-1#
+  BR-SW-1#ssh -l admin 192.168.4.254
+
+  BR-SW-3>en
+  BR-SW-3#config t
+  BR-SW-3(config)#in f0/1
+  BR-SW-3(config-if)#no cd
+  BR-SW-3(config-if)#no cdp enable
+  ```
+
+### Configure NTP:
+* Configure HQ to use the device at 192.168.1.254 as an NTP server.
+  ```bash
+  HQ(config)#ntp server 192.168.1.254
+  ```
 
 
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
 
 
 <br><br><br>
