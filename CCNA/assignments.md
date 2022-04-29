@@ -150,6 +150,16 @@
     - [Configure LLDP as follows:](#configure-lldp-as-follows)
     - [Configure CDP as follows:](#configure-cdp-as-follows)
     - [Configure NTP:](#configure-ntp)
+  - [12.5.13 Troubleshoot Eterprise Networks](#12513-troubleshoot-eterprise-networks)
+    - [Objectives](#objectives-8)
+    - [Scenario](#scenario-1)
+    - [Topology <br/><img src="pics/topology014.png">](#topology-)
+    - [Addressing Table <br/><img src="pics/iptable013.png">](#addressing-table-)
+    - [Part 1: Verify Switching Technologies](#part-1-verify-switching-technologies)
+    - [Part 2: Verify DHCP](#part-2-verify-dhcp)
+    - [Part 3: Verify Routing](#part-3-verify-routing)
+    - [Part 4: Verify WAN Technologies](#part-4-verify-wan-technologies)
+    - [Part 5: Verify Connectivity](#part-5-verify-connectivity)
 - [Assignments](#assignments)
 
 <!-- /TOC -->
@@ -3230,6 +3240,328 @@ Note : in Bold are prefilled information
   ```
 
 
+
+<br><br>
+
+[Back to Top](#table-of-contents)
+
+<br><br>
+
+## 12.5.13 Troubleshoot Eterprise Networks
+### Objectives
+* Part 1: Verify Switching Technologies
+* Part 2: Verify DHCP
+* Part 3: Verify Routing
+* Part 4: Verify WAN Technologies
+* Part 5: Verify Connectivity
+
+### Scenario
+* This activity uses a variety of technologies that you have encountered during your CCNA studies, including IPv4 routing, IPv6 routing, port security, EtherChannel, DHCP, and NAT. Your task is to review the requirements, isolate and resolve any problems, and then document the steps you took to verify the requirements. <br><br> The company replaced routers R1 and R3 to accommodate a fiber connection between the locations. Configurations from the previous routers with serial connections were modified and applied as a starting configuration. IPv6 is being tested on a small portion of the network and needs to be verified.
+
+### Topology <br/><img src="pics/topology014.png">
+### Addressing Table <br/><img src="pics/iptable013.png">
+
+### Part 1: Verify Switching Technologies
+1. **Port security** is configured to only allow PC1 to access S1's F0/3 interface. All violations should disable the interface. <br>Issue the command on S1 to display the current port security status.
+    ```bash
+    S1#show port-security interface f0/3
+    Port Security              : Disabled
+    Port Status                : Secure-down
+    Violation Mode             : Shutdown
+    Aging Time                 : 0 mins
+    Aging Type                 : Absolute
+    SecureStatic Address Aging : Disabled
+    Maximum MAC Addresses      : 1
+    Total MAC Addresses        : 0
+    Configured MAC Addresses   : 0
+    Sticky MAC Addresses       : 0
+    Last Source Address:Vlan   : 0000.0000.0000:0
+    Security Violation Count   : 0
+    ```
+2. Enter interface configuration mode for interface F0/3 and set up port security.
+    ```bash
+    S1(config)#int f0/3
+    S1(config-if)#switchport port-security 
+    S1(config-if)#switchport port-security mac-address sticky 
+    ```
+3. Devices in the LAN on S1 should be in VLAN 10. Display the **current state of VLAN** configuration.
+   ```bash
+    S1#show vlan brief
+    ```
+    * Question: What ports are currently assigned to VLAN 10? Ans:  **```Fa0/3, Fa0/4```**
+
+4. PC1 should be receiving an IP address from the router R1.
+    ```cmd
+    C:\>ipconfig
+
+    FastEthernet0 Connection:(default port)
+
+      Connection-specific DNS Suffix..: 
+      Link-local IPv6 Address.........: FE80::202:17FF:FE87:AB7D
+      IPv6 Address....................: ::
+      Autoconfiguration IPv4 Address..: 169.254.171.125
+      Subnet Mask.....................: 255.255.0.0
+      Default Gateway.................: ::
+                                        0.0.0.0
+    ```
+    * Question: Does the PC currently have an IP address assigned? Ans:  **```No```**
+
+5. Notice the G0/1 interface on R1 is not in the same VLAN as PC1. Change the G0/1 interface to be a member of VLAN 10 and set portfast on the interface.
+    ```bash
+    S1(config)#int g0/1
+    S1(config-if)#switchport access vlan 10
+    S1(config-if)#spanning-tree portfast 
+    S1(config-if)#do show vlan brief
+    ```
+6. Reset the interface address on PC1 from the GUI or by using the command prompt and the ```ipconfig /renew``` command. Does PC1 have an address? If not, recheck your steps. Test connectivity to the TFTP Server. The ping should be successful.
+    ```cmd
+    C:\>ipconfig /renew
+
+      IP Address......................: 192.168.10.10
+      Subnet Mask.....................: 255.255.255.0
+      Default Gateway.................: 192.168.10.1
+      DNS Server......................: 0.0.0.0
+    ```
+7. The LAN connected to R3 had an additional switch added to the topology. Link aggregation using EtherChannel is configured on S2, S3, and S4. The EtherChannel links should be set to trunk. The EtherChannel links should be set to form a channel without using a negotiation protocol. Issue the command on each switch to determine if the channel is working correctly.
+    ```bash
+    S2#show etherchannel summary
+
+    Number of channel-groups in use: 2
+    Number of aggregators:           2
+
+    Group  Port-channel  Protocol    Ports
+    ------+-------------+-----------+----------------------------------------------
+
+    1      Po1(SU)           -      Fa0/1(P) Fa0/2(P) 
+    2      Po2(SU)           -      Fa0/3(P) Fa0/4(P) 
+    ```
+    ```bash
+    S4#show etherchannel summary
+
+    Number of channel-groups in use: 2
+    Number of aggregators:           2
+
+    Group  Port-channel  Protocol    Ports
+    ------+-------------+-----------+----------------------------------------------
+
+    2      Po2(SU)           -      Fa0/1(P) Fa0/2(P) 
+    3      Po3(SU)           -      Fa0/3(P) Fa0/4(P) 
+    ```
+    ```bash
+    S3#show etherchannel summary
+
+    Number of channel-groups in use: 2
+    Number of aggregators:           2
+
+    Group  Port-channel  Protocol    Ports
+    ------+-------------+-----------+----------------------------------------------
+
+    1      Po1(SD)           -      
+    3      Po3(SU)           -      Fa0/3(P) Fa0/4(P) 
+    ```
+    * Question: Were there any problems with EtherChannel? Ans:  **S3's Gropup Channel 1 seems not right**
+
+8. Modify S3 to include ports F0/1 and F0/2 as port channel 1.
+    ```bash
+    S3(config)#int range f0/1-2
+    S3(config-if-range)#channel-group 1 mode on
+    ```
+
+  * Check the status of the EtherChannel on S3. It should be stable now. If it is not, check the previous steps.
+    ```bash
+    S3(config-if-range)#do show etherchannel summary
+
+    Number of channel-groups in use: 2
+    Number of aggregators:           2
+
+    Group  Port-channel  Protocol    Ports
+    ------+-------------+-----------+----------------------------------------------
+
+    1      Po1(SU)           -      Fa0/1(P) Fa0/2(P) 
+    3      Po3(SU)           -      Fa0/3(P) Fa0/4(P) 
+    ```
+
+9. Verify the trunk status on all switches.
+    ```bash
+    S3#show int trunk
+    Port        Mode         Encapsulation  Status        Native vlan
+    Po1         on           802.1q         trunking      99
+    Po3         on           802.1q         trunking      99
+    ```
+    * Question: Were there any issues with trunking? Ans:  **All Good**
+    ```bash
+    S4#show int trunk
+    Port        Mode         Encapsulation  Status        Native vlan
+    Po2         on           802.1q         trunking      99
+    Po3         on           802.1q         trunking      99
+    ```
+    * Question: Were there any issues with trunking? Ans:  **All Good**
+    ```bash
+    S2#show int trunk
+    Port        Mode         Encapsulation  Status        Native vlan
+    Po1         on           802.1q         trunking      99
+    Po2         on           802.1q         trunking      99
+    Gig0/1      on           802.1q         trunking      1
+    ```
+    * Question: Were there any issues with trunking? Ans:  **G0/1 is using VLAN 1 as ative VLAN**
+10.  Correct the trunk issues on S2.
+    ```bash
+    S2(config)#int g0/1
+    S2(config-if)#switchport trunk native vlan 99
+    ```
+11. Spanning Tree should be set to PVST+ on S2, S3, and S4. S2 should be configured to be the root bridge for all VLANs. Issue the command to display the spanning-tree status on S2.
+    ```bash
+    S2#show spanning-tree summary totals 
+    Switch is in pvst mode
+    Root bridge for:
+    <some results removed>
+    ```
+12. The command output shows that S2 is not the root bridge for any VLANs. Correct the spanning-tree status on S2.
+    ```bash
+    S2(config)# spanning-tree vlan 1-1005 root primary
+    ```
+13. Check the spanning-tree status on S2 to verify the changes.
+    ```bash
+    S2#show spanning-tree summary totals
+    Switch is in pvst mode
+    Root bridge for: default V30 V40 V50 Native
+    <some results removed>
+    ```
+
+### Part 2: Verify DHCP
+* R1 is the DHCP server for the R1 LAN.
+* R3 is the DHCP server for all 3 LANs attached to R3.
+
+1. Check the addressing of the PCs.
+
+Question:
+Do they all have correct addressing?
+
+2. Check the DHCP settings on R3. Filter the output from the show run command to start with the DHCP configuration.
+    ```bash
+    R3#sh run | begin dhcp
+    ip dhcp excluded-address 192.168.30.1 192.168.30.9
+    ip dhcp excluded-address 192.168.40.1 192.168.40.9
+    ip dhcp excluded-address 192.168.50.1 192.168.50.9
+    !
+    ip dhcp pool LAN30
+    network 192.168.30.0 255.255.255.0
+    default-router 192.168.30.1
+    ip dhcp pool LAN40
+    network 192.168.40.0 255.255.255.0
+    default-router 192.168.30.1
+    ip dhcp pool LAN50
+    network 192.168.50.0 255.255.255.0
+    default-router 192.168.30.1
+    ```
+    * Question: Are there any issues with the DHCP configurations? Ans:  **LAN40 & LAN50 have wrong gateways**
+
+3. Make any necessary corrections and reset the IP addresses on the PCs. Check connectivity to all devices.
+    ```bash
+    R3(config)#ip dhcp pool LAN40
+    R3(dhcp-config)#defau
+    R3(dhcp-config)#default-router 192.168.40.1
+    R3(dhcp-config)#ip dhcp pool LAN50
+    R3(dhcp-config)#default-router 192.168.50.1
+    ```
+    * Question: Were you able to ping all IPv4 addresses? Ans: **Yes for all PCs except for Outside Host**
+
+### Part 3: Verify Routing
+* Verify that the following requirements have been met. If not, complete the configurations.
+  - All routers are configured with OSPF process ID 1 and no routing updates should be sent across interfaces that do not have routers connected.
+    ```bash
+    R3(config)#router ospf 1
+    R3(config-router)#passive-interface g0/1.30
+    R3(config-router)#passive-interface g0/1.40
+    R3(config-router)#passive-interface g0/1.50
+    ```
+  - R2 is configured with an IPv4 default route pointing to the ISP and redistributes the default route in the OSPFv2 domain.
+  - R2 is configured with a default IPv6 fully qualified default route point to the ISP and redistributes the default route in the OSPFv3 domain.
+  - NAT is configured on R2 and no untranslated addresses are permitted to cross the internet.
+
+  1. Check the routing tables on all routers
+      ```
+      R3#show ip route ospf
+          10.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+      O       10.1.1.0 [110/649] via 10.2.2.1, 00:47:19, GigabitEthernet0/2/0
+      O    192.168.10.0 [110/649] via 10.3.3.1, 4294967274:4294967293:4294967264 GigabitEthernet0/1/0
+      O    192.168.20.0 [110/2] via 10.2.2.1, 4294967274:4294967293:4294967264, GigabitEthernet0/2/0
+      ```
+      ```bash
+      R2#show ip route ospf
+          10.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+      O       10.3.3.0 [110/649] via 10.2.2.2, 4294967274:4294967295:4294967241, GigabitEthernet0/1/0
+      O    192.168.10.0 [110/649] via 10.1.1.1, 00:48:20, Serial0/0/0
+      O    192.168.30.0 [110/11] via 10.2.2.2, 4294967274:4294967295:4294967241, GigabitEthernet0/1/0
+      O    192.168.40.0 [110/11] via 10.2.2.2, 4294967274:4294967295:4294967241, GigabitEthernet0/1/0
+      O    192.168.50.0 [110/11] via 10.2.2.2, 4294967274:4294967295:4294967241, GigabitEthernet0/1/0
+      ```
+      ```
+      R1#show ip route ospf
+          10.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+      O       10.2.2.0 [110/649] via 10.1.1.2, 00:48:53, Serial0/1/0
+                      [110/649] via 10.3.3.2, 00:48:53, GigabitEthernet0/0/0
+      O    192.168.20.0 [110/649] via 10.1.1.2, 00:48:53, Serial0/1/0
+      O    192.168.30.0 [110/658] via 10.3.3.2, 4294967274:4294967295:4294967279, GigabitEthernet0/0/0
+      O    192.168.40.0 [110/658] via 10.3.3.2, 4294967274:4294967295:4294967279, GigabitEthernet0/0/0
+      O    192.168.50.0 [110/658] via 10.3.3.2, 4294967274:4294967295:4294967279, GigabitEthernet0/0/0
+      ```
+      * Do all of the networks appear on all routers? Ans: **R2 has no route to Outside Host**
+  2. Ping the Outside Host from R2. Question: Was the ping successful? Ans: **Yes**
+      ```bash
+      R2#ping 61.100.100.10
+
+      Type escape sequence to abort.
+      Sending 5, 100-byte ICMP Echos to 61.100.100.10, timeout is 2 seconds:
+      .....
+      Success rate is 0 percent (0/5)
+      ```
+  3. Correct the default route propagation.
+      ``hash
+      R2(config)# router ospf 1
+      R2(config-router)# default-information originate
+      ```
+  4. Check the routing tables on R1 and R3 to make certain the default route is present.
+      ```bash
+      R3#show ip route ospf
+          10.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+      O       10.1.1.0 [110/649] via 10.2.2.1, 01:10:20, GigabitEthernet0/2/0
+      O    192.168.10.0 [110/649] via 10.3.3.1, 4294967275:4294967256:4294967265, GigabitEthernet0/1/0
+      O    192.168.20.0 [110/2] via 10.2.2.1, 4294967275:4294967256:4294967265, GigabitEthernet0/2/0
+      O*E2 0.0.0.0/0 [110/1] via 10.2.2.1, 00:07:31, GigabitEthernet0/2/0
+      ```
+      ```bash
+      R2#show ip route ospf
+          10.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+      O       10.3.3.0 [110/649] via 10.2.2.2, 4294967275:4294967256:4294967287, GigabitEthernet0/1/0
+      O    192.168.10.0 [110/649] via 10.1.1.1, 01:10:06, Serial0/0/0
+      O    192.168.30.0 [110/11] via 10.2.2.2, 4294967275:4294967256:4294967287, GigabitEthernet0/1/0
+      O    192.168.40.0 [110/11] via 10.2.2.2, 4294967275:4294967256:4294967287, GigabitEthernet0/1/0
+      O    192.168.50.0 [110/11] via 10.2.2.2, 4294967275:4294967256:4294967287, GigabitEthernet0/1/0
+  5. Test IPv6 connectivity from R2 to Outside Host and TFTP Server. The pings should be successful. Troubleshoot if they are not.
+      ```bash
+      R2#ping 2001:db8:b:64::10
+
+      Type escape sequence to abort.
+      Sending 5, 100-byte ICMP Echos to 2001:db8:b:64::10, timeout is 2 seconds:
+      !!!!!
+      Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/1 ms
+      ```
+  6. Test IPv6 connectivity from R2 to PC4. If the ping fails be sure to check that the IPv6 addressing matches the Addressing Table.
+
+  7. Test IPv6 connectivity from R3 to Outside Host. If the ping fails, check the IPv6 routes on R3. Be sure to validate the default route originating from R2. If the route does not appear, modify the IPv6 OSPF configuration on R2.
+
+### Part 4: Verify WAN Technologies
+1. ```traceroute 192.168.20.254```
+2. ```how ip nat translations```
+3. ```show ip nat statistics```
+
+
+
+
+
+### Part 5: Verify Connectivity
+
 <br><br>
 
 [Back to Top](#table-of-contents)
@@ -3241,13 +3573,7 @@ Note : in Bold are prefilled information
 
 # Assignments
   
-* Module 10 : Up Coming
-  - [x] 10.1.5 Packet Tracer - Use CDP to Map a Network
-  - [ ] 10.2.6  Packet Tracer - Use LLDP to Map a Network
-  - [ ] 10.3.4 Packet Tracer - Configure and Verify NTP
-  - [ ] 10.6.10 Packet Tracer - Back Up Configuration Files
-  - [ ] 10.7.6 Packet Tracer - Use a TFTP Server to Upgrade a Cisco IOS Image
-  - [ ] 10.8.1 Packet Tracer - Configure CDP, LLDP, and NTP
+
 
 * Module 12 : Up Coming
   - [ ] 12.5.13 Packet Tracer - Troubleshoot Enterprise Networks
