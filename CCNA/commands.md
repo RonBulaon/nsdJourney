@@ -79,7 +79,7 @@
     ```bash
     Switch# show flash
     ```
- * Reset switch to factory default. delete startup-config and vlan.dat
+ * Reset switch/router to factory default. delete startup-config and vlan.dat
     ```bash
     Switch# erase startup-config 
     Switch# delete flash:vlan.dat

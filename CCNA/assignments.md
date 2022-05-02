@@ -2346,7 +2346,7 @@ RT1(config-if)#ip access-group ACL in
     R1(config)# do show version
     ```
 * If the Security Technology package has not been enabled, enable the package and reload R3.
-      ```bash
+    ```bash
     R1(config)# do copy run start
     R1(config)# reload
     ```
