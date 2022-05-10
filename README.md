@@ -10,5 +10,13 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
   * [CCNA Commands](CCNA/commands.md)
   * [Course Notes](CCNA/randomNotes.md)
   * [Assigments, Activity and Case Studies](CCNA/assignments.md)
+* Python
+  * [Module 1 and 2](PYTHON/Part%201%20Lecture%20files-20220509/Python_Module_1%20and%202.pdf)
+    * [Exercises](PYTHON/Part%201%20Lecture%20files-20220509/Module%201%20and%202.ipynb)
+  * [Module 3](PYTHON/Part%201%20Lecture%20files-20220509/Python_Module_3.pdf)
+    * [Exercises](PYTHON/Part%201%20Lecture%20files-20220509/Module%203.ipynb)
+  * [Module 4](PYTHON/Part%201%20Lecture%20files-20220509/Python_Module_4.pdf)
+    * [Exercises](PYTHON/Part%201%20Lecture%20files-20220509/Module%204.ipynb)
+  * 
 * [Self Study Materials](selfStudy.md)(including supplmentary resources not provided by school)
 * [Tips and Tricks](tipsandtricks.md)

@@ -1,0 +1,65 @@
+-------------------------
+Site-to-Site VPN
+-------------------------
+
+Step 1: Enable the IKE
+R1(config)#crypto isakmp enable
+-------------------------
+Step 2:Configure the IKE Phase 1 ISAKMP policy
+
+R1(config)# crypto isakmp policy 10
+R1(config-isakmp)# hash sha
+R1(config-isakmp)# authentication pre-share
+R1(config-isakmp)# group 14
+R1(config-isakmp)# lifetime 3600
+R1(config-isakmp)# encryption aes 256
+R1(config-isakmp)# end
+R1# show crypto isakmp policy
+-------------------------
+Step 3: Configure pre-shared key.
+
+R1(config)# crypto isakmp key cisco12345 address 10.2.2.1
+
+-------------------------
+Step 4: Configure the IPsec transform set and lifetime.
+
+R1(config)# crypto ipsec transform-set R1-R2 esp-aes 256 esp-sha-hmac
+R1(config)# crypto ipsec security-association lifetime seconds 1800
+
+
+-------------------------
+Step 5: Define interesting traffic.
+R1(config)# access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+
+-------------------------
+Step 6: Create and apply a crypto map.
+R1(config)# crypto map R1-R2_MAP 10 ipsec-isakmp
+R1(config-crypto-map)# match address 101
+R1(config-crypto-map)# set peer 10.2.2.1
+R1(config-crypto-map)# set pfs group14
+R1(config-crypto-map)# set transform-set R1-R2
+R1(config-crypto-map)# set security-association lifetime seconds 900
+R1(config-crypto-map)# exit
+
+
+Step 7: Configure the crypto map on the outgoing interface.
+R1(config)# interface S0/0/0
+R1(config-if)# crypto map R1-R2_MAP
+R1(config)# end
+-------------------------
+
+Step 8: Verification
+R1# show crypto ipsec transform-set
+R1# show crypto map
+R1# show crypto isakmp sa
+R1# show crypto ipsec sa
+
+-------------------------
+
+DH groups 1, 2, and 5 support exponentiation over a prime modulus with a key size of 768 bits, 1024 bits, and 1536 bits, respectively. These groups were not recommended for use after 2012.
+
+DH groups 14, 15, and 16 use larger key sizes with 2048 bits, 3072 bits, and 4096 bits, respectively, and are recommended for use until 2030.
+
+DH groups 19, 20, 21 and 24 with respective key sizes 256 bits, 384 bits, 521 bits, and 2048 bits support Elliptical Curve Cryptography (ECC), which reduces the time needed to generate keys. DH group 24 is the preferred next generation encryption.
+
+Additional Information video: https://www.youtube.com/watch?v=tuDVWQOG0C0

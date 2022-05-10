@@ -1,0 +1,121 @@
+HUB Router
+
+interface Tunnel0
+ ip address 172.16.0.1 255.255.255.0
+ no ip redirects
+ ip nhrp authentication firewall
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 1
+ tunnel source G0/0
+ tunnel mode gre multipoint
+
+Students familiar with GRE Tunnels will immediately notice the absence of the tunnel destination command. It has been replaced with the tunnel mode gre multipoint command, which designates this tunnel as a multipoint GRE tunnel.
+
+The ip nhrp map multicast dynamic command enables the forwarding of multicast traffic across the tunnel to dynamic spokes. This is usually required by routing protocols such as OSPF and EIGRP.  In most cases, DMVPN is accompanied by a routing protocol to send and receive dynamic updates about the private networks.
+
+The ip nhrp network-id 1 command is used to identify this DMVPN cloud. All routers participating in this DMVPN cloud must have the same network-id configured in order for tunnels to form between them.
+
+The ip nhrp authentication command is used to allow the authenticated updates and queries to the NHRP Database, ensuring unwanted queries are not provided with any information about the DMVPN network.
+
+
+BR1
+
+interface Tunnel0
+ ip address 172.16.0.2 255.255.255.0
+ no ip redirects
+ ip nhrp authentication firewall
+ ip nhrp map multicast dynamic
+ ip nhrp map 172.16.0.1 209.165.200.2
+ ip nhrp map multicast 209.165.200.2
+ ip nhrp network-id 1
+ ip nhrp nhs 172.16.0.1
+ tunnel source G0/1
+ tunnel mode gre multipoint
+
+
+BR2
+
+interface Tunnel0
+ ip address 172.16.0.3 255.255.255.0
+ no ip redirects
+ ip nhrp authentication firewall
+ ip nhrp map multicast dynamic
+ ip nhrp map 172.16.0.1 209.165.200.2
+ ip nhrp map multicast 209.165.200.2
+ ip nhrp network-id 1
+ ip nhrp nhs 172.16.0.1
+ tunnel source G0/2
+ tunnel mode gre multipoint
+
+
+Encrypting DMVPN mGRE Tunnels with IPSec
+
+Step 1: Enable the IKE
+crypto isakmp enable
+
+Step 2:Configure the IKE Phase 1 ISAKMP policy
+crypto isakmp policy 1
+ encr aes
+ hash sha256
+ authentication pre-share
+ group 14
+
+Step 3: Configure pre-shared key.
+crypto isakmp key cisco12345 address 0.0.0.0
+
+Notice the command crypto isakmp key cisco12345 address 0.0.0.0 0.0.0.0. The peer address for which the isakmp key is valid is 0.0.0.0 0.0.0.0, which means every possible host on the Internet.  When our remote routers (spokes) have dynamic IP addresses, 0.0.0.0 0.0.0.0 must be used.
+
+Step 4: Configure the IPsec transform set and lifetime.
+crypto ipsec security-association lifetime seconds 86400
+crypto ipsec transform-set Hub-Spoke esp-aes 256 esp-sha-hmac
+ mode tunnel
+
+Step 5: Create and apply an IPSec profile.
+crypto ipsec profile encrypt-gre
+ set security-association lifetime seconds 86400
+ set transform-set Hub-Spoke
+
+interface tu0
+tunnel protection ipsec profile encrypt-gre
+
+Step 6: Verification
+show crypto session
+show crypto ipsec transform-set
+show crypto isakmp sa
+show crypto ipsec sa
+
+
+
+
+
+The following configuration applies to BR1 & BR2 spoke routers:
+
+crypto isakmp policy 1
+ encr aes
+ hash sha256
+ authentication pre-share
+ group 14
+crypto isakmp key cisco12345 address 0.0.0.0 0.0.0.0
+
+crypto ipsec security-association lifetime seconds 86400
+
+crypto ipsec transform-set Hub-Spoke esp-aes 256 esp-sha-hmac
+ mode tunnel
+
+
+crypto ipsec profile encrypt-gre
+ set security-association lifetime seconds 86400
+ set transform-set Hub-Spoke
+
+interface tu0
+tunnel protection ipsec profile encrypt-gre
+
+
+
+DH groups 1, 2, and 5 support exponentiation over a prime modulus with a key size of 768 bits, 1024 bits, and 1536 bits, respectively. These groups were not recommended for use after 2012.
+
+DH groups 14, 15, and 16 use larger key sizes with 2048 bits, 3072 bits, and 4096 bits, respectively, and are recommended for use until 2030.
+
+DH groups 19, 20, 21 and 24 with respective key sizes 256 bits, 384 bits, 521 bits, and 2048 bits support Elliptical Curve Cryptography (ECC), which reduces the time needed to generate keys. DH group 24 is the preferred next generation encryption.
+
+
