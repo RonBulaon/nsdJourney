@@ -4,7 +4,7 @@
 <!-- TOC -->
 
 - [Tips and Tricks](#tips-and-tricks)
-- [Module Feedback](#module-feedback)
+- [Module Take Away](#module-take-away)
   - [**CCNA 1/2/3** - (Week 1 to 11)](#ccna-123---week-1-to-11)
   - [**Python** - On going](#python---on-going)
 
@@ -21,13 +21,13 @@
 * Be very good at note taking.
 * Exchange notes with others to seee what you've missed.
 * Bullet journaling helps on my planning and scheduling.
-* Since Packet Tracer is a network simulation only, use **autotyper** applications to do repetive stuff in Packet Tracer.
+* Since Packet Tracer is a network simulation only, use **autotyper** applications to do repetitive stuff in Packet Tracer.
 
 <br>
 
 ## Module Take Away
 ### **CCNA 1/2/3** - (Week 1 to 11)
-  * I'm not new to networking, but its my first time learning how to configure Cisco devices. I learned a lot in **configuring cisco devices via CLI** and raised my confidence level from intermediate to advance (maybe higher) networking. 
+  * I'm not new to networking, but its my first time learning to configure Cisco devices. I learned a lot in **configuring cisco devices via CLI** and raised my confidence level from intermediate to advance (maybe higher) networking. 
   * The case studies, labs and final assesments are all very helpful. It all gave me a good review on networking and gained new perspective in modern day implementation. 
   
 ### **Python** - On going
