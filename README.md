@@ -5,7 +5,6 @@ Information here are my schedules, notes, exercises, etc., while I'm taking *Net
 Forgive me if I have not considered you as a reader. Unlike my other works here in github, these notes are writen down as I study (either in lecture, from my self study in late evenings), thus my priority here is to acquire knowledge and sharing comes second.
 <br />
 <hr />
-<br />
 <h2>Table of Contents</h2>
 
 <!-- TOC -->
@@ -15,7 +14,6 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
 - [Python](#python)
 
 <!-- /TOC -->
-<br />
 <hr />
 <br />
 
