@@ -30,4 +30,5 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
   * [Assigments, Activity and Case Studies](CCNA/assignments.md)
   
 ### Python
+  * [Python Basics](PYTHON/module1/)
   * [Python Notes](PYTHON/source/readme.md)
