@@ -1,0 +1,9 @@
+requests
+tabulate
+ncclient
+pyang --no-binary=pyang
+netmiko
+xmltodict
+
+
+
