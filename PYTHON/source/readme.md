@@ -121,7 +121,8 @@
 
 ## Class 6
 ### Activity : 2.2 Lab - CLI Automation with Python using netmiko 
-#### Objectives
+#### Objectives 
+  * [Lab Instructions](../class6/2.2%20Lab%20-%20CLI%20Automation%20with%20Python%20using%20netmiko.pdf)
   * Part 1: Install the netmiko Python module
   * Part 2: Connect to IOS XE’s SSH service using netmiko
   * Part 3: Use netmiko to gather information from the device
@@ -169,13 +170,14 @@
   sendCommand('send_command',cliCommand)
   ```
 ### Activity : 2.3 Lab - Explore YANG models using the pyang tool 
-* Pending
+* [Lab Instructions and solutions](../class6/2.3%20Lab%20-%20Explore%20YANG%20models%20using%20the%20pyang%20tool.pdf)
 
 <br/><br/>
 
 ## Class 7
 ### Activity : 2.5 Lab - RESTCONF with Python
 #### Objectives
+* [Lab Instructions](../class7/lab%202.5.py)
 * Part 1: RESTCONF basics in Python
 * Part 2: Modify interface configuration with RESTCONF in Python
 
@@ -248,6 +250,7 @@
 ## Class 8
 ### Activity : 2.7 Lab - NETCONF wPython List Capabilities
 #### Objectives
+* [Lab Instructions](../class8/RonAnswered_2.7%20Lab%20-%20NETCONF%20wPython%20List%20Capabilities.pdf)
 * Part 1: Install the ncclient Python module
 * Part 2: Connect to IOS XE’s NETCONF service using ncclient
 * Part 3: List the IOS XE’s capabilities – supported YANG models
@@ -283,6 +286,7 @@
 
 ### Activity : 2.8 Lab - NETCONF wPython Device Configuration
 #### Objectives
+* [Lab Instructions](../class8/RonAnswered_2.8%20Lab%20-%20NETCONF%20wPython%20Device%20Configuration.pdf)
 * Part 1: Retrieve the IOS XE VMs’ existing running configuration
 * Part 2: Update the device’s configuration
 
@@ -380,6 +384,7 @@
 
 ### Activity : 2.9 Lab - NETCONF wPython Get Operational Data
 #### Objectives
+* [Lab Instructions](../class8/RonAnswered_2.9%20Lab%20-%20NETCONF%20wPython%20Get%20Operational%20Data.pdf)
 * Part 1: Retrieve the IOS XE VMs’ existing running configuration
 
 #### Solution : ```lab29.py```
