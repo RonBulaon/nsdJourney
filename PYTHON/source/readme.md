@@ -12,7 +12,7 @@
   - [Install JupyterLab](#install-jupyterlab)
 - [Class 5](#class-5)
   - [Objectives](#objectives)
-  - [Install Required Modules for excercises](#install-required-modules-for-excercises)
+  - [Install Required Modules for Exercises](#install-required-modules-for-exercises)
 - [Class 6](#class-6)
   - [Activity : 2.2 Lab - CLI Automation with Python using netmiko](#activity--22-lab---cli-automation-with-python-using-netmiko)
     - [Objectives](#objectives-1)
@@ -33,7 +33,7 @@
   - [Activity : 2.9 Lab - NETCONF with Python Get Operational Data](#activity--29-lab---netconf-with-python-get-operational-data)
     - [Objectives](#objectives-5)
     - [Solution : ```lab29.py```](#solution--lab29py)
-- [Replit Excercises](#replit-excercises)
+- [Replit Exercises](#replit-exercises)
 
 <!-- /TOC -->
 <br />
@@ -98,7 +98,7 @@
 * Install [putty](https://www.putty.org/)
 * Install [virtualbox](https://www.virtualbox.org/)
  
-### Install Required Modules for excercises
+### Install Required Modules for Exercises
 * This was not taught during class.
 * Build ```requirements.txt``` file. 
   ```bash
@@ -423,8 +423,8 @@
   ```
 <br /> <br />
 
-## Replit Excercises
-* Excercise 1
+## Replit Exercises
+* Exercise 1
   ```python
   # Write a Python program that uses three variables. The variables in your program will be country, province, and city. Assign a string value to each one of the variables. Your program should display "Here is an example of a country, a province, and a city." Next, display the value for country, followed by province, and city. Each one of the values should be printed on their own line. Your program will display four lines in total.
 
@@ -435,7 +435,7 @@
       (x, y, z))
 
   ```
-* Excercise 2
+* Exercise 2
   ```python
   # Similar output of Exercise 1 but minimize your code to use one print() function only.
 
@@ -443,14 +443,14 @@
   x,y,z = "Canada", "Manitoba", "Winnipeg"
   print('Here is an example of a country, a province, and a city. \n%s \n%s \n%s' % (x,y,z) )
   ```
-* Excercise 3
+* Exercise 3
   ```python
   # Create a code that will output exactly the same of the output file.
 
   # Put your codes below
   print('The','light','sly','fox','jumped','over','the','lazy','dog',sep=('***\n'), end=('***\n'))
   ```
-* Excercise 4
+* Exercise 4
   ```python
   # Modify the first line of code in the editor, using the sep and end keywords, to match the expected output. Use the two print() functions in the editor.
 
@@ -459,7 +459,7 @@
   print("Programming","Essentials","in", sep=('***'),end=('...'))
   print("Python")  
   ```
-* Excercise 5
+* Exercise 5
   ```python
   #Troubleshoot the following line of code
 
@@ -468,7 +468,7 @@
   # print("URI = schema "://\" authority "//\" path [ "?" ] [ /"#/" fragment ]\n")
   print("Think of the URI as the location of the data")
   ```
-* Excercise 1-15
+* Exercise 1-15
   ```python
   # Create a Python program that enters and displays the equipment entered. Continually prompt the user for another item until they enter a blank item. After all the items are entered, display the equipment list back to the user.
 
@@ -584,7 +584,7 @@
   if json_status == 0:
       print("API Status: " + str(json_status) + " = A successful route call.\n")
   ```
-* Excercise : 2.4.1.4.0.1
+* Exercise : 2.4.1.4.0.1
   ```python
   '''
   Click on the 2.4.1.4.01 image to the left.
@@ -600,7 +600,7 @@
   x = requests.get(url)
   print(x)
   ```
-* Excercise : 24.1.4.0.2
+* Exercise : 24.1.4.0.2
   ```python
   '''
   Click on the 24.1.4.02 image to the left.
