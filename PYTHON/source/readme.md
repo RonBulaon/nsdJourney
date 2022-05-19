@@ -33,6 +33,7 @@
   - [Activity : 2.9 Lab - NETCONF with Python Get Operational Data](#activity--29-lab---netconf-with-python-get-operational-data)
     - [Objectives](#objectives-5)
     - [Solution : ```lab29.py```](#solution--lab29py)
+- [Replit Excercises](#replit-excercises)
 
 <!-- /TOC -->
 <br />
@@ -419,4 +420,201 @@
                   interface["statistics"]["out-octets"]
         )
       )
+  ```
+<br /> <br />
+
+## Replit Excercises
+* Excercise 1
+  ```python
+  # Write a Python program that uses three variables. The variables in your program will be country, province, and city. Assign a string value to each one of the variables. Your program should display "Here is an example of a country, a province, and a city." Next, display the value for country, followed by province, and city. Each one of the values should be printed on their own line. Your program will display four lines in total.
+
+  # Put your codes below
+  x, y, z = "Canada", "Manitoba", "Winnipeg"
+  print(
+      'Here is an example of a country, a province, and a city. \n%s \n%s \n%s' %
+      (x, y, z))
+
+  ```
+* Excercise 2
+  ```python
+  # Similar output of Exercise 1 but minimize your code to use one print() function only.
+
+  # Put your codes below
+  x,y,z = "Canada", "Manitoba", "Winnipeg"
+  print('Here is an example of a country, a province, and a city. \n%s \n%s \n%s' % (x,y,z) )
+  ```
+* Excercise 3
+  ```python
+  # Create a code that will output exactly the same of the output file.
+
+  # Put your codes below
+  print('The','light','sly','fox','jumped','over','the','lazy','dog',sep=('***\n'), end=('***\n'))
+  ```
+* Excercise 4
+  ```python
+  # Modify the first line of code in the editor, using the sep and end keywords, to match the expected output. Use the two print() functions in the editor.
+
+  # Don't change anything in the second print() invocation.
+
+  print("Programming","Essentials","in", sep=('***'),end=('...'))
+  print("Python")  
+  ```
+* Excercise 5
+  ```python
+  #Troubleshoot the following line of code
+
+  print("REST APIs use Uniform Resource Identifiers or (URIs) \nThese are the parts of a URI:")
+  print('\nURI = schema "://" authority "/" path [ "?" ] [ "#" fragment ]\n')
+  # print("URI = schema "://\" authority "//\" path [ "?" ] [ /"#/" fragment ]\n")
+  print("Think of the URI as the location of the data")
+  ```
+* Excercise 1-15
+  ```python
+  # Create a Python program that enters and displays the equipment entered. Continually prompt the user for another item until they enter a blank item. After all the items are entered, display the equipment list back to the user.
+
+  # Put your code below
+  y = []
+  while True:
+      x = input("Enter the device hostname. Press <enter> when done: ")
+      if len(x):
+          y.append(x)
+          print("Device added.")
+      if x == '':
+          print("\nEquipment List:")
+          for each in y:
+              print(each)
+          break
+  ```
+* Troubleshooting List and Dictionary
+  ```python
+  # Create a list of the BRICS countries
+  country = [ 
+              "Brazil", 
+              "Russia", 
+              "India", 
+              "China", 
+              "South Africa"
+            ]
+
+  """Create a dictionary of BRICS capitals.
+  Note that South Africa has 3 capitals. Therefore, we embed a list inside
+  the dictionary.
+  """
+
+  capitals = {
+      "Brazil": "Brasilia",
+      "Russia": "Moscow",
+      "India": "New Delhi",
+      "China": "Beijing",
+      "South Africa": [
+                          "Pretoria",
+                          "Cape Town",
+                          "Bloemfontein"
+                      ]
+            }
+
+  # Print the list and dictionary
+  print( country ) # Printing the elements in the country
+  print( capitals ) # Printing the key:value pairs in capitals
+  """
+  What response did you get?
+  Why did the list and dictionary contents not print?
+  Fix the code and run the script again.
+  """
+
+  print(capitals["South Africa"][1]) # Printing the capital Cape Town which is index 1
+  """
+  Why did you get an error for the 2nd capital of South Africa?
+  Hint: Check the syntax for the index value.
+  """
+  ```
+* Troubleshoot a script
+  ```python
+  '''
+  Troubleshoot the Script to Allow User to Add Devices
+
+  1. For the open() function use the mode a, which will allow you to append an item to the devices.txt file.(Note: device.txt will be automatically created when script runs)
+  2. Inside a while True: loop, embed an input() function command that asks the user for the new device.
+  3. Set the value of the user's input to a variable named newItem.
+  4. Use an if statement that breaks the loop if the user types exit and prints the statement "All done!".
+  5. Use the command file.write(newItem + “\n”) to add the new user provided device.
+
+  Run and troubleshoot your script until you get output similar to 1.2.6.4.PNG
+  '''
+
+  while True:
+    newItem = input("Enter device name: ")
+    if newItem == "exit":
+      print("All done!")
+      break
+    file = open("devices.txt", "a") 
+    file.write(newItem + "\n")
+    file.close()
+  ```
+* Check status of a JSON Request
+  ```python
+  '''
+  Troubleshoot the codes below which will do the following:
+
+  1. Print the constructed URL so that the user can see the exact request made by the application.
+  2. Parse the JSON data to obtain the statuscode value
+  3. Print the statuscode value and a message if the request is successful. The \n adds a blank line after the message.
+
+  You will need to import two modules from the Python library: requests and urllib.parse. The request module provides functions for retrieving JSON data from a URL.  
+
+  '''
+
+  #Replace 'your_api_key' with your MapQuest API key
+
+  import urllib.parse
+  import requests
+
+  main_api = "https://www.mapquestapi.com/directions/v2/route?"
+  orig = "Toronto"
+  dest = "New York"
+  key = 'your_api_key'
+
+  url = main_api + urllib.parse.urlencode({"key": key, "from":orig, "to":dest})
+  #(Note: The url value has no error)
+  print("URL:", url)
+
+  json_data = requests.get(url).json()
+  json_status = json_data["info"]["statuscode"]
+
+  if json_status == 0:
+      print("API Status: " + str(json_status) + " = A successful route call.\n")
+  ```
+* Excercise : 2.4.1.4.0.1
+  ```python
+  '''
+  Click on the 2.4.1.4.01 image to the left.
+  Make the necessary changes to the code so that
+  it runs without any errors. Once you have completed
+  this activity, you can 'Submit' your file.Click on the image
+  to the left to see what the output should produce.
+  '''
+  import requests
+
+  url = "https://w3schools.com/python/demopage.html"
+  print(url)
+  x = requests.get(url)
+  print(x)
+  ```
+* Excercise : 24.1.4.0.2
+  ```python
+  '''
+  Click on the 24.1.4.02 image to the left.
+  Make the necessary changes to the file so that
+  it runs without any errors. Once you have completed
+  this activity, you can 'Submit' your file. Click on the image
+  to the left to see what the output should produce.
+  '''
+  import requests
+
+  url = "https://mitt.ca"
+  print(url)
+  httpResponse = requests.head(url)
+  print(httpResponse)
+  httpStatusCode = httpResponse.status_code
+  print(httpStatusCode)
   ```
