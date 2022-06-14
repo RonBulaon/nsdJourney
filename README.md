@@ -12,6 +12,7 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
 - [Misc](#misc)
 - [CCNA](#ccna)
 - [Python](#python)
+- [Palo Alto Networks](#palo-alto-networks)
 
 <!-- /TOC -->
 <hr />
@@ -30,3 +31,7 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
 ### Python
   * [Basic Programing](PYTHON/module1/)
   * [Course Notes](PYTHON/source/readme.md)
+
+
+### Palo Alto Networks
+  * [Course Labs](paloAlto/paloAltoNote.md)

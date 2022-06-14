@@ -6,7 +6,9 @@
 - [Tips and Tricks](#tips-and-tricks)
 - [Module Take Away](#module-take-away)
   - [**CCNA 1/2/3** - (Week 1 to 11)](#ccna-123---week-1-to-11)
-  - [**Python** - On going](#python---on-going)
+  - [**Python** - (Week 12 to 13)](#python---week-12-to-13)
+  - [Cisco CyberOps - (Week 14 to 17)](#cisco-cyberops---week-14-to-17)
+  - [Palo Alto Networks - (Week 17 to 18)](#palo-alto-networks---week-17-to-18)
 
 <!-- /TOC -->
 
@@ -30,4 +32,15 @@
   * I'm not new to networking, but its my first time learning to configure Cisco devices. I learned a lot in **configuring cisco devices via CLI** and raised my confidence level from intermediate to advance (maybe higher) networking. 
   * The case studies, labs and final assesments are all very helpful. It all gave me a good review on networking and gained new perspective in modern day implementation. 
   
-### **Python** - On going
+### **Python** - (Week 12 to 13)
+  * I have good back ground in programing and somehow this module's Network programability is enough to provoke some thoughts.
+  * They teach enough just to get by and explore on your own for pytho usage on network programability.
+  * Low light : Whatever theyt taught was mentioned for class only not really used in real networking.
+
+### Cisco CyberOps - (Week 14 to 17)
+  * More like exploration of Windows and Linux. Very little on advance topics.
+  * Highlight : Lab works on Securityy Onion are nice. I never used those tools before except for Wireshark so its a good take a way for me to learn new tools.
+  * Lowlight : Course profile looks like for SOC operations but it alsmost don't have SIEM topics that can be usable for live operation of SOC.
+
+### Palo Alto Networks - (Week 17 to 18)
+  * On going
