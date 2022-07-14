@@ -33,7 +33,6 @@
     - [Enable the Application Block Page](#enable-the-application-block-page)
     - [Create an FTP Port-Based Security Policy Rule](#create-an-ftp-port-based-security-policy-rule)
     - [Migrate Port-Based Rule to Application-Aware Rule](#migrate-port-based-rule-to-application-aware-rule)
-  - [Content-ID](#content-id)
   - [GlobalProtect](#globalprotect)
   - [Site to site VPN](#site-to-site-vpn)
   - [Active/Passive High Availability](#activepassive-high-availability)
@@ -252,9 +251,6 @@ ping host www.paloaltonetworks.com
   * Policies > Security > [Policy] >  Application > [+]Add (Add your application) 
   * Policies > Security > [Policy] > Application(tab) > Service/URL Category(pane) > Service > [Drop-Down] application-default
 
-
-## Content-ID
---Lab 5
 
 ## GlobalProtect
   * Summary : 
