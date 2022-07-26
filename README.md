@@ -13,6 +13,7 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
 - [CCNA](#ccna)
 - [Python](#python)
 - [Palo Alto Networks](#palo-alto-networks)
+- [Security+](#security)
 
 <!-- /TOC -->
 <hr />
@@ -35,3 +36,7 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
 
 ### Palo Alto Networks
   * [Course Labs](paloAlto/paloAltoNote.md)
+
+### Security+
+  * [Cert Master Notes](sec+/notesCM.md)
+  * [LinkedIn Learning Notes](sec+/notesLL.md)

@@ -1,13 +1,12 @@
-# CompTIA Security+
+# CompTIA Security+ Cert Master Labs
 
 <h2>Table of Contents</h2>
 
 <!-- TOC -->
 
-- [CompTIA Security+](#comptia-security)
-  - [Lesson Notes:](#lesson-notes)
+- [CompTIA Security+ Cert Master Labs](#comptia-security-cert-master-labs)
+  - [Lesson Notes: CertMaster](#lesson-notes-certmaster)
     - [Topic 3A : Assess Organizational Security with Network Reconnaissance Tools](#topic-3a--assess-organizational-security-with-network-reconnaissance-tools)
-      - [OTHER RECONNAISSANCE AND DISCOVERY TOOLS](#other-reconnaissance-and-discovery-tools)
   - [Commands and Configurations Journal Used in Labs](#commands-and-configurations-journal-used-in-labs)
     - [Assisted Lab 02: Scanning and Identifying Network Nodes](#assisted-lab-02-scanning-and-identifying-network-nodes)
       - [Kali](#kali)
@@ -107,7 +106,7 @@
 
 <!-- /TOC -->
 
-## Lesson Notes:
+## Lesson Notes: CertMaster
 ### Topic 3A : Assess Organizational Security with Network Reconnaissance Tools
   * Shodan.io - search engine for IoT
   * Metagoofil - Kali Tool. Harvest files, emails and other interesting information.
@@ -127,26 +126,13 @@
     * ```pathping```
     * ```netstat -ano``` / ```netstat -tulpn```
     * ```nslookup / dig```
-    * 
-  
-#### OTHER RECONNAISSANCE AND DISCOVERY TOOLS
-  * dnsenum
-  * theHarvester
-  * scanless
-  * curl
-  * Nessus
-
-
-[Back to Top](#comptia-security)
-<br/><br/>
-
-
-[Back to Top](#comptia-security)
-<br/><br/>
-
-
-[Back to Top](#comptia-security)
-<br/><br/>
+   
+  * other tools
+    * dnsenum
+    * theHarvester
+    * scanless
+    * curl
+    * Nessus
 
 
 [Back to Top](#comptia-security)
