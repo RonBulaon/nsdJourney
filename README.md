@@ -14,6 +14,7 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
 - [Python](#python)
 - [Palo Alto Networks](#palo-alto-networks)
 - [Security+](#security)
+- [PenTest+](#pentest)
 
 <!-- /TOC -->
 <hr />
@@ -40,3 +41,9 @@ Forgive me if I have not considered you as a reader. Unlike my other works here 
 ### Security+
   * [Cert Master Notes](sec+/notesCM.md)
   * [LinkedIn Learning Notes](sec+/notesLL.md)
+
+### PenTest+
+  * [Lab Notes](pentest+/labNotes.md)
+  * [PBQ](pentest+/pbq.md)
+  * [School Labs](pentest+/pdfs/)
+  * [Case Study](pentest+/casestudy/caseStudy.md)
